@@ -209,7 +209,7 @@ lt:{
   sCom:'Komisiniai platformai',sFee:(n,p)=>`${n} × ${p} € = ${n*p} €/mėn.`,blockT:'Užblokuoti laiką',close:'Uždaryti',vShort:'viz.',
   lgEx:'Rezervacija (pavyzdys)',lgNew:'Nauja per puslapį',lgBlk:'Užblokuota',blocked:'Užblokuota',
   visitH:'Vizitas',visitHint:'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis ir galėtum jį atšaukti ar pažymėti neatvykusį.',
-  twH:'Kiek kainuoja Treatwell?',com:'Komisinis, %',ourFee:'Mūsų kaina už barberį, €/mėn.',twBase:r=>`Skaičiuojama nuo šio mėnesio apyvartos (${r} €). Įrašyk komisinį pagal savo Treatwell sutartį.`,
+  twH:'Kiek kainuoja Treatwell?',com:'Komisinis už naują klientą, %',ourFee:'Mūsų kaina už barberį, €/mėn.',twBase:(n,a,c)=>`${n} nauj. klientų × ${a} € × ${c} % + mėnesinis planas. Pakartotiniai vizitai ir rezervacijos per tavo paties nuorodą Treatwell'e – 0 %. Įrašyk skaičius iš savo Treatwell sąskaitos.`,newC:'Nauji klientai per Treatwell, per mėn.',avg:'Vid. pirmo vizito kaina, €',plan:'Treatwell mėn. planas, €',yr:y=>`Per metus: ${y} €`,cheaper:'Su tokiais skaičiais Treatwell pigesnis. Mūsų nauda: klientai ir atsiliepimai lieka tavo, nėra priklausomybės nuo platformos.',
   ours:'Mūsų platforma',saved:s=>`Sutaupoma ${s} € per mėnesį`,linkH:'Tavo registracijos nuoroda',copy:'Kopijuoti',
   linkInfo:'Įdėk į Instagram bio, Google Maps profilį ir Facebook. Klientai registruojasi tiesiai pas tave.',
   bBarber:'Barberis',bFrom:'Nuo',bLen:'Trukmė',bSave:'Užblokuoti',h:'val.',
@@ -242,7 +242,7 @@ en:{
   sCom:'Platform commission',sFee:(n,p)=>`${n} × €${p} = €${n*p}/month`,blockT:'Block time',close:'Close',vShort:'visits',
   lgEx:'Booking (sample)',lgNew:'New via page',lgBlk:'Blocked',blocked:'Blocked',
   visitH:'Appointment',visitHint:'Tap an appointment in the calendar to see client details, cancel it, or mark a no-show.',
-  twH:'What does Treatwell cost?',com:'Commission, %',ourFee:'Our price per barber, €/month',twBase:r=>`Based on this month’s revenue (€${r}). Enter the commission from your Treatwell contract.`,
+  twH:'What does Treatwell cost?',com:'Commission per new client, %',ourFee:'Our price per barber, €/month',twBase:(n,a,c)=>`${n} new clients × €${a} × ${c}% + monthly plan. Repeat visits and bookings through your own link cost 0% on Treatwell. Enter the numbers from your Treatwell invoice.`,newC:'New clients via Treatwell per month',avg:'Avg. first-visit price, €',plan:'Treatwell monthly plan, €',yr:y=>`Per year: €${y}`,cheaper:'With these numbers Treatwell is cheaper. Our edge: you own your clients and reviews, no platform lock-in.',
   ours:'Our platform',saved:s=>`You save €${s} a month`,linkH:'Your booking link',copy:'Copy',
   linkInfo:'Add it to your Instagram bio, Google Maps profile and Facebook. Clients book with you directly.',
   bBarber:'Barber',bFrom:'From',bLen:'Length',bSave:'Block',h:'h',
@@ -403,7 +403,7 @@ function bindDone(){
 }
 
 /* ---------- Dashboard ---------- */
-const ad={date:todayStr,sel:null,per:30,commission:25,blocking:false};
+const ad={date:todayStr,sel:null,per:30,commission:35,newc:20,avg:null,plan:0,blocking:false};
 const admin=document.getElementById('admin');
 const PX=1.1;
 function monthStats(){
@@ -428,7 +428,7 @@ function renderAdmin(){
   const heads=BARBERS.map(b=>`<div class="head"><span class="avatar">${b.name[0]}</span>${b.name}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x=>x.barber===b.id&&x.service).length} ${t.vShort}</span></div>`).join('');
   const days=DAYS.map(d=>dayBtn(d,'data-aday',ad.date===d,false,niceDate(d))).join('');
   const sel=bookings.find(b=>b.id===ad.sel&&b.status!=='cancelled');
-  const tw=Math.round(ms.rev*ad.commission/100);const fee=ad.per*BARBERS.length;
+  const avgP=ad.avg??Math.round(SERVICES.reduce((a,s)=>a+s.price,0)/SERVICES.length);const tw=Math.round(ad.newc*avgP*ad.commission/100+ad.plan);const fee=ad.per*BARBERS.length;
 
   admin.innerHTML=`
   <div class="stats">
@@ -453,12 +453,15 @@ function renderAdmin(){
       ${sel?detail(sel):`<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
       <div class="panel"><h3>${t.twH}</h3>
         <div class="inline-fields">
+          <div class="field"><label for="f-newc">${t.newC}</label><input id="f-newc" type="number" min="0" value="${ad.newc}"></div>
+          <div class="field"><label for="f-avg">${t.avg}</label><input id="f-avg" type="number" min="0" value="${avgP}"></div>
+          <div class="field"><label for="f-plan">${t.plan}</label><input id="f-plan" type="number" min="0" value="${ad.plan}"></div>
           <div class="field"><label for="f-com">${t.com}</label><input id="f-com" type="number" min="0" max="60" value="${ad.commission}"></div>
           <div class="field"><label for="f-fee">${t.ourFee}</label><input id="f-fee" type="number" min="0" value="${ad.per}"></div>
         </div>
-        <p class="info" style="margin:0">${t.twBase(ms.rev)}</p>
+        <p class="info" style="margin:0">${t.twBase(ad.newc,avgP,ad.commission)}</p>
         <div class="cmp"><div class="bad"><small>Treatwell</small><b>${eur(tw)}</b></div><div class="good"><small>${t.ours}</small><b>${eur(fee)}</b></div></div>
-        <div class="save">${t.saved(Math.max(0,tw-fee))}</div>
+        ${tw>fee?`<div class="save">${t.saved(tw-fee)}</div><p class="info" style="margin-top:4px">${t.yr((tw-fee)*12)}</p>`:`<p class="info" style="margin-top:10px">${t.cheaper}</p>`}
       </div>
       <div class="panel"><h3>${t.linkH}</h3>
         <div class="share"><input id="f-link" readonly value="${BOOK_URL}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
@@ -509,6 +512,7 @@ function bindAdmin(){
   };
   const com=admin.querySelector('#f-com'),fee=admin.querySelector('#f-fee');
   com.onchange=()=>{ad.commission=Math.max(0,+com.value||0);renderAdmin()};
+  [['#f-newc','newc'],['#f-avg','avg'],['#f-plan','plan']].forEach(([id,k])=>{const el=admin.querySelector(id);el.onchange=()=>{ad[k]=Math.max(0,+el.value||0);renderAdmin()}});
   fee.onchange=()=>{ad.per=Math.max(0,+fee.value||0);renderAdmin()};
   admin.querySelector('#copy').onclick=()=>{const i=admin.querySelector('#f-link');
     try{navigator.clipboard.writeText(i.value).then(()=>toast(t.tCopied),()=>{i.select();toast(t.tSelect)})}catch(e){i.select();toast(t.tSelect)}};
