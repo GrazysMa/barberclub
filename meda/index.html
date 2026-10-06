@@ -221,7 +221,7 @@ lt:{
   sCom:'Komisiniai platformai',sFee:(n,p)=>`${n} × ${p} € = ${n*p} €/mėn.`,blockT:'Užblokuoti laiką',close:'Uždaryti',vShort:'viz.',
   lgEx:'Rezervacija (pavyzdys)',lgNew:'Nauja per puslapį',lgBlk:'Užblokuota',blocked:'Užblokuota',
   visitH:'Vizitas',visitHint:'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis ir galėtum jį atšaukti ar pažymėti neatvykusį.',
-  twH:'Kiek kainuoja Treatwell?',com:'Komisinis už naują klientą, %',ourFee:'Mūsų kaina už meistrę, €/mėn.',twBase:(n,a,c)=>`${n} nauj. klientų × ${a} € × ${c} % + mėnesinis planas. Pakartotiniai vizitai ir rezervacijos per tavo paties nuorodą Treatwell'e – 0 %. Įrašyk skaičius iš savo Treatwell sąskaitos.`,newC:'Nauji klientai per Treatwell, per mėn.',avg:'Vid. pirmo vizito kaina, €',plan:'Treatwell mėn. planas, €',yr:y=>`Per metus: ${y} €`,cheaper:'Su tokiais skaičiais Treatwell pigesnis. Mūsų nauda: klientai ir atsiliepimai lieka tavo, nėra priklausomybės nuo platformos.',
+  twH:'Kiek kainuoja Treatwell?',com:'Treatwell komisinis, %',ourFee:'Mūsų kaina už meistrę, €/mėn.',twBase:(n,a,c)=>`${n} rezerv. × ${a} € × ${c} % + mėnesinis planas. Pvz. 25 € kirpimas su 20 % komisiniu – Treatwell'ui 5 €. Įrašyk skaičius iš savo Treatwell sąskaitos.`,newC:'Rezervacijos per Treatwell, per mėn.',avg:'Vid. vizito kaina, €',plan:'Treatwell mėn. planas, €',yr:y=>`Per metus: ${y} €`,cheaper:'Su tokiais skaičiais Treatwell pigesnis. Mūsų nauda: klientai ir atsiliepimai lieka tavo, nėra priklausomybės nuo platformos.',
   ours:'Mūsų platforma',saved:s=>`Sutaupoma ${s} € per mėnesį`,linkH:'Tavo registracijos nuoroda',copy:'Kopijuoti',
   linkInfo:'Įdėk į Instagram bio, Google Maps profilį ir Facebook. Klientai registruojasi tiesiai pas tave.',
   bBarber:'Meistrė',bFrom:'Nuo',bLen:'Trukmė',bSave:'Užblokuoti',h:'val.',
@@ -263,7 +263,7 @@ en:{
   sCom:'Platform commission',sFee:(n,p)=>`${n} × €${p} = €${n*p}/month`,blockT:'Block time',close:'Close',vShort:'visits',
   lgEx:'Booking (sample)',lgNew:'New via page',lgBlk:'Blocked',blocked:'Blocked',
   visitH:'Appointment',visitHint:'Tap an appointment in the calendar to see client details, cancel it, or mark a no-show.',
-  twH:'What does Treatwell cost?',com:'Commission per new client, %',ourFee:'Our price per specialist, €/month',twBase:(n,a,c)=>`${n} new clients × €${a} × ${c}% + monthly plan. Repeat visits and bookings through your own link cost 0% on Treatwell. Enter the numbers from your Treatwell invoice.`,newC:'New clients via Treatwell per month',avg:'Avg. first-visit price, €',plan:'Treatwell monthly plan, €',yr:y=>`Per year: €${y}`,cheaper:'With these numbers Treatwell is cheaper. Our edge: you own your clients and reviews, no platform lock-in.',
+  twH:'What does Treatwell cost?',com:'Treatwell commission, %',ourFee:'Our price per specialist, €/month',twBase:(n,a,c)=>`${n} bookings × €${a} × ${c}% + monthly plan. E.g. a €25 cut at 20% means €5 to Treatwell. Enter the numbers from your Treatwell invoice.`,newC:'Bookings via Treatwell per month',avg:'Avg. visit price, €',plan:'Treatwell monthly plan, €',yr:y=>`Per year: €${y}`,cheaper:'With these numbers Treatwell is cheaper. Our edge: you own your clients and reviews, no platform lock-in.',
   ours:'Our platform',saved:s=>`You save €${s} a month`,linkH:'Your booking link',copy:'Copy',
   linkInfo:'Add it to your Instagram bio, Google Maps profile and Facebook. Clients book with you directly.',
   bBarber:'Specialist',bFrom:'From',bLen:'Length',bSave:'Block',h:'h',
@@ -435,7 +435,7 @@ function bindDone(){
 }
 
 /* ---------- Dashboard ---------- */
-const ad={date:todayStr,sel:null,per:25,commission:35,newc:20,avg:null,plan:0,blocking:false};
+const ad={date:todayStr,sel:null,per:25,commission:20,newc:60,avg:null,plan:0,blocking:false};
 const admin=document.getElementById('admin');
 const PX=1.1;
 function monthStats(){
