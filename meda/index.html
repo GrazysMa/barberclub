@@ -217,7 +217,7 @@ lt:{
   errName:'Įrašyk vardą.',errPhone:'Įrašyk telefono numerį, pvz. +370 612 34567.',taken:'Šis laikas ką tik užimtas. Pasirink kitą.',
   confirmed:'Patvirtinta',seeYou:n=>`Iki pasimatymo, ${n}!`,with:'pas',code:'Rezervacijos kodas',
   noSms:'Prototipe laiškai ir SMS nesiunčiami. Tikroje versijoje klientas iškart gautų patvirtinimą el. paštu, o likus 24 val. – priminimą.',again:'Nauja rezervacija',see:'Žiūrėti meistrės skydelyje',
-  sMonth:'Šio mėnesio vizitai',sTurn:'€ apyvarta',sDay:'Pasirinktos dienos pajamos',sVisits:'vizitai',sNew:'Naujos rezervacijos',sNewN:'Per kliento puslapį šioje sesijoje',
+  sMonth:'Šio mėnesio vizitai',sTurn:'apyvarta',sDay:'Pasirinktos dienos pajamos',sVisits:'vizitai',sNew:'Naujos rezervacijos',sNewN:'Per kliento puslapį šioje sesijoje',
   sCom:'Komisiniai platformai',sFee:(n,p)=>`${n} × ${p} € = ${n*p} €/mėn.`,blockT:'Užblokuoti laiką',close:'Uždaryti',vShort:'viz.',
   lgEx:'Rezervacija (pavyzdys)',lgNew:'Nauja per puslapį',lgBlk:'Užblokuota',blocked:'Užblokuota',
   visitH:'Vizitas',visitHint:'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis ir galėtum jį atšaukti ar pažymėti neatvykusį.',
@@ -259,7 +259,7 @@ en:{
   errName:'Enter your name.',errPhone:'Enter a phone number, e.g. +370 612 34567.',taken:'That time was just taken. Please pick another.',
   confirmed:'Confirmed',seeYou:n=>`See you soon, ${n}!`,with:'with',code:'Booking code',
   noSms:'The prototype sends no emails or SMS. The real version emails a confirmation right away and a reminder 24 hours before.',again:'New booking',see:'Open in dashboard',
-  sMonth:'Visits this month',sTurn:'€ revenue',sDay:'Revenue for selected day',sVisits:'visits',sNew:'New bookings',sNewN:'Via the client page this session',
+  sMonth:'Visits this month',sTurn:'revenue',sDay:'Revenue for selected day',sVisits:'visits',sNew:'New bookings',sNewN:'Via the client page this session',
   sCom:'Platform commission',sFee:(n,p)=>`${n} × €${p} = €${n*p}/month`,blockT:'Block time',close:'Close',vShort:'visits',
   lgEx:'Booking (sample)',lgNew:'New via page',lgBlk:'Blocked',blocked:'Blocked',
   visitH:'Appointment',visitHint:'Tap an appointment in the calendar to see client details, cancel it, or mark a no-show.',
@@ -435,7 +435,7 @@ function bindDone(){
 }
 
 /* ---------- Dashboard ---------- */
-const ad={date:todayStr,sel:null,per:30,commission:35,newc:20,avg:null,plan:0,blocking:false};
+const ad={date:todayStr,sel:null,per:25,commission:35,newc:20,avg:null,plan:0,blocking:false};
 const admin=document.getElementById('admin');
 const PX=1.1;
 function monthStats(){
@@ -465,7 +465,7 @@ function renderAdmin(){
 
   admin.innerHTML=`
   <div class="stats">
-    <div class="stat"><small>${t.sMonth}</small><b>${ms.count}</b><div class="note">${ms.rev} ${t.sTurn}</div></div>
+    <div class="stat"><small>${t.sMonth}</small><b>${ms.count}</b><div class="note">${eur(ms.rev)} ${t.sTurn}</div></div>
     <div class="stat"><small>${t.sDay}</small><b>${eur(dayRev)}</b><div class="note">${dayList.filter(b=>b.service).length} ${t.sVisits}</div></div>
     <div class="stat"><small>${t.sNew}</small><b>${ms.fresh}</b><div class="note">${t.sNewN}</div></div>
     <div class="stat"><small>${t.sCom}</small><b>${eur(0)}</b><div class="note">${t.sFee(BARBERS.length,ad.per)}</div></div>
