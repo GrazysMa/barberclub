@@ -461,7 +461,7 @@ function renderAdmin(){
   const heads=BARBERS.map(b=>`<div class="head"><span class="avatar">${b.name[0]}</span>${b.name}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x=>x.barber===b.id&&x.service).length} ${t.vShort}</span></div>`).join('');
   const days=DAYS.map(d=>dayBtn(d,'data-aday',ad.date===d,false,niceDate(d))).join('');
   const sel=bookings.find(b=>b.id===ad.sel&&b.status!=='cancelled');
-  const avgP=ad.avg??Math.round(SERVICES.reduce((a,s)=>a+s.price,0)/SERVICES.length);const tw=Math.round(ad.newc*avgP*ad.commission/100+ad.plan);const fee=ad.per*BARBERS.length;
+  const avgP=ad.avg??(()=>{const v=SERVICES.map(s=>s.price).sort((x,y)=>x-y),m=v.length>>1;return Math.round(v.length%2?v[m]:(v[m-1]+v[m])/2)})();const tw=Math.round(ad.newc*avgP*ad.commission/100+ad.plan);const fee=ad.per*BARBERS.length;
 
   admin.innerHTML=`
   <div class="stats">
