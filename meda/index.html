@@ -210,12 +210,13 @@ lt:{
   pickSvc:'Pasirink paslaugą',pickBrb:'Pasirink meistrę',any:'Bet kuris laisvas',anyS:'Daugiausia laisvų laikų',pickTime:'Pasirink laiką',
   noSlotsDay:', laisvų laikų nėra',parts:['Rytas','Diena','Vakaras'],noSlots:'Šią dieną laisvų laikų nėra.',
   you:'Tavo duomenys',name:'Vardas',phone:'Telefono numeris',phoneHint:'Atsiųsime SMS priminimą dieną prieš vizitą.',note:'Pastaba meistrei (nebūtina)',
+  email:'El. paštas',emailHint:'Iškart atsiųsime patvirtinimą, o likus 24 val. iki vizito – priminimą.',errEmail:'Įrašyk teisingą el. pašto adresą, pvz. vardas@gmail.com.',sentTo:e=>`Patvirtinimas išsiųstas į <strong>${e}</strong>. Likus 24 val. iki vizito gausi priminimą el. paštu ir SMS.`,
   back:'Atgal',next:'Toliau',confirm:'Patvirtinti rezervaciją',
   visit:'Tavo vizitas',service:'Paslauga',duration:'Trukmė',barberL:'Meistrė',time:'Laikas',payIn:'Mokėsi salone',
   infoS:'<strong>Be komisinių.</strong> Visa suma atitenka meistrei. Atšaukti galima nemokamai iki 3 val. prieš vizitą.',
   errName:'Įrašyk vardą.',errPhone:'Įrašyk telefono numerį, pvz. +370 612 34567.',taken:'Šis laikas ką tik užimtas. Pasirink kitą.',
   confirmed:'Patvirtinta',seeYou:n=>`Iki pasimatymo, ${n}!`,with:'pas',code:'Rezervacijos kodas',
-  noSms:'Prototipe SMS nesiunčiamas. Tikroje versijoje klientas gautų patvirtinimą ir priminimą.',again:'Nauja rezervacija',see:'Žiūrėti meistrės skydelyje',
+  noSms:'Prototipe laiškai ir SMS nesiunčiami. Tikroje versijoje klientas iškart gautų patvirtinimą el. paštu, o likus 24 val. – priminimą.',again:'Nauja rezervacija',see:'Žiūrėti meistrės skydelyje',
   sMonth:'Šio mėnesio vizitai',sTurn:'€ apyvarta',sDay:'Pasirinktos dienos pajamos',sVisits:'vizitai',sNew:'Naujos rezervacijos',sNewN:'Per kliento puslapį šioje sesijoje',
   sCom:'Komisiniai platformai',sFee:(n,p)=>`${n} × ${p} € = ${n*p} €/mėn.`,blockT:'Užblokuoti laiką',close:'Uždaryti',vShort:'viz.',
   lgEx:'Rezervacija (pavyzdys)',lgNew:'Nauja per puslapį',lgBlk:'Užblokuota',blocked:'Užblokuota',
@@ -251,12 +252,13 @@ en:{
   pickSvc:'Choose a service',pickBrb:'Choose a specialist',any:'Any available',anyS:'Most open times',pickTime:'Choose a time',
   noSlotsDay:', fully booked',parts:['Morning','Afternoon','Evening'],noSlots:'No open times on this day.',
   you:'Your details',name:'First name',phone:'Phone number',phoneHint:'We’ll text you a reminder the day before.',note:'Note for Meda (optional)',
+  email:'Email',emailHint:'We’ll email a confirmation right away and a reminder 24 hours before.',errEmail:'Enter a valid email, e.g. name@gmail.com.',sentTo:e=>`Confirmation sent to <strong>${e}</strong>. You’ll get an email and SMS reminder 24 hours before your visit.`,
   back:'Back',next:'Continue',confirm:'Confirm booking',
   visit:'Your visit',service:'Service',duration:'Duration',barberL:'Specialist',time:'Time',payIn:'Pay at the salon',
   infoS:'<strong>No commission.</strong> The full price goes to your specialist. Free cancellation up to 3 hours before.',
   errName:'Enter your name.',errPhone:'Enter a phone number, e.g. +370 612 34567.',taken:'That time was just taken. Please pick another.',
   confirmed:'Confirmed',seeYou:n=>`See you soon, ${n}!`,with:'with',code:'Booking code',
-  noSms:'The prototype sends no SMS. The real version would send a confirmation and a reminder.',again:'New booking',see:'Open in dashboard',
+  noSms:'The prototype sends no emails or SMS. The real version emails a confirmation right away and a reminder 24 hours before.',again:'New booking',see:'Open in dashboard',
   sMonth:'Visits this month',sTurn:'€ revenue',sDay:'Revenue for selected day',sVisits:'visits',sNew:'New bookings',sNewN:'Via the client page this session',
   sCom:'Platform commission',sFee:(n,p)=>`${n} × €${p} = €${n*p}/month`,blockT:'Block time',close:'Close',vShort:'visits',
   lgEx:'Booking (sample)',lgNew:'New via page',lgBlk:'Blocked',blocked:'Blocked',
@@ -341,7 +343,7 @@ function dayBtn(d,attr,pressed,disabled,label){const dt=parseYmd(d),t=T();
   return `<button class="day" ${attr}="${d}" aria-pressed="${pressed}" ${disabled?'disabled':''} aria-label="${label}"><small>${t.dow[dt.getDay()]}</small><b>${dt.getDate()}</b><small>${t.monS[dt.getMonth()]}</small></button>`}
 
 /* ---------- Client flow ---------- */
-const st={step:0,service:null,barber:'meda',date:null,time:null,name:'',phone:'',note:'',errors:{},done:null};
+const st={step:0,service:null,barber:'meda',date:null,time:null,name:'',phone:'',email:'',note:'',errors:{},done:null};
 const client=document.getElementById('client');
 function firstDayWithSlots(){const len=svc(st.service).min;return DAYS.find(d=>slotsFor(d,len,st.barber).length)||DAYS[0]}
 
@@ -374,6 +376,7 @@ function renderClient(){
     body=`<h2>${t.you}</h2>
       <div class="field"><label for="f-name">${t.name}</label><input id="f-name" autocomplete="given-name" value="${esc(st.name)}">${e.name?`<span class="err">${t[e.name]}</span>`:''}</div>
       <div class="field"><label for="f-phone">${t.phone}</label><input id="f-phone" type="tel" autocomplete="tel" placeholder="+370 6xx xxxxx" value="${esc(st.phone)}">${e.phone?`<span class="err">${t[e.phone]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.phoneHint}</span>`}</div>
+      <div class="field"><label for="f-email">${t.email}</label><input id="f-email" type="email" autocomplete="email" inputmode="email" placeholder="vardas@gmail.com" value="${esc(st.email)}">${e.email?`<span class="err">${t[e.email]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.emailHint}</span>`}</div>
       <div class="field"><label for="f-note">${t.note}</label><textarea id="f-note" rows="2">${esc(st.note)}</textarea></div>`;
   }
   const canNext=[st.service,st.barber,st.time!=null,true][st.step];
@@ -404,14 +407,15 @@ function bindClient(){
     saveFields();
     const e={};if(st.name.trim().length<2)e.name='errName';
     if(st.phone.replace(/\D/g,'').length<8)e.phone='errPhone';
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.email.trim()))e.email='errEmail';
     st.errors=e;if(Object.keys(e).length){renderClient();return}
     const len=svc(st.service).min;const free=freeBarbers(st.date,st.time,len,st.barber);
     if(!free.length){st.step=2;st.time=null;renderClient();toast(T().taken);return}
-    const b={id:seq++,barber:free[0],service:st.service,date:st.date,start:st.time,name:st.name.trim(),phone:st.phone.trim(),note:st.note.trim(),kind:'new',status:'ok'};
+    const b={id:seq++,barber:free[0],service:st.service,date:st.date,start:st.time,name:st.name.trim(),phone:st.phone.trim(),email:st.email.trim(),note:st.note.trim(),kind:'new',status:'ok'};
     bookings.push(b);st.done=b;renderClient();renderAdmin();
   };
 }
-function saveFields(){const n=client.querySelector('#f-name');if(n){st.name=n.value;st.phone=client.querySelector('#f-phone').value;st.note=client.querySelector('#f-note').value}}
+function saveFields(){const n=client.querySelector('#f-name');if(n){st.name=n.value;st.phone=client.querySelector('#f-phone').value;st.email=client.querySelector('#f-email').value;st.note=client.querySelector('#f-note').value}}
 function doneView(){
   const t=T(),b=st.done,s=svc(b.service);
   return `<section class="panel done-box" style="max-width:560px;margin:0 auto">
@@ -419,13 +423,14 @@ function doneView(){
     <h2 style="margin-top:12px">${t.seeYou(esc(b.name))}</h2>
     <p>${sName(s.id)} ${t.with} <strong>${brb(b.barber).name}</strong><br>${niceDate(b.date)}, ${hm(b.start)}–${hm(b.start+s.min)}</p>
     <div class="code" aria-label="${t.code}">MD-${String(b.id).padStart(4,'0')}</div>
+    <p>${t.sentTo(esc(b.email))}</p>
     <p class="info" style="margin-top:0">${t.noSms}</p>
     <div class="row" style="justify-content:center;margin-top:14px">
       <button class="btn ghost" id="again">${t.again}</button>
       ${IS_ADMIN()?`<button class="btn" id="see">${t.see}</button>`:''}</div></section>`;
 }
 function bindDone(){
-  client.querySelector('#again').onclick=()=>{Object.assign(st,{step:0,service:null,barber:'meda',date:null,time:null,name:'',phone:'',note:'',errors:{},done:null});renderClient()};
+  client.querySelector('#again').onclick=()=>{Object.assign(st,{step:0,service:null,barber:'meda',date:null,time:null,name:'',phone:'',email:'',note:'',errors:{},done:null});renderClient()};
   const see=client.querySelector('#see');if(see)see.onclick=()=>{ad.date=st.done.date;ad.sel=st.done.id;setMode('admin')};
 }
 
@@ -510,7 +515,7 @@ function detail(b){
   const pill=b.status==='noshow'?`<span class="pill ns">${t.pNo}</span>`:b.kind==='new'?`<span class="pill new">${t.pNew}</span>`:`<span class="pill ok">${t.pOk}</span>`;
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">${t.visitH}</h3>${pill}</div>
     <div style="font-weight:700;font-size:18px">${esc(b.name)}</div>
-    <div style="font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-bottom:10px">${esc(b.phone)}</div>
+    <div style="font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-bottom:10px">${esc(b.phone)}${b.email?`<br>${esc(b.email)}`:''}</div>
     <div class="sum-row"><span>${t.service}</span><span>${sName(s.id)}</span></div>
     <div class="sum-row"><span>${t.time}</span><span>${hm(b.start)}–${hm(b.start+s.min)}</span></div>
     <div class="sum-row"><span>${t.barberL}</span><span>${brb(b.barber).name}</span></div>
