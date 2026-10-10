@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151012" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Meda – manikiūras, pedikiūras, antakiai. Registracija internetu">
 <style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Meda registracija</title>
@@ -28,6 +30,15 @@
   --red:#e586aa; --red-soft:#3d1e2b; --navy:#b9a0d8; --navy-soft:#2a2238; --ok:#5cc98d; --ok-soft:#14301f; --warn:#e9a94a; --warn-soft:#33260f; color-scheme:dark}
 
 *{box-sizing:border-box}
+
+html{-webkit-tap-highlight-color:rgba(31,58,138,.15)}
+a,button,input,select,textarea,label,summary{touch-action:manipulation}
+select{background-color:var(--surface);color:var(--ink)}
+h1,h2,h3{text-wrap:balance}
+main{scroll-margin-top:16px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{left:16px}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding:0 16px 48px}
 .wrap{max-width:1080px;margin:0 auto}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -39,7 +50,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;padding-block:22px 18px}
 .brand h1{font-family:var(--f-display);font-weight:700;font-size:clamp(34px,6vw,52px);line-height:1;letter-spacing:-.01em;margin:0}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
-.proto{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:99px;margin-bottom:8px}
+.proto{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:99px;margin-bottom:8px}
 .modes{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px}
 .modes button{border:0;background:none;padding:8px 16px;border-radius:99px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
 .modes button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
@@ -70,7 +81,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute
 .days{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;scrollbar-width:thin}
 .day{flex:none;width:58px;padding:8px 0;text-align:center;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);cursor:pointer}
 .day b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.05}
-.day small{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.day small{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .day[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .day[aria-pressed="true"] small{color:var(--bg);opacity:.75}
 .day:disabled{opacity:.4;cursor:default}
@@ -116,7 +127,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute
 .sched .head .avatar{width:28px;height:28px;font-size:14px}
 .col{position:relative;border-left:1px solid var(--line)}
 .hours{position:relative}
-.hours div{position:absolute;right:8px;font-family:var(--f-mono);font-size:11px;color:var(--muted);transform:translateY(-50%)}
+.hours div{position:absolute;right:8px;font-family:var(--f-mono);font-size:12px;color:var(--muted);transform:translateY(-50%)}
 .gl{position:absolute;left:0;right:0;border-top:1px solid var(--line);opacity:.6}
 .appt{position:absolute;left:4px;right:4px;border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.3;overflow:hidden;cursor:pointer;text-align:left;border:1px solid transparent;background:var(--navy-soft);color:var(--ink);border-left:3px solid var(--navy)}
 .appt b{display:block;font-weight:700}
@@ -131,7 +142,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute
 .dash-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
 @media (max-width:900px){.dash-grid{grid-template-columns:minmax(0,1fr)}}
 .side{display:grid;gap:16px}
-.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.new{background:var(--red-soft);color:var(--red)}
 .pill.ns{background:var(--warn-soft);color:var(--warn)}
@@ -158,12 +169,13 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}
 
 </head>
 <body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
 <div class="pole" aria-hidden="true"></div>
 <div class="wrap">
   <header>
     <div class="brand">
       <span class="proto" id="t-proto"></span>
-      <h1>Meda · nagai ir antakiai</h1>
+      <h1 translate="no">Meda · nagai ir antakiai</h1>
       <p id="t-addr"></p>
     </div>
     <div class="controls">
@@ -178,12 +190,13 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}
     </div>
   </header>
 
-  <main id="client"></main>
-  <main id="admin" hidden></main>
+  <main id="client" tabindex="-1"></main>
+  <main id="admin" tabindex="-1" hidden></main>
 
   <footer id="t-foot"></footer>
 </div>
-<div class="toast" id="toast" hidden></div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
 <script>
 const I18N={
@@ -225,7 +238,7 @@ lt:{
   ours:'Mūsų platforma',saved:s=>`Sutaupoma ${s} € per mėnesį`,linkH:'Tavo registracijos nuoroda',copy:'Kopijuoti',
   linkInfo:'Įdėk į Instagram bio, Google Maps profilį ir Facebook. Klientai registruojasi tiesiai pas tave.',
   bBarber:'Meistrė',bFrom:'Nuo',bLen:'Trukmė',bSave:'Užblokuoti',h:'val.',
-  blkH:'Užblokuotas laikas',unblock:'Atblokuoti',pNo:'Neatvyko',pNew:'Nauja',pOk:'Patvirtinta',price:'Kaina',noshow:'Neatvyko',cancel:'Atšaukti vizitą',
+  blkH:'Užblokuotas laikas',unblock:'Atblokuoti',pNo:'Neatvyko',pNew:'Nauja',pOk:'Patvirtinta',price:'Kaina',noshow:'Neatvyko',cancel:'Atšaukti vizitą',cancelSure:'Tikrai atšaukti?',
   tUnblocked:'Laikas atblokuotas',tCancelled:'Vizitas atšauktas. Laikas vėl laisvas klientams.',tNoshow:'Pažymėta: neatvyko',tBusy:'Tuo metu jau yra vizitas. Pasirink kitą laiką.',
   tBlocked:'Laikas užblokuotas',tCopied:'Nuoroda nukopijuota',tSelect:'Pažymėta, nukopijuok ranka',qrInfo:'Klientas nuskenuoja telefonu ir iškart patenka į registraciją. Atspausdink ir padėk ant stalelio ar prie kasos.',qrAlt:'QR kodas registracijai',closedL:'Uždaryta'
 },
@@ -267,7 +280,7 @@ en:{
   ours:'Our platform',saved:s=>`You save €${s} a month`,linkH:'Your booking link',copy:'Copy',
   linkInfo:'Add it to your Instagram bio, Google Maps profile and Facebook. Clients book with you directly.',
   bBarber:'Specialist',bFrom:'From',bLen:'Length',bSave:'Block',h:'h',
-  blkH:'Blocked time',unblock:'Unblock',pNo:'No-show',pNew:'New',pOk:'Confirmed',price:'Price',noshow:'No-show',cancel:'Cancel appointment',
+  blkH:'Blocked time',unblock:'Unblock',pNo:'No-show',pNew:'New',pOk:'Confirmed',price:'Price',noshow:'No-show',cancel:'Cancel appointment',cancelSure:'Really cancel?',
   tUnblocked:'Time unblocked',tCancelled:'Appointment cancelled. The slot is open again.',tNoshow:'Marked as no-show',tBusy:'There’s already an appointment then. Pick another time.',
   tBlocked:'Time blocked',tCopied:'Link copied',tSelect:'Selected, copy it manually',qrInfo:'Clients scan it with their phone and land straight on booking. Print it and put it on the desk or by the till.',qrAlt:'Booking QR code',closedL:'Closed'
 }};
@@ -301,8 +314,12 @@ const sName=id=>T().svc[id];
 const brb=id=>BARBERS.find(b=>b.id===id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function parseYmd(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
-function niceDate(s){return T().niceDate(parseYmd(s),T())}
-const eur=v=>LANG==='en'?`€${v}`:`${v} €`;
+const DF={lt:new Intl.DateTimeFormat('lt-LT',{weekday:'long',month:'long',day:'numeric'}),en:new Intl.DateTimeFormat('en-GB',{weekday:'long',day:'numeric',month:'long'})};
+const DS={lt:new Intl.DateTimeFormat('lt-LT',{month:'numeric',day:'numeric'}),en:new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'numeric'})};
+function niceDate(s){return DF[LANG].format(parseYmd(s))}
+function shortDate(s){return DS[LANG].format(parseYmd(s))}
+const EUR={lt:new Intl.NumberFormat('lt-LT',{style:'currency',currency:'EUR',maximumFractionDigits:0}),en:new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR',maximumFractionDigits:0})};
+const eur=v=>EUR[LANG].format(v);
 
 const now=new Date();
 const todayStr=ymd(now);
@@ -374,10 +391,10 @@ function renderClient(){
   }else{
     const e=st.errors;
     body=`<h2>${t.you}</h2>
-      <div class="field"><label for="f-name">${t.name}</label><input id="f-name" autocomplete="given-name" value="${esc(st.name)}">${e.name?`<span class="err">${t[e.name]}</span>`:''}</div>
-      <div class="field"><label for="f-phone">${t.phone}</label><input id="f-phone" type="tel" autocomplete="tel" placeholder="+370 6xx xxxxx" value="${esc(st.phone)}">${e.phone?`<span class="err">${t[e.phone]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.phoneHint}</span>`}</div>
-      <div class="field"><label for="f-email">${t.email}</label><input id="f-email" type="email" autocomplete="email" inputmode="email" placeholder="vardas@gmail.com" value="${esc(st.email)}">${e.email?`<span class="err">${t[e.email]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.emailHint}</span>`}</div>
-      <div class="field"><label for="f-note">${t.note}</label><textarea id="f-note" rows="2">${esc(st.note)}</textarea></div>`;
+      <div class="field"><label for="f-name">${t.name}</label><input id="f-name" name="name" autocomplete="given-name" ${e.name?'aria-invalid="true" aria-describedby="e-name"':''} value="${esc(st.name)}">${e.name?`<span class="err" id="e-name">${t[e.name]}</span>`:''}</div>
+      <div class="field"><label for="f-phone">${t.phone}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" spellcheck="false" placeholder="+370 612 34567…" ${e.phone?'aria-invalid="true" aria-describedby="e-phone"':''} value="${esc(st.phone)}">${e.phone?`<span class="err" id="e-phone">${t[e.phone]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.phoneHint}</span>`}</div>
+      <div class="field"><label for="f-email">${t.email}</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="vardas@gmail.com…" ${e.email?'aria-invalid="true" aria-describedby="e-email"':''} value="${esc(st.email)}">${e.email?`<span class="err" id="e-email">${t[e.email]}</span>`:`<span style="font-size:12px;color:var(--muted)">${t.emailHint}</span>`}</div>
+      <div class="field"><label for="f-note">${t.note}</label><textarea id="f-note" name="note" autocomplete="off" rows="2">${esc(st.note)}</textarea></div>`;
   }
   const canNext=[st.service,st.barber,st.time!=null,true][st.step];
   const nav=`<div class="nav">${st.step>0?`<button class="btn ghost" id="back">${t.back}</button>`:'<span></span>'}
@@ -392,7 +409,7 @@ function summary(){
     <div class="sum-row"><span>${t.service}</span><span>${s?sName(s.id):'—'}</span></div>
     <div class="sum-row"><span>${t.duration}</span><span>${s?durTxt(s.min):'—'}</span></div>
     <div class="sum-row"><span>${t.barberL}</span><span>${who}</span></div>
-    <div class="sum-row"><span>${t.time}</span><span>${st.time!=null?`${st.date.slice(5).replace('-','.')} · ${hm(st.time)}`:'—'}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${st.time!=null?`${shortDate(st.date)} · ${hm(st.time)}`:'—'}</span></div>
     <div class="sum-total"><span>${t.payIn}</span><b>${s?eur(s.price):'—'}</b></div>
     <p class="info">${t.infoS}</p></aside>`;
 }
@@ -408,7 +425,7 @@ function bindClient(){
     const e={};if(st.name.trim().length<2)e.name='errName';
     if(st.phone.replace(/\D/g,'').length<8)e.phone='errPhone';
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.email.trim()))e.email='errEmail';
-    st.errors=e;if(Object.keys(e).length){renderClient();return}
+    st.errors=e;if(Object.keys(e).length){renderClient();const k=Object.keys(e)[0],el=client.querySelector('#f-'+k);if(el)el.focus();announce(Object.values(e).map(x=>T()[x]).join(' '));return}
     const len=svc(st.service).min;const free=freeBarbers(st.date,st.time,len,st.barber);
     if(!free.length){st.step=2;st.time=null;renderClient();toast(T().taken);return}
     const b={id:seq++,barber:free[0],service:st.service,date:st.date,start:st.time,name:st.name.trim(),phone:st.phone.trim(),email:st.email.trim(),note:st.note.trim(),kind:'new',status:'ok'};
@@ -422,7 +439,7 @@ function doneView(){
     <span class="pill ok">${t.confirmed}</span>
     <h2 style="margin-top:12px">${t.seeYou(esc(b.name))}</h2>
     <p>${sName(s.id)} ${t.with} <strong>${brb(b.barber).name}</strong><br>${niceDate(b.date)}, ${hm(b.start)}–${hm(b.start+s.min)}</p>
-    <div class="code" aria-label="${t.code}">MD-${String(b.id).padStart(4,'0')}</div>
+    <div class="code" translate="no" aria-label="${t.code}">MD-${String(b.id).padStart(4,'0')}</div>
     <p>${t.sentTo(esc(b.email))}</p>
     <p class="info" style="margin-top:0">${t.noSms}</p>
     <div class="row" style="justify-content:center;margin-top:14px">
@@ -486,18 +503,18 @@ function renderAdmin(){
       ${sel?detail(sel):`<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
       <div class="panel"><h3>${t.twH}</h3>
         <div class="inline-fields">
-          <div class="field"><label for="f-newc">${t.newC}</label><input id="f-newc" type="number" min="0" value="${ad.newc}"></div>
-          <div class="field"><label for="f-avg">${t.avg}</label><input id="f-avg" type="number" min="0" value="${avgP}"></div>
-          <div class="field"><label for="f-plan">${t.plan}</label><input id="f-plan" type="number" min="0" value="${ad.plan}"></div>
-          <div class="field"><label for="f-com">${t.com}</label><input id="f-com" type="number" min="0" max="60" value="${ad.commission}"></div>
-          <div class="field"><label for="f-fee">${t.ourFee}</label><input id="f-fee" type="number" min="0" value="${ad.per}"></div>
+          <div class="field"><label for="f-newc">${t.newC}</label><input id="f-newc" name="new_clients" type="number" inputmode="numeric" autocomplete="off" min="0" value="${ad.newc}"></div>
+          <div class="field"><label for="f-avg">${t.avg}</label><input id="f-avg" name="avg_price" type="number" inputmode="numeric" autocomplete="off" min="0" value="${avgP}"></div>
+          <div class="field"><label for="f-plan">${t.plan}</label><input id="f-plan" name="plan_cost" type="number" inputmode="numeric" autocomplete="off" min="0" value="${ad.plan}"></div>
+          <div class="field"><label for="f-com">${t.com}</label><input id="f-com" name="commission" type="number" inputmode="numeric" autocomplete="off" min="0" max="60" value="${ad.commission}"></div>
+          <div class="field"><label for="f-fee">${t.ourFee}</label><input id="f-fee" name="our_fee" type="number" inputmode="numeric" autocomplete="off" min="0" value="${ad.per}"></div>
         </div>
         <p class="info" style="margin:0">${t.twBase(ad.newc,avgP,ad.commission)}</p>
         <div class="cmp"><div class="bad"><small>Treatwell</small><b>${eur(tw)}</b></div><div class="good"><small>${t.ours}</small><b>${eur(fee)}</b></div></div>
         ${tw>fee?`<div class="save">${t.saved(tw-fee)}</div><p class="info" style="margin-top:4px">${t.yr((tw-fee)*12)}</p>`:`<p class="info" style="margin-top:10px">${t.cheaper}</p>`}
       </div>
       <div class="panel"><h3>${t.linkH}</h3>
-        <div class="share"><input id="f-link" readonly value="${BOOK_URL}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
+        <div class="share"><input id="f-link" name="booking_link" autocomplete="off" spellcheck="false" readonly value="${BOOK_URL}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
         <p class="info">${t.linkInfo}</p><div class="qr"><div class="qr-box" role="img" aria-label="${t.qrAlt}">${qrSvg()}</div><p class="info">${t.qrInfo}</p></div></div>
     </div>
   </div>`;
@@ -506,9 +523,9 @@ function renderAdmin(){
 function blockForm(){
   const t=T(),opts=[];for(let x=OPEN;x<CLOSE;x+=15)opts.push(`<option value="${x}">${hm(x)}</option>`);
   return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
-    <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb">${BARBERS.map(b=>`<option value="${b.id}">${b.name}</option>`).join('')}</select></div>
-    <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start">${opts.join('')}</select></div>
-    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option></select></div>
+    <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb" name="barber" autocomplete="off">${BARBERS.map(b=>`<option value="${b.id}">${b.name}</option>`).join('')}</select></div>
+    <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start" name="start" autocomplete="off">${opts.join('')}</select></div>
+    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length" autocomplete="off"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option></select></div>
   </div><button class="btn" id="b-save">${t.bSave}</button></div>`;
 }
 function detail(b){
@@ -532,6 +549,9 @@ function bindAdmin(){
   admin.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{ad.sel=+b.dataset.id;renderAdmin()});
   admin.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{
     const bk=bookings.find(x=>x.id===ad.sel);if(!bk)return;
+    if(b.dataset.act==='cancel'&&bk.kind!=='block'&&!b.dataset.armed){
+      b.dataset.armed='1';b.textContent=t.cancelSure;announce(t.cancelSure);
+      setTimeout(()=>{if(b.isConnected){delete b.dataset.armed;b.textContent=t.cancel}},4000);return}
     if(b.dataset.act==='cancel'){bk.status='cancelled';ad.sel=null;toast(bk.kind==='block'?t.tUnblocked:t.tCancelled)}
     else{bk.status='noshow';toast(t.tNoshow)}
     renderAdmin();if(!st.done)renderClient();
@@ -552,7 +572,8 @@ function bindAdmin(){
 }
 
 /* ---------- Shell ---------- */
-let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.hidden=false;clearTimeout(tt);tt=setTimeout(()=>el.hidden=true,2600)}
+let tt,at;function announce(m){const l=document.getElementById('live');l.textContent='';clearTimeout(at);at=setTimeout(()=>{l.textContent=m},60)}
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.hidden=false;announce(m);clearTimeout(tt);tt=setTimeout(()=>el.hidden=true,2600)}
 let MODE='client';
 // Demo stage: both views visible. Later set SHOW_TABS=false so clients see booking only.
 const SHOW_TABS=true;
@@ -570,6 +591,7 @@ function applyLang(){
   document.getElementById('t-proto').textContent=t.proto;
   document.getElementById('t-addr').textContent=t.addr;
   document.getElementById('t-foot').textContent=t.foot;
+  document.getElementById('skip').textContent=LANG==='lt'?'Pereiti prie turinio':'Skip to content';
   document.getElementById('tab-client').textContent=t.tabC;
   document.getElementById('tab-admin').textContent=t.tabA;
   document.getElementById('lang-lt').setAttribute('aria-pressed',LANG==='lt');
@@ -577,6 +599,7 @@ function applyLang(){
   saveFields();renderClient();renderAdmin();
 }
 function setLang(l){LANG=l;try{localStorage.setItem('md-lang',l)}catch(e){}applyLang()}
+document.getElementById('skip').onclick=e=>{e.preventDefault();document.getElementById(MODE).focus()};
 document.getElementById('lang-lt').onclick=()=>setLang('lt');
 document.getElementById('lang-en').onclick=()=>setLang('en');
 document.getElementById('tab-client').onclick=()=>setMode('client');
