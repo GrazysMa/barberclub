@@ -261,7 +261,7 @@ insert into public.services (id, name_lt, name_en, minutes, price, sort) values
   ('kid',     'Vaikų kirpimas', 'Children’s haircut', 30, 20, 3),
   ('beard',   'Barzdos kirpimas ir modeliavimas arba skutimas', 'Beard trim & styling or shave', 35, 20, 4),
   ('premium', 'Viskas viename: Premium skutimas + plaukų kirpimas', 'All in one: premium shave + haircut', 90, 45, 5),
-  ('perm',    'Šukuosenos ir sušukavimas', 'Hair styling & setting', 120, 120, 6),
+  ('perm',    'Šukuosenos ir sušukavimas', 'Hair styling & setting', 60, 120, 6),
   ('facial',  'Veido procedūros', 'Facial procedures', 45, 45, 7),
   ('brow',    'Barzdos ir antakių modeliavimas', 'Beard & eyebrow shaping', 45, 25, 8),
   ('ritual',  'Premium skutimo ritualas (karšti ir šalti rankšluosčiai, veido masažas, antakių linijos suformavimas, gyvaplaukių pašalinimas ugnimi/vašku)', 'Premium shave ritual (hot & cold towels, face massage, brow line, wax/flame hair removal)', 60, 35, 9);
