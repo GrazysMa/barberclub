@@ -80,6 +80,12 @@ create policy "staff reads own staff row" on public.staff for select to authenti
 create policy "staff reads bookings" on public.bookings for select to authenticated using (public.is_staff());
 create policy "staff updates bookings" on public.bookings for update to authenticated using (public.is_staff()) with check (public.is_staff());
 
+-- Table access (newer Supabase projects grant nothing by default; RLS above still filters rows)
+grant usage on schema public to anon, authenticated;
+grant select on public.settings, public.barbers, public.services to anon, authenticated;
+grant select, update on public.bookings to authenticated;
+grant select on public.staff to authenticated;
+
 -- Clients never touch tables directly; they only call the two functions below.
 revoke all on public.bookings, public.staff from anon;
 revoke insert, update, delete on public.settings, public.barbers, public.services from anon, authenticated;
