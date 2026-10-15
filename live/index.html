@@ -28,6 +28,7 @@
       <div class="lang" role="group" aria-label="Kalba / Language">
         <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
         <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+        <button id="lang-tr" lang="tr" aria-pressed="false">TR</button>
       </div>
     </div>
   </header>
@@ -77,6 +78,24 @@ const I18N = {
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers'
+  },
+  tr: {
+    steps: ['Hizmet','Berber','Saat','Bilgiler'],
+    pickSvc: 'Hizmet seçin', pickBrb: 'Berber seçin', any: 'Fark etmez', anyS: 'En çok boş saat', pickTime: 'Saat seçin',
+    noSlotsDay: ', boş saat yok', parts: ['Sabah','Öğle','Akşam'], noSlots: 'Bu gün boş saat yok.',
+    you: 'Bilgileriniz', name: 'Adınız', phone: 'Telefon numarası', phoneHint: 'Gerekirse sizi arayacağız.',
+    email: 'E-posta', emailHint: 'Yalnızca bu randevuyla ilgili bilgi için kullanılır.', note: 'Berbere not (isteğe bağlı)',
+    back: 'Geri', next: 'Devam', confirm: 'Randevuyu onayla', sending: 'Gönderiliyor…',
+    visit: 'Randevunuz', service: 'Hizmet', duration: 'Süre', barberL: 'Berber', time: 'Saat', payIn: 'Ödeme salonda',
+    infoS: 'Ödeme randevudan sonra salonda yapılır. Gelemeyecekseniz lütfen önceden arayın.',
+    errName: 'Adınızı yazın.', errPhone: 'Telefon numaranızı yazın, örn. +370 612 34567.', errEmail: 'Geçerli bir e-posta yazın, örn. ad@gmail.com.',
+    errNote: 'Not çok uzun (en fazla 300 karakter).',
+    taken: 'Bu saat az önce alındı. Lütfen başka bir saat seçin.', tooSoon: 'Bu saat artık çok yakın. Lütfen daha geç bir saat seçin.',
+    tooMany: `Bu numarayla zaten birkaç randevu var. Daha fazlası için ${SHOP_PHONE} numarasını arayın.`,
+    failed: `Randevu alınamadı. Tekrar deneyin veya ${SHOP_PHONE} numarasını arayın.`,
+    confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
+    keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
+    again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için'
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -87,7 +106,7 @@ const st = { step: 0, service: null, barber: null, date: null, time: null, name:
 const client = document.getElementById('client');
 
 const svc = id => SERVICES.find(s => s.id === id);
-const sName = s => LANG === 'en' ? s.name_en : s.name_lt;
+const sName = s => svcName(s);
 const brb = id => BARBERS.find(b => b.id === id);
 
 async function loadBusy() {
@@ -99,7 +118,7 @@ async function loadAll() {
   loadState = 'loading'; render();
   try {
     const [s, b, c] = await Promise.all([
-      sb.from('services').select('id,name_lt,name_en,minutes,price,sort').order('sort'),
+      sb.from('services').select('*').order('sort'),
       sb.from('barbers').select('id,name,role,sort').order('sort'),
       sb.from('settings').select('*').limit(1)
     ]);
@@ -134,7 +153,7 @@ const firstStep = () => BARBERS.length === 1 ? [0, 2, 3] : [0, 1, 2, 3];
 function render() {
   const t = T();
   paintCommon();
-  document.title = LANG === 'lt' ? 'Barber Club Vilnius – registracija' : 'Barber Club Vilnius – booking';
+  document.title = { lt: 'Barber Club Vilnius – registracija', en: 'Barber Club Vilnius – booking', tr: 'Barber Club Vilnius – randevu' }[LANG];
   document.getElementById('t-foot').textContent = t.foot;
   document.getElementById('t-staff').textContent = t.staff;
   if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }

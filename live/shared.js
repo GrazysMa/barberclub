@@ -10,7 +10,8 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 let LANG = 'lt';
-try { const s = localStorage.getItem('bc-lang'); if (s === 'en' || s === 'lt') LANG = s; } catch (e) {}
+try { const s = localStorage.getItem('bc-lang'); if (['lt','en','tr'].includes(s)) LANG = s; } catch (e) {}
+const LOC = { lt: 'lt-LT', en: 'en-GB', tr: 'tr-TR' };
 
 const COMMON = {
   lt: {
@@ -32,6 +33,16 @@ const COMMON = {
     skip: 'Skip to content', loading: 'Loading…',
     loadErr: `Couldn’t load the data. Check your connection and reload, or call ${SHOP_PHONE}.`,
     retry: 'Try again'
+  },
+  tr: {
+    addr: 'K. Ulvydo g. 11-432, Vilnius (Ozas AVM yakını) · her gün 10:00–21:00',
+    dow: ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],
+    monS: ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'],
+    dur: m => m >= 60 ? `${Math.floor(m/60)} sa${m%60 ? ' ' + (m%60) + ' dk' : ''}` : `${m} dk`,
+    role: { master: 'Usta berber', barber: 'Berber' },
+    skip: 'İçeriğe geç', loading: 'Yükleniyor…',
+    loadErr: `Veriler yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin veya ${SHOP_PHONE} numarasını arayın.`,
+    retry: 'Tekrar dene'
   }
 };
 
@@ -50,11 +61,14 @@ function shopNow() {
 }
 
 const DF = { lt: new Intl.DateTimeFormat('lt-LT', { weekday: 'long', month: 'long', day: 'numeric' }),
-             en: new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) };
+             en: new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
+             tr: new Intl.DateTimeFormat('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }) };
 const DS = { lt: new Intl.DateTimeFormat('lt-LT', { month: 'numeric', day: 'numeric' }),
-             en: new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'numeric' }) };
+             en: new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'numeric' }),
+             tr: new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'numeric' }) };
 const EUR = { lt: new Intl.NumberFormat('lt-LT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }),
-              en: new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }) };
+              en: new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }),
+              tr: new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0 }) };
 const niceDate = s => DF[LANG].format(parseYmd(s));
 const shortDate = s => DS[LANG].format(parseYmd(s));
 const eur = v => EUR[LANG].format(Number(v));
@@ -80,11 +94,14 @@ function bindLangButtons(onChange) {
   const set = l => { LANG = l; try { localStorage.setItem('bc-lang', l); } catch (e) {} onChange(); };
   document.getElementById('lang-lt').onclick = () => set('lt');
   document.getElementById('lang-en').onclick = () => set('en');
+  document.getElementById('lang-tr').onclick = () => set('tr');
 }
+const svcName = s => !s ? '' : LANG === 'lt' ? s.name_lt : LANG === 'tr' ? (s.name_tr || s.name_en) : s.name_en;
 function paintCommon() {
   document.documentElement.lang = LANG;
   document.getElementById('t-addr').textContent = COMMON[LANG].addr;
   document.getElementById('skip').textContent = COMMON[LANG].skip;
   document.getElementById('lang-lt').setAttribute('aria-pressed', LANG === 'lt');
   document.getElementById('lang-en').setAttribute('aria-pressed', LANG === 'en');
+  document.getElementById('lang-tr').setAttribute('aria-pressed', LANG === 'tr');
 }

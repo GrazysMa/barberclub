@@ -30,6 +30,7 @@
       <div class="lang" role="group" aria-label="Kalba / Language">
         <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
         <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+        <button id="lang-tr" lang="tr" aria-pressed="false">TR</button>
       </div>
     </div>
   </header>
@@ -57,7 +58,7 @@ const I18N = {
     tBusy: 'Tuo metu jau yra vizitas. Pasirink kitą laiką.', tBlocked: 'Laikas užblokuotas', tFail: 'Nepavyko. Patikrink internetą ir bandyk dar kartą.', refreshed: 'Atnaujinta',
     linkH: 'Registracijos nuoroda klientams', copy: 'Kopijuoti', tCopied: 'Nuoroda nukopijuota', tSelect: 'Pažymėta, nukopijuok ranka',
     linkInfo: 'Įdėk į Instagram bio, Google Maps profilį ir Facebook.', qrAlt: 'QR kodas registracijai',
-    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.'
+    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.', allDay: 'Visa diena'
   },
   en: {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
@@ -74,7 +75,24 @@ const I18N = {
     tBusy: 'There’s already an appointment then. Pick another time.', tBlocked: 'Time blocked', tFail: 'Something went wrong. Check your connection and try again.', refreshed: 'Updated',
     linkH: 'Client booking link', copy: 'Copy', tCopied: 'Link copied', tSelect: 'Selected, copy it manually',
     linkInfo: 'Add it to your Instagram bio, Google Maps profile and Facebook.', qrAlt: 'Booking QR code',
-    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.'
+    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.', allDay: 'All day'
+  },
+  tr: {
+    title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
+    badLogin: 'E-posta veya şifre yanlış.', notStaff: 'Bu hesabın panele erişimi yok.', forgot: 'Şifrenizi mi unuttunuz? Yöneticiye başvurun.',
+    logout: 'Çıkış yap', signedAs: e => `Giriş yapıldı: ${e}`,
+    sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
+    blockT: 'Saati kapat', close: 'Kapat', refresh: 'Yenile', updated: t => `Güncellendi ${t}`,
+    lgBook: 'Randevu', lgNew: 'Yeni (24 sa)', lgBlk: 'Kapalı', blocked: 'Kapalı',
+    visitH: 'Randevu', visitHint: 'Müşteri bilgilerini görmek için takvimdeki bir randevuya dokunun.',
+    service: 'Hizmet', time: 'Saat', barberL: 'Berber', price: 'Fiyat', code: 'Kod', created: 'Alınma zamanı',
+    pNo: 'Gelmedi', pNew: 'Yeni', pOk: 'Onaylı', noshow: 'Gelmedi', undoNoshow: 'Geldi', cancel: 'Randevuyu iptal et', cancelSure: 'Emin misiniz?',
+    blkH: 'Kapalı saat', unblock: 'Saati aç', bBarber: 'Berber', bFrom: 'Başlangıç', bLen: 'Süre', bSave: 'Kapat', h: 'sa',
+    tUnblocked: 'Saat açıldı', tCancelled: 'Randevu iptal edildi. Saat tekrar müşterilere açık.', tNoshow: 'İşaretlendi: gelmedi', tShow: 'İşaretlendi: geldi',
+    tBusy: 'O saatte zaten randevu var. Başka bir saat seçin.', tBlocked: 'Saat kapatıldı', tFail: 'Bir hata oluştu. Bağlantınızı kontrol edip tekrar deneyin.', refreshed: 'Güncellendi',
+    linkH: 'Müşteri randevu linki', copy: 'Kopyala', tCopied: 'Link kopyalandı', tSelect: 'Seçildi, elle kopyalayın',
+    linkInfo: 'Instagram biyografinize, Google Maps profilinize ve Facebook’a ekleyin.', qrAlt: 'Randevu QR kodu',
+    qrInfo: 'Müşteri telefonuyla tarar ve doğrudan randevu sayfasına gelir.', none: 'Bu gün randevu yok.', allDay: 'Tüm gün'
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -88,7 +106,7 @@ const ad = { date: null, sel: null, blocking: false };
 const login = { email: '', err: '', sending: false };
 
 const svc = id => SERVICES.find(s => s.id === id);
-const sName = s => s ? (LANG === 'en' ? s.name_en : s.name_lt) : '';
+const sName = s => svcName(s);
 const brb = id => BARBERS.find(b => b.id === id) || { name: id };
 
 let QR = ''; function qrSvg() { if (QR) return QR; try { const q = qrcode(0, 'M'); q.addData(BOOK_URL); q.make(); QR = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) {} return QR; }
@@ -189,7 +207,7 @@ function renderDash() {
   const heads = BARBERS.map(b => `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x => x.barber_id === b.id && x.kind === 'booking').length} ${t.vShort}</span></div>`).join('');
   const days = DAYS.map(d => dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d))).join('');
   const sel = ROWS.find(r => r.id === ad.sel);
-  const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LANG === 'lt' ? 'lt-LT' : 'en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
+  const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LOC[LANG], { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
 
   admin.innerHTML = `
   <div class="stats">
@@ -229,7 +247,7 @@ function blockForm() {
   return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
     <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('')}</select></div>
     <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start" name="start">${opts.join('')}</select></div>
-    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option><option value="660">${LANG === 'lt' ? 'Visa diena' : 'All day'}</option></select></div>
+    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option><option value="660">${t.allDay}</option></select></div>
   </div><button class="btn" id="b-save">${t.bSave}</button></div>`;
 }
 function detail(r) {
@@ -237,7 +255,7 @@ function detail(r) {
   if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`;
   const s = svc(r.service_id);
   const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
-  const created = new Intl.DateTimeFormat(LANG === 'lt' ? 'lt-LT' : 'en-GB', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
+  const created = new Intl.DateTimeFormat(LOC[LANG], { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
   const tel = String(r.client_phone || '').replace(/[^\d+]/g, '');
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">${t.visitH}</h3>${pill}</div>
     <div style="font-weight:700;font-size:18px">${esc(r.client_name)}</div>
