@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Barber Club Vilnius – registracija internetu. K. Ulvydo g. 11-432, Vilnius.">
+<title>Barber Club Vilnius – registracija</title>
+<link rel="icon" href="logo.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
+<div class="pole" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
+      <p id="t-addr"></p>
+      <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a></p>
+    </div>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="client" tabindex="-1"></main>
+
+  <footer><div class="foot-row"><span id="t-foot"></span><a href="admin.html" id="t-staff"></a></div></footer>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js"></script>
+<script>
+const I18N = {
+  lt: {
+    steps: ['Paslauga','Barberis','Laikas','Duomenys'],
+    pickSvc: 'Pasirink paslaugą', pickBrb: 'Pasirink barberį', any: 'Bet kuris laisvas', anyS: 'Daugiausia laisvų laikų', pickTime: 'Pasirink laiką',
+    noSlotsDay: ', laisvų laikų nėra', parts: ['Rytas','Diena','Vakaras'], noSlots: 'Šią dieną laisvų laikų nėra.',
+    you: 'Tavo duomenys', name: 'Vardas', phone: 'Telefono numeris', phoneHint: 'Paskambinsime, jei reikės ką nors patikslinti.',
+    email: 'El. paštas', emailHint: 'Naudosime tik su šiuo vizitu susijusiai informacijai.', note: 'Pastaba barberiui (nebūtina)',
+    back: 'Atgal', next: 'Toliau', confirm: 'Patvirtinti rezervaciją', sending: 'Siunčiama…',
+    visit: 'Tavo vizitas', service: 'Paslauga', duration: 'Trukmė', barberL: 'Barberis', time: 'Laikas', payIn: 'Mokėsi salone',
+    infoS: 'Mokama salone po vizito. Jei negali atvykti, paskambink mums iš anksto.',
+    errName: 'Įrašyk vardą.', errPhone: 'Įrašyk telefono numerį, pvz. +370 612 34567.', errEmail: 'Įrašyk teisingą el. pašto adresą, pvz. vardas@gmail.com.',
+    errNote: 'Pastaba per ilga (iki 300 simbolių).',
+    taken: 'Šis laikas ką tik užimtas. Pasirink kitą.', tooSoon: 'Šis laikas jau per arti. Pasirink vėlesnį.',
+    tooMany: `Šiuo numeriu jau yra kelios būsimos rezervacijos. Dėl daugiau vizitų paskambink ${SHOP_PHONE}.`,
+    failed: `Nepavyko užregistruoti. Bandyk dar kartą arba paskambink ${SHOP_PHONE}.`,
+    confirmed: 'Patvirtinta', seeYou: n => `Iki pasimatymo, ${n}!`, with: 'pas', code: 'Rezervacijos kodas',
+    keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
+    again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams'
+  },
+  en: {
+    steps: ['Service','Barber','Time','Details'],
+    pickSvc: 'Choose a service', pickBrb: 'Choose a barber', any: 'Any available', anyS: 'Most open times', pickTime: 'Choose a time',
+    noSlotsDay: ', fully booked', parts: ['Morning','Afternoon','Evening'], noSlots: 'No open times on this day.',
+    you: 'Your details', name: 'First name', phone: 'Phone number', phoneHint: 'We’ll call if we need to confirm anything.',
+    email: 'Email', emailHint: 'Used only for information about this visit.', note: 'Note for your barber (optional)',
+    back: 'Back', next: 'Continue', confirm: 'Confirm booking', sending: 'Sending…',
+    visit: 'Your visit', service: 'Service', duration: 'Duration', barberL: 'Barber', time: 'Time', payIn: 'Pay at the shop',
+    infoS: 'You pay at the shop after your visit. If you can’t make it, please call us in advance.',
+    errName: 'Enter your name.', errPhone: 'Enter a phone number, e.g. +370 612 34567.', errEmail: 'Enter a valid email, e.g. name@gmail.com.',
+    errNote: 'The note is too long (300 characters max).',
+    taken: 'That time was just taken. Please pick another.', tooSoon: 'That time is too close now. Please pick a later one.',
+    tooMany: `This phone number already has several upcoming bookings. For more, call ${SHOP_PHONE}.`,
+    failed: `Booking failed. Please try again or call ${SHOP_PHONE}.`,
+    confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
+    keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
+    again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers'
+  }
+};
+const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
+
+let SERVICES = [], BARBERS = [], SET = null, BUSY = [], DAYS = [];
+let loadState = 'loading';
+const st = { step: 0, service: null, barber: null, date: null, time: null, name: '', phone: '', email: '', note: '', errors: {}, done: null, sending: false };
+const client = document.getElementById('client');
+
+const svc = id => SERVICES.find(s => s.id === id);
+const sName = s => LANG === 'en' ? s.name_en : s.name_lt;
+const brb = id => BARBERS.find(b => b.id === id);
+
+async function loadBusy() {
+  const { data, error } = await sb.rpc('busy_slots', { p_from: DAYS[0], p_to: DAYS[DAYS.length - 1] });
+  if (error) throw error;
+  BUSY = data || [];
+}
+async function loadAll() {
+  loadState = 'loading'; render();
+  try {
+    const [s, b, c] = await Promise.all([
+      sb.from('services').select('id,name_lt,name_en,minutes,price,sort').order('sort'),
+      sb.from('barbers').select('id,name,role,sort').order('sort'),
+      sb.from('settings').select('*').limit(1)
+    ]);
+    for (const r of [s, b, c]) if (r.error) throw r.error;
+    SERVICES = s.data; BARBERS = b.data; SET = c.data[0];
+    const today = shopNow().date, n = Math.min(14, SET.days_ahead + 1);
+    DAYS = Array.from({ length: n }, (_, i) => addDays(today, i));
+    await loadBusy();
+    if (BARBERS.length === 1) st.barber = BARBERS[0].id;
+    loadState = 'ok';
+  } catch (e) { console.error(e); loadState = 'error'; }
+  render();
+}
+
+function busy(barber, date, start, len) {
+  return BUSY.some(b => b.barber_id === barber && b.day === date && start < b.end_min && b.start_min < start + len);
+}
+function freeBarbers(date, start, len, which) {
+  return (which === 'any' ? BARBERS.map(b => b.id) : [which]).filter(id => !busy(id, date, start, len));
+}
+function slotsFor(date, len, which) {
+  const now = shopNow(), out = [];
+  for (let t = SET.open_min; t + len <= SET.close_min; t += SET.step_min) {
+    if (date === now.date && t < now.min + SET.lead_min) continue;
+    if (freeBarbers(date, t, len, which).length) out.push(t);
+  }
+  return out;
+}
+const firstDayWithSlots = () => DAYS.find(d => slotsFor(d, svc(st.service).minutes, st.barber).length) || DAYS[0];
+const firstStep = () => BARBERS.length === 1 ? [0, 2, 3] : [0, 1, 2, 3];
+
+function render() {
+  const t = T();
+  paintCommon();
+  document.title = LANG === 'lt' ? 'Barber Club Vilnius – registracija' : 'Barber Club Vilnius – booking';
+  document.getElementById('t-foot').textContent = t.foot;
+  document.getElementById('t-staff').textContent = t.staff;
+  if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
+  if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
+
+  const visible = firstStep();
+  const steps = visible.map((s, i) => `<span class="${s === st.step ? 'on' : s < st.step ? 'done' : ''}">${i + 1}. ${t.steps[s]}</span>`).join('');
+  let body = '';
+  if (st.step === 0) {
+    body = `<h2>${t.pickSvc}</h2><div class="list">${SERVICES.map(s => `
+      <button class="opt" data-svc="${esc(s.id)}" aria-pressed="${st.service === s.id}">
+        <div class="main"><div class="t">${esc(sName(s))}</div><div class="s">${t.dur(s.minutes)}</div></div>
+        <div class="p">${eur(s.price)}</div></button>`).join('')}</div>`;
+  } else if (st.step === 1) {
+    body = `<h2>${t.pickBrb}</h2><div class="list">
+      <button class="opt" data-brb="any" aria-pressed="${st.barber === 'any'}"><div class="avatar any" aria-hidden="true">✂</div><div class="main"><div class="t">${t.any}</div><div class="s">${t.anyS}</div></div></button>
+      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}"><div class="avatar" aria-hidden="true">${esc(b.name[0])}</div><div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}</div></div></button>`).join('')}</div>`;
+  } else if (st.step === 2) {
+    const len = svc(st.service).minutes;
+    if (!st.date) st.date = firstDayWithSlots();
+    const days = DAYS.map(d => { const n = slotsFor(d, len, st.barber).length; return dayBtn(d, 'data-day', st.date === d, !n, niceDate(d) + (n ? '' : t.noSlotsDay)); }).join('');
+    const sl = slotsFor(st.date, len, st.barber);
+    const groups = [[0, 0, 720], [1, 720, 1020], [2, 1020, 1440]].map(([n, a, b]) => {
+      const g = sl.filter(x => x >= a && x < b); if (!g.length) return '';
+      return `<div class="part">${t.parts[n]}</div><div class="slots">${g.map(x => `<button class="slot" data-t="${x}" aria-pressed="${st.time === x}">${hm(x)}</button>`).join('')}</div>`;
+    }).join('');
+    body = `<h2>${t.pickTime}</h2><div class="days">${days}</div><h3>${niceDate(st.date)}</h3>${groups || `<div class="empty">${t.noSlots}</div>`}`;
+  } else {
+    const e = st.errors;
+    const fld = (k, label, attrs, hint) => `<div class="field"><label for="f-${k}">${label}</label><input id="f-${k}" name="${k}" ${attrs} ${e[k] ? `aria-invalid="true" aria-describedby="e-${k}"` : ''} value="${esc(st[k])}">${e[k] ? `<span class="err" id="e-${k}">${t[e[k]]}</span>` : hint ? `<span style="font-size:12px;color:var(--muted)">${hint}</span>` : ''}</div>`;
+    body = `<h2>${t.you}</h2>
+      ${fld('name', t.name, 'autocomplete="given-name" maxlength="60"', '')}
+      ${fld('phone', t.phone, 'type="tel" autocomplete="tel" inputmode="tel" spellcheck="false" maxlength="20" placeholder="+370 612 34567"', t.phoneHint)}
+      ${fld('email', t.email, 'type="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="120" placeholder="vardas@gmail.com"', t.emailHint)}
+      <div class="field"><label for="f-note">${t.note}</label><textarea id="f-note" name="note" autocomplete="off" rows="2" maxlength="300" ${e.note ? 'aria-invalid="true" aria-describedby="e-note"' : ''}>${esc(st.note)}</textarea>${e.note ? `<span class="err" id="e-note">${t[e.note]}</span>` : ''}</div>`;
+  }
+  const canNext = [st.service, st.barber, st.time != null, !st.sending][st.step];
+  const showBack = st.step > 0;
+  const nav = `<div class="nav">${showBack ? `<button class="btn ghost" id="back">${t.back}</button>` : '<span></span>'}
+    <button class="btn ${st.step === 3 ? 'red' : ''}" id="next" ${canNext ? '' : 'disabled'} ${st.sending ? 'aria-busy="true"' : ''}>${st.step === 3 ? (st.sending ? t.sending : t.confirm) : t.next}</button></div>`;
+  client.innerHTML = `<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>`;
+  bindClient();
+}
+function summary() {
+  const t = T(), s = st.service && svc(st.service);
+  const who = st.barber === 'any' ? t.any : st.barber ? brb(st.barber).name : '—';
+  return `<aside class="panel summary"><h3>${t.visit}</h3>
+    <div class="sum-row"><span>${t.service}</span><span>${s ? esc(sName(s)) : '—'}</span></div>
+    <div class="sum-row"><span>${t.duration}</span><span>${s ? t.dur(s.minutes) : '—'}</span></div>
+    <div class="sum-row"><span>${t.barberL}</span><span>${esc(who)}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${st.time != null ? `${shortDate(st.date)} · ${hm(st.time)}` : '—'}</span></div>
+    <div class="sum-total"><span>${t.payIn}</span><b>${s ? eur(s.price) : '—'}</b></div>
+    <p class="info">${t.infoS}</p></aside>`;
+}
+function go(step) {
+  st.step = step; render();
+  if (step === 2) loadBusy().then(render).catch(() => {});
+}
+function bindClient() {
+  const steps = firstStep();
+  const nextOf = s => steps[steps.indexOf(s) + 1], prevOf = s => steps[steps.indexOf(s) - 1];
+  client.querySelectorAll('[data-svc]').forEach(b => b.onclick = () => { if (st.service !== b.dataset.svc) { st.service = b.dataset.svc; st.date = null; st.time = null; } go(nextOf(0)); });
+  client.querySelectorAll('[data-brb]').forEach(b => b.onclick = () => { if (st.barber !== b.dataset.brb) { st.barber = b.dataset.brb; st.date = null; st.time = null; } go(2); });
+  client.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { st.date = b.dataset.day; st.time = null; render(); });
+  client.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { st.time = +b.dataset.t; render(); });
+  const back = client.querySelector('#back'); if (back) back.onclick = () => { saveFields(); go(prevOf(st.step)); };
+  client.querySelector('#next').onclick = () => { if (st.step < 3) { go(nextOf(st.step)); return; } submit(); };
+}
+function saveFields() {
+  const n = client.querySelector('#f-name');
+  if (n) { st.name = n.value; st.phone = client.querySelector('#f-phone').value; st.email = client.querySelector('#f-email').value; st.note = client.querySelector('#f-note').value; }
+}
+function showErrors(e) {
+  st.errors = e; render();
+  const k = Object.keys(e)[0], el = client.querySelector('#f-' + k); if (el) el.focus();
+  announce(Object.values(e).map(x => T()[x]).join(' '));
+}
+async function submit() {
+  if (st.sending) return;
+  saveFields();
+  const e = {};
+  if (st.name.trim().length < 2) e.name = 'errName';
+  if (st.phone.replace(/\D/g, '').length < 8) e.phone = 'errPhone';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.email.trim())) e.email = 'errEmail';
+  if (st.note.trim().length > 300) e.note = 'errNote';
+  if (Object.keys(e).length) { showErrors(e); return; }
+  st.errors = {}; st.sending = true; render();
+  const { data, error } = await sb.rpc('create_booking', {
+    p_service: st.service, p_barber: st.barber, p_day: st.date, p_start_min: st.time,
+    p_name: st.name.trim(), p_phone: st.phone.trim(), p_email: st.email.trim(), p_note: st.note.trim() || null, p_lang: LANG
+  });
+  st.sending = false;
+  if (error || !data || !data.length) {
+    const c = errCode(error), t = T();
+    if (c === 'bad_name') return showErrors({ name: 'errName' });
+    if (c === 'bad_phone') return showErrors({ phone: 'errPhone' });
+    if (c === 'bad_email') return showErrors({ email: 'errEmail' });
+    if (c === 'bad_note') return showErrors({ note: 'errNote' });
+    if (c === 'slot_taken' || c === 'too_soon' || c === 'bad_time' || c === 'bad_day') {
+      st.time = null; go(2); toast(c === 'too_soon' ? t.tooSoon : t.taken); return;
+    }
+    render(); toast(c === 'too_many' ? t.tooMany : t.failed); return;
+  }
+  const r = data[0];
+  st.done = { code: r.code, barberName: r.barber_name, day: r.day, start: r.start_min, end: r.end_min, service: st.service, name: st.name.trim() };
+  render(); client.focus();
+}
+function doneView() {
+  const t = T(), d = st.done, s = svc(d.service);
+  return `<section class="panel done-box" style="max-width:560px;margin:0 auto">
+    <span class="pill ok">${t.confirmed}</span>
+    <h2 style="margin-top:12px">${t.seeYou(esc(d.name))}</h2>
+    <p>${esc(sName(s))} ${t.with} <strong>${esc(d.barberName)}</strong><br>${niceDate(d.day)}, ${hm(d.start)}–${hm(d.end)}</p>
+    <div class="code" translate="no" aria-label="${t.code}">${esc(d.code)}</div>
+    <p class="info" style="margin-top:0">${t.keep}</p>
+    <div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" id="again">${t.again}</button></div></section>`;
+}
+function bindDone() {
+  client.querySelector('#again').onclick = () => {
+    Object.assign(st, { step: 0, service: null, barber: BARBERS.length === 1 ? BARBERS[0].id : null, date: null, time: null, note: '', errors: {}, done: null });
+    go(0);
+  };
+}
+
+document.getElementById('skip').onclick = e => { e.preventDefault(); client.focus(); };
+bindLangButtons(() => { saveFields(); render(); });
+loadAll();
+setInterval(() => { if (loadState === 'ok' && st.step === 2 && !document.hidden) loadBusy().then(render).catch(() => {}); }, 60000);
+</script>
+</body>
+</html>

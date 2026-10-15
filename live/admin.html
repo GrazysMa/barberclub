@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
+<title>Barber Club – skydelis</title>
+<link rel="icon" href="logo.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#admin">Pereiti prie turinio</a>
+<div class="pole" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
+      <p id="t-addr"></p>
+      <p class="who" id="who"></p>
+    </div>
+    <div class="controls">
+      <button class="btn ghost" id="logout" hidden style="padding:8px 14px;font-size:13px"></button>
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="admin" tabindex="-1"></main>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js"></script>
+<script>
+const I18N = {
+  lt: {
+    title: 'Barber Club – skydelis', loginH: 'Barberių prisijungimas', email: 'El. paštas', pass: 'Slaptažodis', login: 'Prisijungti', logging: 'Jungiamasi…',
+    badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Kreipkis į administratorių.',
+    logout: 'Atsijungti', signedAs: e => `Prisijungta: ${e}`,
+    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
+    blockT: 'Užblokuoti laiką', close: 'Uždaryti', refresh: 'Atnaujinti', updated: t => `Atnaujinta ${t}`,
+    lgBook: 'Rezervacija', lgNew: 'Nauja (24 val.)', lgBlk: 'Užblokuota', blocked: 'Užblokuota',
+    visitH: 'Vizitas', visitHint: 'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis.',
+    service: 'Paslauga', time: 'Laikas', barberL: 'Barberis', price: 'Kaina', code: 'Kodas', created: 'Užregistruota',
+    pNo: 'Neatvyko', pNew: 'Nauja', pOk: 'Patvirtinta', noshow: 'Neatvyko', undoNoshow: 'Atvyko', cancel: 'Atšaukti vizitą', cancelSure: 'Tikrai atšaukti?',
+    blkH: 'Užblokuotas laikas', unblock: 'Atblokuoti', bBarber: 'Barberis', bFrom: 'Nuo', bLen: 'Trukmė', bSave: 'Užblokuoti', h: 'val.',
+    tUnblocked: 'Laikas atblokuotas', tCancelled: 'Vizitas atšauktas. Laikas vėl laisvas klientams.', tNoshow: 'Pažymėta: neatvyko', tShow: 'Pažymėta: atvyko',
+    tBusy: 'Tuo metu jau yra vizitas. Pasirink kitą laiką.', tBlocked: 'Laikas užblokuotas', tFail: 'Nepavyko. Patikrink internetą ir bandyk dar kartą.', refreshed: 'Atnaujinta',
+    linkH: 'Registracijos nuoroda klientams', copy: 'Kopijuoti', tCopied: 'Nuoroda nukopijuota', tSelect: 'Pažymėta, nukopijuok ranka',
+    linkInfo: 'Įdėk į Instagram bio, Google Maps profilį ir Facebook.', qrAlt: 'QR kodas registracijai',
+    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.'
+  },
+  en: {
+    title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
+    badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Ask the administrator.',
+    logout: 'Sign out', signedAs: e => `Signed in: ${e}`,
+    sToday: 'Visits today', sTodayRev: 'Revenue today', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
+    blockT: 'Block time', close: 'Close', refresh: 'Refresh', updated: t => `Updated ${t}`,
+    lgBook: 'Booking', lgNew: 'New (24 h)', lgBlk: 'Blocked', blocked: 'Blocked',
+    visitH: 'Appointment', visitHint: 'Tap an appointment in the calendar to see client details.',
+    service: 'Service', time: 'Time', barberL: 'Barber', price: 'Price', code: 'Code', created: 'Booked',
+    pNo: 'No-show', pNew: 'New', pOk: 'Confirmed', noshow: 'No-show', undoNoshow: 'Showed up', cancel: 'Cancel appointment', cancelSure: 'Really cancel?',
+    blkH: 'Blocked time', unblock: 'Unblock', bBarber: 'Barber', bFrom: 'From', bLen: 'Length', bSave: 'Block', h: 'h',
+    tUnblocked: 'Time unblocked', tCancelled: 'Appointment cancelled. The slot is open again.', tNoshow: 'Marked as no-show', tShow: 'Marked as showed up',
+    tBusy: 'There’s already an appointment then. Pick another time.', tBlocked: 'Time blocked', tFail: 'Something went wrong. Check your connection and try again.', refreshed: 'Updated',
+    linkH: 'Client booking link', copy: 'Copy', tCopied: 'Link copied', tSelect: 'Selected, copy it manually',
+    linkInfo: 'Add it to your Instagram bio, Google Maps profile and Facebook.', qrAlt: 'Booking QR code',
+    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.'
+  }
+};
+const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
+const admin = document.getElementById('admin');
+const BOOK_URL = new URL('./', location.href).href;
+const PX = 1.1;
+
+let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], FROM, TO;
+let view = 'loading', session = null, lastLoad = null, busyAct = false;
+const ad = { date: null, sel: null, blocking: false };
+const login = { email: '', err: '', sending: false };
+
+const svc = id => SERVICES.find(s => s.id === id);
+const sName = s => s ? (LANG === 'en' ? s.name_en : s.name_lt) : '';
+const brb = id => BARBERS.find(b => b.id === id) || { name: id };
+
+let QR = ''; function qrSvg() { if (QR) return QR; try { const q = qrcode(0, 'M'); q.addData(BOOK_URL); q.make(); QR = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) {} return QR; }
+
+async function loadRef() {
+  const [s, b, c] = await Promise.all([
+    sb.from('services').select('*').order('sort'),
+    sb.from('barbers').select('*').order('sort'),
+    sb.from('settings').select('*').limit(1)
+  ]);
+  for (const r of [s, b, c]) if (r.error) throw r.error;
+  SERVICES = s.data; BARBERS = b.data.filter(x => x.active); SET = c.data[0];
+  const today = shopNow().date;
+  FROM = addDays(today, -7); TO = addDays(today, 30);
+  DAYS = Array.from({ length: 21 }, (_, i) => addDays(today, i - 3));
+  if (!ad.date) ad.date = today;
+}
+async function loadRows() {
+  const { data, error } = await sb.rpc('staff_bookings', { p_from: FROM, p_to: TO });
+  if (error) throw error;
+  ROWS = data || []; lastLoad = new Date();
+}
+async function enter() {
+  view = 'loading'; render();
+  try { await loadRef(); await loadRows(); view = 'dash'; }
+  catch (e) {
+    console.error(e);
+    if (errCode(e) === 'not_staff') { await sb.auth.signOut(); session = null; login.err = 'notStaff'; view = 'login'; }
+    else view = 'error';
+  }
+  render();
+}
+
+function render() {
+  const t = T();
+  paintCommon();
+  document.title = t.title;
+  const lo = document.getElementById('logout'); lo.hidden = !session; lo.textContent = t.logout;
+  document.getElementById('who').textContent = session ? t.signedAs(session.user.email) : '';
+  if (view === 'loading') { admin.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (view === 'error') { admin.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; admin.querySelector('#retry').onclick = enter; return; }
+  if (view === 'login') return renderLogin();
+  renderDash();
+}
+
+function renderLogin() {
+  const t = T();
+  admin.innerHTML = `<section class="panel login"><h2>${t.loginH}</h2>
+    ${login.err ? `<p class="alert bad" role="alert">${t[login.err]}</p>` : ''}
+    <form id="lf" novalidate>
+      <div class="field"><label for="l-email">${t.email}</label><input id="l-email" name="email" type="email" autocomplete="username" inputmode="email" spellcheck="false" required value="${esc(login.email)}"></div>
+      <div class="field"><label for="l-pass">${t.pass}</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn" type="submit" ${login.sending ? 'disabled aria-busy="true"' : ''}>${login.sending ? t.logging : t.login}</button>
+    </form><p class="info">${t.forgot}</p></section>`;
+  admin.querySelector('#lf').onsubmit = async ev => {
+    ev.preventDefault();
+    login.email = admin.querySelector('#l-email').value.trim();
+    const pass = admin.querySelector('#l-pass').value;
+    if (!login.email || !pass) { login.err = 'badLogin'; render(); return; }
+    login.sending = true; login.err = ''; render();
+    const { data, error } = await sb.auth.signInWithPassword({ email: login.email, password: pass });
+    login.sending = false;
+    if (error || !data.session) { login.err = 'badLogin'; render(); admin.querySelector('#l-pass')?.focus(); return; }
+    session = data.session; enter();
+  };
+  (login.email ? admin.querySelector('#l-pass') : admin.querySelector('#l-email')).focus();
+}
+
+function isNew(r) { return r.kind === 'booking' && Date.now() - new Date(r.created_at).getTime() < 864e5; }
+function stats() {
+  const today = shopNow().date, week = addDays(today, 7);
+  const book = ROWS.filter(r => r.kind === 'booking' && r.status === 'confirmed');
+  const td = book.filter(r => r.day === today);
+  return {
+    today: td.length,
+    rev: td.reduce((a, r) => a + Number(svc(r.service_id)?.price || 0), 0),
+    week: book.filter(r => r.day >= today && r.day < week).length,
+    fresh: ROWS.filter(isNew).length
+  };
+}
+
+function renderDash() {
+  const t = T(), now = shopNow(), s = stats();
+  const OPEN = SET.open_min, CLOSE = SET.close_min, H = (CLOSE - OPEN) * PX;
+  const dayList = ROWS.filter(r => r.day === ad.date);
+  const hours = []; for (let x = OPEN; x <= CLOSE; x += 60) hours.push(x);
+  const cols = BARBERS.map(br => {
+    const items = dayList.filter(r => r.barber_id === br.id).map(r => {
+      const top = Math.max(0, r.start_min - OPEN), bottom = Math.min(CLOSE, r.end_min) - OPEN;
+      const cls = r.kind === 'block' ? 'block' : r.status === 'noshow' ? 'noshow' : isNew(r) ? 'new' : '';
+      const label = r.kind === 'block' ? t.blocked : esc(r.client_name);
+      return `<button class="appt ${cls}" data-id="${r.id}" aria-pressed="${ad.sel === r.id}" style="top:${top * PX + 1}px;height:${Math.max(18, (bottom - top) * PX - 2)}px"><b>${hm(r.start_min)} ${label}</b>${r.service_id ? esc(sName(svc(r.service_id))) : ''}</button>`;
+    }).join('');
+    const lines = hours.map(x => `<div class="gl" style="top:${(x - OPEN) * PX}px"></div>`).join('');
+    const nowLine = ad.date === now.date && now.min >= OPEN && now.min <= CLOSE ? `<div class="now" style="top:${(now.min - OPEN) * PX}px"></div>` : '';
+    return `<div class="col" style="height:${H}px">${lines}${nowLine}${items}</div>`;
+  }).join('');
+  const heads = BARBERS.map(b => `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x => x.barber_id === b.id && x.kind === 'booking').length} ${t.vShort}</span></div>`).join('');
+  const days = DAYS.map(d => dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d))).join('');
+  const sel = ROWS.find(r => r.id === ad.sel);
+  const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LANG === 'lt' ? 'lt-LT' : 'en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
+
+  admin.innerHTML = `
+  <div class="stats">
+    <div class="stat"><small>${t.sToday}</small><b>${s.today}</b></div>
+    <div class="stat"><small>${t.sTodayRev}</small><b>${eur(s.rev)}</b></div>
+    <div class="stat"><small>${t.sWeek}</small><b>${s.week}</b><div class="note">${t.vShort}</div></div>
+    <div class="stat"><small>${t.sNew}</small><b>${s.fresh}</b></div>
+  </div>
+  <div class="dash-grid">
+    <section>
+      <div class="days" id="days">${days}</div>
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${niceDate(ad.date)}</h3>
+        <div class="row"><span class="who">${upd}</span><button class="btn ghost" id="ref" style="padding:7px 12px;font-size:13px">${t.refresh}</button>
+        <button class="btn ghost" id="blk" style="padding:7px 12px;font-size:13px">${ad.blocking ? t.close : t.blockT}</button></div></div>
+      ${ad.blocking ? blockForm() : ''}
+      ${dayList.length ? '' : `<p class="info" style="margin-top:0">${t.none}</p>`}
+      <div class="sched-wrap"><div class="sched" style="grid-template-columns:52px repeat(${BARBERS.length},minmax(150px,1fr))">
+        <div class="head" style="padding:10px 0"></div>${heads}
+        <div class="hours" style="height:${H}px">${hours.map(x => `<div style="top:${(x - OPEN) * PX}px">${hm(x)}</div>`).join('')}</div>${cols}
+      </div></div>
+      <div class="legend"><span><i style="background:var(--navy-soft);border-left:3px solid var(--navy)"></i>${t.lgBook}</span><span><i style="background:var(--red-soft);border-left:3px solid var(--red)"></i>${t.lgNew}</span><span><i style="background:var(--line)"></i>${t.lgBlk}</span></div>
+    </section>
+    <div class="side">
+      ${sel ? detail(sel) : `<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
+      <div class="panel"><h3>${t.linkH}</h3>
+        <div class="share"><input id="f-link" name="booking_link" autocomplete="off" spellcheck="false" readonly value="${esc(BOOK_URL)}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
+        <p class="info">${t.linkInfo}</p><div class="qr"><div class="qr-box" role="img" aria-label="${t.qrAlt}">${qrSvg()}</div><p class="info">${t.qrInfo}</p></div></div>
+    </div>
+  </div>`;
+  bindDash();
+  const strip = admin.querySelector('#days'), cur = strip && strip.querySelector('[aria-pressed="true"]');
+  if (cur) strip.scrollLeft = ad.scroll ?? Math.max(0, cur.offsetLeft - strip.clientWidth / 2 + cur.clientWidth / 2);
+  if (strip) strip.onscroll = () => { ad.scroll = strip.scrollLeft; };
+}
+function blockForm() {
+  const t = T(), opts = []; for (let x = SET.open_min; x < SET.close_min; x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
+  return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+    <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start" name="start">${opts.join('')}</select></div>
+    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option><option value="660">${LANG === 'lt' ? 'Visa diena' : 'All day'}</option></select></div>
+  </div><button class="btn" id="b-save">${t.bSave}</button></div>`;
+}
+function detail(r) {
+  const t = T();
+  if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`;
+  const s = svc(r.service_id);
+  const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
+  const created = new Intl.DateTimeFormat(LANG === 'lt' ? 'lt-LT' : 'en-GB', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
+  const tel = String(r.client_phone || '').replace(/[^\d+]/g, '');
+  return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">${t.visitH}</h3>${pill}</div>
+    <div style="font-weight:700;font-size:18px">${esc(r.client_name)}</div>
+    <div style="font-family:var(--f-mono);font-size:13px;margin-bottom:10px"><a class="tel" href="tel:${esc(tel)}">${esc(r.client_phone)}</a><br><span style="color:var(--muted);user-select:all">${esc(r.client_email)}</span></div>
+    <div class="sum-row"><span>${t.service}</span><span>${esc(sName(s))}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${hm(r.start_min)}–${hm(r.end_min)}</span></div>
+    <div class="sum-row"><span>${t.barberL}</span><span>${esc(brb(r.barber_id).name)}</span></div>
+    <div class="sum-row"><span>${t.price}</span><span>${s ? eur(s.price) : '—'}</span></div>
+    <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(r.code)}</span></div>
+    <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
+    ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
+    <div class="row" style="margin-top:14px">${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+}
+async function act(fn, okMsg) {
+  if (busyAct) return; busyAct = true;
+  try { const { error } = await fn(); if (error) throw error; await loadRows(); toast(okMsg); }
+  catch (e) { console.error(e); toast(errCode(e) === 'slot_taken' ? T().tBusy : T().tFail); }
+  busyAct = false; render();
+}
+function bindDash() {
+  const t = T();
+  admin.querySelectorAll('[data-aday]').forEach(b => b.onclick = () => { ad.date = b.dataset.aday; ad.sel = null; render(); });
+  admin.querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ad.sel = b.dataset.id; render(); });
+  admin.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    const r = ROWS.find(x => x.id === ad.sel); if (!r) return;
+    if (b.dataset.confirm && !b.dataset.armed) {
+      b.dataset.armed = '1'; b.textContent = t.cancelSure; announce(t.cancelSure);
+      setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = t.cancel; } }, 4000); return;
+    }
+    const status = b.dataset.act;
+    const msg = status === 'cancelled' ? (r.kind === 'block' ? t.tUnblocked : t.tCancelled) : status === 'noshow' ? t.tNoshow : t.tShow;
+    if (status === 'cancelled') ad.sel = null;
+    act(() => sb.rpc('set_booking_status', { p_id: r.id, p_status: status }), msg);
+  });
+  admin.querySelector('#blk').onclick = () => { ad.blocking = !ad.blocking; render(); };
+  admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
+  const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
+    const barber = admin.querySelector('#b-brb').value, start = +admin.querySelector('#b-start').value;
+    const len = Math.min(+admin.querySelector('#b-len').value, SET.close_min - start);
+    ad.blocking = false;
+    act(() => sb.rpc('add_block', { p_barber: barber, p_day: ad.date, p_start_min: start, p_minutes: len }), t.tBlocked);
+  };
+  admin.querySelector('#copy').onclick = () => {
+    const i = admin.querySelector('#f-link');
+    try { navigator.clipboard.writeText(i.value).then(() => toast(t.tCopied), () => { i.select(); toast(t.tSelect); }); } catch (e) { i.select(); toast(t.tSelect); }
+  };
+}
+
+document.getElementById('skip').onclick = e => { e.preventDefault(); admin.focus(); };
+document.getElementById('logout').onclick = async () => { await sb.auth.signOut(); session = null; ROWS = []; ad.sel = null; view = 'login'; render(); };
+bindLangButtons(render);
+
+(async () => {
+  const { data } = await sb.auth.getSession();
+  session = data.session;
+  if (session) enter(); else { view = 'login'; render(); }
+})();
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.blocking) loadRows().then(render).catch(() => {}); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.blocking) loadRows().then(render).catch(() => {}); });
+</script>
+</body>
+</html>
