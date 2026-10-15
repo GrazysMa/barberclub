@@ -256,11 +256,12 @@ insert into public.barbers (id, name, role, sort) values
   ('cagri',  'Cagri',  'barber', 3);
 
 insert into public.services (id, name_lt, name_en, minutes, price, sort) values
-  ('cut',     'Plaukų kirpimas', 'Haircut', 60, 25, 1),
-  ('beard',   'Barzdos skutimas', 'Beard shave', 35, 20, 2),
-  ('brow',    'Barzdos ir antakių modeliavimas', 'Beard & eyebrow shaping', 45, 25, 3),
-  ('combo',   'Plaukų kirpimas ir barzda', 'Haircut + beard', 75, 35, 4),
-  ('kid',     'Berniukų kirpimas (12 m. ir jaunesni)', 'Boys’ haircut (12 and under)', 30, 20, 5),
-  ('ritual',  'Premium skutimo ritualas (karšti ir šalti rankšluosčiai, veido masažas, antakių linijos suformavimas, gyvaplaukių pašalinimas ugnimi/vašku)', 'Premium shave ritual (hot & cold towels, face massage, brow line, wax/flame hair removal)', 60, 35, 6),
-  ('premium', 'Viskas viename (premium skutimas + plaukų kirpimas)', 'All in one (premium shave + haircut)', 90, 45, 7),
-  ('perm',    'Cheminis plaukų sušukavimas', 'Chemical perm', 120, 120, 8);
+  ('cut',     'Vyrų kirpimas', 'Men’s haircut', 60, 25, 1),
+  ('combo',   'Plaukų kirpimas ir barzdos modeliavimas', 'Hair & beard styling', 75, 35, 2),
+  ('kid',     'Vaikų kirpimas', 'Children’s haircut', 30, 20, 3),
+  ('beard',   'Barzdos kirpimas ir modeliavimas arba skutimas', 'Beard trim & styling or shave', 35, 20, 4),
+  ('premium', 'Viskas viename: Premium skutimas + plaukų kirpimas', 'All in one: premium shave + haircut', 90, 45, 5),
+  ('perm',    'Šukuosenos ir sušukavimas', 'Hair styling & setting', 120, 120, 6),
+  ('facial',  'Veido procedūros', 'Facial procedures', 45, 45, 7),
+  ('brow',    'Barzdos ir antakių modeliavimas', 'Beard & eyebrow shaping', 45, 25, 8),
+  ('ritual',  'Premium skutimo ritualas (karšti ir šalti rankšluosčiai, veido masažas, antakių linijos suformavimas, gyvaplaukių pašalinimas ugnimi/vašku)', 'Premium shave ritual (hot & cold towels, face massage, brow line, wax/flame hair removal)', 60, 35, 9);
