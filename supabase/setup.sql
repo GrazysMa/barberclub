@@ -252,8 +252,8 @@ grant execute on function public.busy_slots(date, date),
 insert into public.settings (id) values (1);
 
 insert into public.barbers (id, name, role, sort) values
-  ('mehmet', 'Mehmet', 'master', 1),
-  ('metin',  'Metin',  'barber', 2),
+  ('mehmet', 'Mehmet', 'master', 2),
+  ('metin',  'Metin',  'barber', 1),
   ('cagri',  'Cagri',  'barber', 3);
 
 insert into public.services (id, name_lt, name_en, name_tr, minutes, price, sort) values
