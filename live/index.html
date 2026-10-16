@@ -35,7 +35,7 @@
 
   <main id="client" tabindex="-1"></main>
 
-  <footer><div class="foot-row"><span id="t-foot"></span><a href="admin.html" id="t-staff"></a></div></footer>
+  <footer><div class="foot-row"><span id="t-foot"></span></div></footer>
 </div>
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
@@ -155,7 +155,6 @@ function render() {
   paintCommon();
   document.title = { lt: 'Barber Club Vilnius – registracija', en: 'Barber Club Vilnius – booking', tr: 'Barber Club Vilnius – randevu' }[LANG];
   document.getElementById('t-foot').textContent = t.foot;
-  document.getElementById('t-staff').textContent = t.staff;
   if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
   if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
   if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
