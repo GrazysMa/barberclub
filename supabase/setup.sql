@@ -258,11 +258,11 @@ insert into public.barbers (id, name, role, sort) values
 
 insert into public.services (id, name_lt, name_en, name_tr, minutes, price, sort) values
   ('cut',     'Vyrų kirpimas', 'Men’s haircut', 'Erkek saç kesimi', 60, 25, 1),
-  ('combo',   'Plaukų kirpimas ir barzdos modeliavimas', 'Hair & beard styling', 'Saç kesimi ve sakal şekillendirme', 75, 35, 2),
+  ('combo',   'Vyrų kirpimas + barzdos modeliavimas', 'Men’s haircut + beard styling', 'Saç kesimi + sakal şekillendirme', 75, 35, 2),
   ('kid',     'Vaikų kirpimas', 'Children’s haircut', 'Çocuk saç kesimi', 30, 20, 3),
-  ('beard',   'Barzdos kirpimas ir modeliavimas arba skutimas', 'Beard trim & styling or shave', 'Sakal kesimi ve şekillendirme veya tıraş', 35, 20, 4),
-  ('premium', 'Viskas viename: Premium skutimas + plaukų kirpimas', 'All in one: premium shave + haircut', 'Hepsi bir arada: premium tıraş + saç kesimi', 90, 45, 5),
-  ('perm',    'Cheminis', 'Chemical perm', 'Kimyasal perma', 60, 120, 6),
-  ('facial',  'Veido procedūros', 'Facial procedures', 'Yüz bakımı', 45, 45, 7),
-  ('brow',    'Barzdos ir antakių modeliavimas', 'Beard & eyebrow shaping', 'Sakal ve kaş şekillendirme', 45, 25, 8),
-  ('ritual',  'Premium skutimo ritualas (karšti ir šalti rankšluosčiai, veido masažas, antakių linijos suformavimas, gyvaplaukių pašalinimas ugnimi/vašku)', 'Premium shave ritual (hot & cold towels, face massage, brow line, wax/flame hair removal)', 'Premium tıraş ritüeli (sıcak ve soğuk havlu, yüz masajı, kaş hattı, ağda/ateşle tüy alma)', 60, 35, 9);
+  ('beard',   'Barzdos modeliavimas', 'Beard styling', 'Sakal şekillendirme', 35, 20, 4),
+  ('premium', 'Premium kirpimas + skutimas', 'Premium haircut + shave', 'Premium saç kesimi + tıraş', 90, 45, 5),
+  ('perm',    'Plaukų cheminis garbanojimas', 'Chemical perm', 'Kimyasal perma', 60, 120, 6),
+  ('facial',  'Veido priežiūros procedūra', 'Facial treatment', 'Yüz bakımı', 45, 45, 7),
+  ('brow',    'Barzdos + antakių korekcija', 'Beard + eyebrow shaping', 'Sakal + kaş şekillendirme', 45, 25, 8),
+  ('ritual',  'Premium skutimo ritualas', 'Premium shave ritual', 'Premium tıraş ritüeli', 60, 35, 9);
