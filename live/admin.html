@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </head>
@@ -40,14 +40,14 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=5"></script>
+<script src="shared.js?v=6"></script>
 <script>
 const I18N = {
   lt: {
     title: 'Barber Club – skydelis', loginH: 'Barberių prisijungimas', email: 'El. paštas', pass: 'Slaptažodis', login: 'Prisijungti', logging: 'Jungiamasi…',
     badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Kreipkis į administratorių.',
     logout: 'Atsijungti', signedAs: e => `Prisijungta: ${e}`,
-    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
+    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sDay: 'Vizitų', sDayRev: 'Pajamos', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
     blockT: 'Užblokuoti laiką', close: 'Uždaryti', refresh: 'Atnaujinti', updated: t => `Atnaujinta ${t}`,
     lgBook: 'Rezervacija', lgNew: 'Nauja (24 val.)', lgBlk: 'Užblokuota', blocked: 'Užblokuota',
     visitH: 'Vizitas', visitHint: 'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis.',
@@ -64,7 +64,7 @@ const I18N = {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
     badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Ask the administrator.',
     logout: 'Sign out', signedAs: e => `Signed in: ${e}`,
-    sToday: 'Visits today', sTodayRev: 'Revenue today', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
+    sToday: 'Visits today', sTodayRev: 'Revenue today', sDay: 'Visits', sDayRev: 'Revenue', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
     blockT: 'Block time', close: 'Close', refresh: 'Refresh', updated: t => `Updated ${t}`,
     lgBook: 'Booking', lgNew: 'New (24 h)', lgBlk: 'Blocked', blocked: 'Blocked',
     visitH: 'Appointment', visitHint: 'Tap an appointment in the calendar to see client details.',
@@ -81,7 +81,7 @@ const I18N = {
     title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
     badLogin: 'E-posta veya şifre yanlış.', notStaff: 'Bu hesabın panele erişimi yok.', forgot: 'Şifrenizi mi unuttunuz? Yöneticiye başvurun.',
     logout: 'Çıkış yap', signedAs: e => `Giriş yapıldı: ${e}`,
-    sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
+    sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sDay: 'Randevular', sDayRev: 'Gelir', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
     blockT: 'Saati kapat', close: 'Kapat', refresh: 'Yenile', updated: t => `Güncellendi ${t}`,
     lgBook: 'Randevu', lgNew: 'Yeni (24 sa)', lgBlk: 'Kapalı', blocked: 'Kapalı',
     visitH: 'Randevu', visitHint: 'Müşteri bilgilerini görmek için takvimdeki bir randevuya dokunun.',
@@ -179,7 +179,7 @@ function isNew(r) { return r.kind === 'booking' && Date.now() - new Date(r.creat
 function stats() {
   const today = shopNow().date, week = addDays(today, 7);
   const book = ROWS.filter(r => r.kind === 'booking' && r.status === 'confirmed');
-  const td = book.filter(r => r.day === today);
+  const td = book.filter(r => r.day === ad.date);
   return {
     today: td.length,
     rev: td.reduce((a, r) => a + Number(svc(r.service_id)?.price || 0), 0),
@@ -211,8 +211,8 @@ function renderDash() {
 
   admin.innerHTML = `
   <div class="stats">
-    <div class="stat"><small>${t.sToday}</small><b>${s.today}</b></div>
-    <div class="stat"><small>${t.sTodayRev}</small><b>${eur(s.rev)}</b></div>
+    <div class="stat"><small>${ad.date === now.date ? t.sToday : `${t.sDay} · ${shortDate(ad.date)}`}</small><b>${s.today}</b></div>
+    <div class="stat"><small>${ad.date === now.date ? t.sTodayRev : `${t.sDayRev} · ${shortDate(ad.date)}`}</small><b>${eur(s.rev)}</b></div>
     <div class="stat"><small>${t.sWeek}</small><b>${s.week}</b><div class="note">${t.vShort}</div></div>
     <div class="stat"><small>${t.sNew}</small><b>${s.fresh}</b></div>
   </div>
