@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=19">
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="fonts.css?v=20">
+<link rel="stylesheet" href="style.css?v=20">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -25,7 +25,7 @@
       <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
       <p id="t-addr"></p>
       <p class="rating-line"><button type="button" class="rating-btn" id="rating-btn" hidden></button></p>
-      <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a></p>
+      <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a> · <a id="g-rev" href="https://search.google.com/local/writereview?placeid=ChIJPR5CVL-R3UYRdWcgGH-9PzA" target="_blank" rel="noopener">Google ★</a></p>
     </div>
     <div class="controls">
       <div class="lang" role="group" aria-label="Kalba / Language">
@@ -43,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=19"></script>
+<script src="shared.js?v=20"></script>
 <script>
 const I18N = {
   lt: {
@@ -64,7 +64,7 @@ const I18N = {
     keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams',
     revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
-    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
+    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', gRev: 'Įvertink mus Google ★', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
   },
   en: {
     steps: ['Service','Barber','Time','Details'],
@@ -83,7 +83,7 @@ const I18N = {
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers',
-    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close', gRev: 'Review us on Google ★', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
   },
   tr: {
     steps: ['Hizmet','Berber','Saat','Bilgiler'],
@@ -102,7 +102,7 @@ const I18N = {
     confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
     keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
     again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için',
-    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
+    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', gRev: 'Google’da değerlendir ★', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -225,6 +225,7 @@ function render() {
   document.title = { lt: 'Barber Club Vilnius – registracija', en: 'Barber Club Vilnius – booking', tr: 'Barber Club Vilnius – randevu' }[LANG];
   document.getElementById('t-foot').textContent = t.foot;
   paintRating();
+  document.getElementById('g-rev').textContent = t.gRev;
   if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
   if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
   if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
