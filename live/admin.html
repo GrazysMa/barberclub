@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </head>
@@ -40,14 +40,14 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=6"></script>
+<script src="shared.js?v=7"></script>
 <script>
 const I18N = {
   lt: {
     title: 'Barber Club – skydelis', loginH: 'Barberių prisijungimas', email: 'El. paštas', pass: 'Slaptažodis', login: 'Prisijungti', logging: 'Jungiamasi…',
     badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Kreipkis į administratorių.',
     logout: 'Atsijungti', signedAs: e => `Prisijungta: ${e}`,
-    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sDay: 'Vizitų', sDayRev: 'Pajamos', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
+    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sDay: 'Vizitų', sDayRev: 'Pajamos', findL: 'Rasti vizitą', findPh: 'Kodas, vardas arba telefonas', findNone: 'Nieko nerasta', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
     blockT: 'Užblokuoti laiką', close: 'Uždaryti', refresh: 'Atnaujinti', updated: t => `Atnaujinta ${t}`,
     lgBook: 'Rezervacija', lgNew: 'Nauja (24 val.)', lgBlk: 'Užblokuota', blocked: 'Užblokuota',
     visitH: 'Vizitas', visitHint: 'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis.',
@@ -64,7 +64,7 @@ const I18N = {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
     badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Ask the administrator.',
     logout: 'Sign out', signedAs: e => `Signed in: ${e}`,
-    sToday: 'Visits today', sTodayRev: 'Revenue today', sDay: 'Visits', sDayRev: 'Revenue', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
+    sToday: 'Visits today', sTodayRev: 'Revenue today', sDay: 'Visits', sDayRev: 'Revenue', findL: 'Find a visit', findPh: 'Code, name or phone', findNone: 'Nothing found', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
     blockT: 'Block time', close: 'Close', refresh: 'Refresh', updated: t => `Updated ${t}`,
     lgBook: 'Booking', lgNew: 'New (24 h)', lgBlk: 'Blocked', blocked: 'Blocked',
     visitH: 'Appointment', visitHint: 'Tap an appointment in the calendar to see client details.',
@@ -81,7 +81,7 @@ const I18N = {
     title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
     badLogin: 'E-posta veya şifre yanlış.', notStaff: 'Bu hesabın panele erişimi yok.', forgot: 'Şifrenizi mi unuttunuz? Yöneticiye başvurun.',
     logout: 'Çıkış yap', signedAs: e => `Giriş yapıldı: ${e}`,
-    sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sDay: 'Randevular', sDayRev: 'Gelir', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
+    sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sDay: 'Randevular', sDayRev: 'Gelir', findL: 'Randevu bul', findPh: 'Kod, isim veya telefon', findNone: 'Sonuç yok', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
     blockT: 'Saati kapat', close: 'Kapat', refresh: 'Yenile', updated: t => `Güncellendi ${t}`,
     lgBook: 'Randevu', lgNew: 'Yeni (24 sa)', lgBlk: 'Kapalı', blocked: 'Kapalı',
     visitH: 'Randevu', visitHint: 'Müşteri bilgilerini görmek için takvimdeki bir randevuya dokunun.',
@@ -218,6 +218,7 @@ function renderDash() {
   </div>
   <div class="dash-grid">
     <section>
+      <div class="find"><label class="sr-only" for="q">${t.findL}</label><input id="q" type="search" name="q" autocomplete="off" spellcheck="false" placeholder="🔍 ${t.findPh}" value="${esc(ad.q || '')}"><div id="qres" aria-live="polite">${findHtml()}</div></div>
       <div class="days" id="days">${days}</div>
       <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${niceDate(ad.date)}</h3>
         <div class="row"><span class="who">${upd}</span><button class="btn ghost" id="ref" style="padding:7px 12px;font-size:13px">${t.refresh}</button>
@@ -241,6 +242,20 @@ function renderDash() {
   const strip = admin.querySelector('#days'), cur = strip && strip.querySelector('[aria-pressed="true"]');
   if (cur) strip.scrollLeft = ad.scroll ?? Math.max(0, cur.offsetLeft - strip.clientWidth / 2 + cur.clientWidth / 2);
   if (strip) strip.onscroll = () => { ad.scroll = strip.scrollLeft; };
+}
+function findHtml() {
+  const t = T(), raw = (ad.q || '').trim(); if (raw.length < 2) return '';
+  const q = raw.toLowerCase(), code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^BC/, ''), dig = raw.replace(/\D/g, '');
+  const hits = ROWS.filter(r => r.kind === 'booking' && (
+    (code.length >= 3 && String(r.code || '').replace(/[^A-Z0-9]/g, '').replace(/^BC/, '').includes(code)) ||
+    String(r.client_name || '').toLowerCase().includes(q) ||
+    (dig.length >= 4 && String(r.client_phone || '').replace(/\D/g, '').includes(dig))
+  )).sort((a, b) => (a.day + hm(a.start_min)).localeCompare(b.day + hm(b.start_min))).slice(0, 8);
+  if (!hits.length) return `<p class="info" style="margin:6px 0 0">${t.findNone}</p>`;
+  return `<div class="list" style="margin-top:6px">${hits.map(r => `<button class="opt" data-hit="${r.id}" data-day="${r.day}"><div class="main"><div class="t">${esc(r.client_name)} · ${esc(brb(r.barber_id).name)}</div><div class="s">${shortDate(r.day)} ${hm(r.start_min)} · <span translate="no">${esc(r.code)}</span></div></div></button>`).join('')}</div>`;
+}
+function bindFind() {
+  admin.querySelectorAll('[data-hit]').forEach(b => b.onclick = () => { ad.date = b.dataset.day; ad.sel = b.dataset.hit; ad.q = ''; ad.scroll = null; render(); });
 }
 function blockForm() {
   const t = T(), opts = []; for (let x = SET.open_min; x < SET.close_min; x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
@@ -290,6 +305,9 @@ function bindDash() {
     if (status === 'cancelled') ad.sel = null;
     act(() => sb.rpc('set_booking_status', { p_id: r.id, p_status: status }), msg);
   });
+  const qi = admin.querySelector('#q');
+  if (qi) qi.oninput = () => { ad.q = qi.value; admin.querySelector('#qres').innerHTML = findHtml(); bindFind(); };
+  bindFind();
   admin.querySelector('#blk').onclick = () => { ad.blocking = !ad.blocking; render(); };
   admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
   const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
@@ -313,7 +331,7 @@ bindLangButtons(render);
   session = data.session;
   if (session) enter(); else { view = 'login'; render(); }
 })();
-setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.blocking) loadRows().then(render).catch(() => {}); }, 60000);
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.blocking && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.blocking) loadRows().then(render).catch(() => {}); });
 </script>
 </body>
