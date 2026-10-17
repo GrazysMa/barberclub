@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=17">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="fonts.css?v=18">
+<link rel="stylesheet" href="style.css?v=18">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=17"></script>
+<script src="shared.js?v=18"></script>
 <script>
 const I18N = {
   lt: {
@@ -65,7 +65,7 @@ const I18N = {
     src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
     hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
     hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
-    tabCal: 'Kalendorius', tabCli: 'Klientai', tabRat: 'Įvertinimai', cliSearch: 'Ieškoti: vardas, telefonas, el. paštas', cliCount: n => `${n} klientų`, cliVisits: 'vizitų', cliNo: 'neatvyko', cliLast: 'Paskutinis', cliNext: 'Kitas', cliNote: 'Pastaba', cliSave: 'Išsaugoti', cliMore: 'Rodyti daugiau', cliCsv: 'Atsisiųsti CSV', cliNone: 'Klientų nerasta', cliMk: 'sutinka gauti naujienas', tNote: 'Pastaba išsaugota', ratAvg: 'Vidurkis', ratCount: n => `${n} įvert.`, ratNone: 'Įvertinimų dar nėra. Klientai gaus nuorodą el. paštu po vizito, arba nusiųsk ją pats iš vizito kortelės.', rateLink: 'Įvertinimo nuoroda', tRateCopied: 'Įvertinimo nuoroda nukopijuota – nusiųsk klientui', revShort: 'pajamos', ratHide: 'Slėpti nuo klientų', ratShow: 'Rodyti klientams', ratHidden: 'Paslėpta nuo klientų', ratPublic: 'Žvaigždutės ir komentarai rodomi klientų puslapyje. Bendras įvertinimas skaičiuojamas kartu su Treatwell (5,0 · 454).',
+    tabCal: 'Kalendorius', tabCli: 'Klientai', tabRat: 'Įvertinimai', cliSearch: 'Ieškoti: vardas, telefonas, el. paštas', cliCount: n => `${n} klientų`, cliVisits: 'vizitų', cliNo: 'neatvyko', cliLast: 'Paskutinis', cliNext: 'Kitas', cliNote: 'Pastaba', cliSave: 'Išsaugoti', cliMore: 'Rodyti daugiau', cliCsv: 'Atsisiųsti CSV', cliNone: 'Klientų nerasta', cliMk: 'sutinka gauti naujienas', tNote: 'Pastaba išsaugota', ratAvg: 'Vidurkis', ratCount: n => `${n} įvert.`, ratNone: 'Įvertinimų dar nėra. Klientai gaus nuorodą el. paštu po vizito, arba nusiųsk ją pats iš vizito kortelės.', rateLink: 'Įvertinimo nuoroda', tRateCopied: 'Įvertinimo nuoroda nukopijuota – nusiųsk klientui', revShort: 'pajamos', tabTeam: 'Profilis', tSaved: 'Išsaugota', tmPhoto: 'Keisti nuotrauką', tmAbout: 'Apie (rodoma klientams)', tmGallery: 'Darbų galerija', tmAdd: '+ Pridėti nuotraukų', tmNone: 'Nuotraukų dar nėra.', tmRemove: 'Pašalinti', tmConfirm: 'Pašalinti šią nuotrauką?', tmUploading: 'Įkeliama…', tmInfo: 'Viskas iškart matosi klientų puslapyje, skiltyje „Susipažink su komanda“.', ratHide: 'Slėpti nuo klientų', ratShow: 'Rodyti klientams', ratHidden: 'Paslėpta nuo klientų', ratPublic: 'Žvaigždutės ir komentarai rodomi klientų puslapyje. Bendras įvertinimas skaičiuojamas kartu su Treatwell (5,0 · 454).',
     pwSetH: 'Sukurk slaptažodį', pwSetInfo: 'Sveiki! Susikurk slaptažodį, kuriuo jungsiesi prie skydelio.', resetBtn: 'Pamiršau slaptažodį', tReset: 'Jei toks el. paštas yra, išsiuntėme nuorodą slaptažodžiui atkurti.', needEmail: 'Įrašyk el. paštą viršuje.',
     accH: 'Paskyra', pwBtn: 'Pakeisti slaptažodį', pwNew: 'Naujas slaptažodis (bent 10 simbolių)', pwRep: 'Pakartok slaptažodį', pwSave: 'Išsaugoti', pwShort: 'Slaptažodis per trumpas (bent 10 simbolių).', pwDiff: 'Slaptažodžiai nesutampa.', tPw: 'Slaptažodis pakeistas', pushH: 'Pranešimai šiame telefone', pushOn: 'Įjungti pranešimus', pushOff: 'Išjungti', pushTest: 'Bandomasis pranešimas', pushFor: 'Pranešti apie vizitus pas', pushIsOn: n => `Įjungta: gausi pranešimą, kai kas nors užsiregistruos pas ${n}.`, pushIos: 'iPhone: pirmiausia įsidėk šį puslapį į pradinį ekraną (Dalintis → Add to Home Screen) ir atidaryk iš ikonėlės.', pushNo: 'Ši naršyklė pranešimų nepalaiko.', pushDenied: 'Pranešimai užblokuoti. Įjunk juos telefono nustatymuose šiai programėlei.', tPushOn: 'Pranešimai įjungti', tPushOff: 'Pranešimai išjungti', tPushTest: 'Išsiųsta – pranešimas turėtų atsirasti per kelias sekundes',
     move: 'Perkelti', mDay: 'Diena', mSave: 'Perkelti čia', tMoved: 'Perkelta', dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
@@ -90,7 +90,7 @@ const I18N = {
     src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
     hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
     hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
-    tabCal: 'Calendar', tabCli: 'Clients', tabRat: 'Ratings', cliSearch: 'Search: name, phone, email', cliCount: n => `${n} clients`, cliVisits: 'visits', cliNo: 'no-shows', cliLast: 'Last', cliNext: 'Next', cliNote: 'Note', cliSave: 'Save', cliMore: 'Show more', cliCsv: 'Download CSV', cliNone: 'No clients found', cliMk: 'agrees to marketing', tNote: 'Note saved', ratAvg: 'Average', ratCount: n => `${n} ratings`, ratNone: 'No ratings yet. Clients get a link by email after the visit, or send it yourself from the visit card.', rateLink: 'Rating link', tRateCopied: 'Rating link copied – send it to the client', revShort: 'revenue', ratHide: 'Hide from clients', ratShow: 'Show to clients', ratHidden: 'Hidden from clients', ratPublic: 'Stars and comments are shown on the client page. The overall rating is combined with Treatwell (5.0 · 454).',
+    tabCal: 'Calendar', tabCli: 'Clients', tabRat: 'Ratings', cliSearch: 'Search: name, phone, email', cliCount: n => `${n} clients`, cliVisits: 'visits', cliNo: 'no-shows', cliLast: 'Last', cliNext: 'Next', cliNote: 'Note', cliSave: 'Save', cliMore: 'Show more', cliCsv: 'Download CSV', cliNone: 'No clients found', cliMk: 'agrees to marketing', tNote: 'Note saved', ratAvg: 'Average', ratCount: n => `${n} ratings`, ratNone: 'No ratings yet. Clients get a link by email after the visit, or send it yourself from the visit card.', rateLink: 'Rating link', tRateCopied: 'Rating link copied – send it to the client', revShort: 'revenue', tabTeam: 'Profile', tSaved: 'Saved', tmPhoto: 'Change photo', tmAbout: 'About (shown to clients)', tmGallery: 'Work gallery', tmAdd: '+ Add photos', tmNone: 'No photos yet.', tmRemove: 'Remove', tmConfirm: 'Remove this photo?', tmUploading: 'Uploading…', tmInfo: 'Everything shows right away on the client page, under “Meet the team”.', ratHide: 'Hide from clients', ratShow: 'Show to clients', ratHidden: 'Hidden from clients', ratPublic: 'Stars and comments are shown on the client page. The overall rating is combined with Treatwell (5.0 · 454).',
     pwSetH: 'Create your password', pwSetInfo: 'Welcome! Create the password you’ll use to sign in.', resetBtn: 'Forgot password', tReset: 'If that email exists, we sent a link to reset the password.', needEmail: 'Enter your email above.',
     accH: 'Account', pwBtn: 'Change password', pwNew: 'New password (at least 10 characters)', pwRep: 'Repeat password', pwSave: 'Save', pwShort: 'Password too short (at least 10 characters).', pwDiff: 'Passwords don’t match.', tPw: 'Password changed', pushH: 'Notifications on this phone', pushOn: 'Turn on notifications', pushOff: 'Turn off', pushTest: 'Send a test', pushFor: 'Notify me about bookings with', pushIsOn: n => `On: you’ll get a notification when someone books with ${n}.`, pushIos: 'iPhone: first add this page to your Home Screen (Share → Add to Home Screen) and open it from the icon.', pushNo: 'This browser doesn’t support notifications.', pushDenied: 'Notifications are blocked. Allow them in your phone settings for this app.', tPushOn: 'Notifications on', tPushOff: 'Notifications off', tPushTest: 'Sent – it should show up in a few seconds',
     move: 'Move', mDay: 'Day', mSave: 'Move here', tMoved: 'Moved', dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
@@ -115,7 +115,7 @@ const I18N = {
     src: 'Kaynak', srcN: { web: 'Web sitesi', phone: 'Telefon', walkin: 'Kapıdan', treatwell: 'Treatwell' },
     hoursT: 'Çalışma saatleri', hSave: 'Saatleri kaydet', tHours: 'Saatler kaydedildi', dayOff: 'Kapalı', hTo: '–',
     hInfo: 'Müşteriler yalnızca çalışma saatlerindeki saatleri görür. Tatil veya tek bir gün için “Saati kapat”ı kullanın.',
-    tabCal: 'Takvim', tabCli: 'Müşteriler', tabRat: 'Değerlendirmeler', cliSearch: 'Ara: isim, telefon, e-posta', cliCount: n => `${n} müşteri`, cliVisits: 'ziyaret', cliNo: 'gelmedi', cliLast: 'Son', cliNext: 'Sonraki', cliNote: 'Not', cliSave: 'Kaydet', cliMore: 'Daha fazla', cliCsv: 'CSV indir', cliNone: 'Müşteri bulunamadı', cliMk: 'pazarlamaya izin veriyor', tNote: 'Not kaydedildi', ratAvg: 'Ortalama', ratCount: n => `${n} değerlendirme`, ratNone: 'Henüz değerlendirme yok. Müşteriler ziyaretten sonra e-postayla link alır veya ziyaret kartından linki kendin gönder.', rateLink: 'Değerlendirme linki', tRateCopied: 'Link kopyalandı – müşteriye gönder', revShort: 'gelir', ratHide: 'Müşterilerden gizle', ratShow: 'Müşterilere göster', ratHidden: 'Müşterilerden gizli', ratPublic: 'Yıldızlar ve yorumlar müşteri sayfasında gösterilir. Genel puan Treatwell ile birlikte hesaplanır (5,0 · 454).',
+    tabCal: 'Takvim', tabCli: 'Müşteriler', tabRat: 'Değerlendirmeler', cliSearch: 'Ara: isim, telefon, e-posta', cliCount: n => `${n} müşteri`, cliVisits: 'ziyaret', cliNo: 'gelmedi', cliLast: 'Son', cliNext: 'Sonraki', cliNote: 'Not', cliSave: 'Kaydet', cliMore: 'Daha fazla', cliCsv: 'CSV indir', cliNone: 'Müşteri bulunamadı', cliMk: 'pazarlamaya izin veriyor', tNote: 'Not kaydedildi', ratAvg: 'Ortalama', ratCount: n => `${n} değerlendirme`, ratNone: 'Henüz değerlendirme yok. Müşteriler ziyaretten sonra e-postayla link alır veya ziyaret kartından linki kendin gönder.', rateLink: 'Değerlendirme linki', tRateCopied: 'Link kopyalandı – müşteriye gönder', revShort: 'gelir', tabTeam: 'Profil', tSaved: 'Kaydedildi', tmPhoto: 'Fotoğrafı değiştir', tmAbout: 'Hakkında (müşterilere gösterilir)', tmGallery: 'Çalışmalar', tmAdd: '+ Fotoğraf ekle', tmNone: 'Henüz fotoğraf yok.', tmRemove: 'Kaldır', tmConfirm: 'Bu fotoğraf kaldırılsın mı?', tmUploading: 'Yükleniyor…', tmInfo: 'Her şey hemen müşteri sayfasında, “Ekibimiz” bölümünde görünür.', ratHide: 'Müşterilerden gizle', ratShow: 'Müşterilere göster', ratHidden: 'Müşterilerden gizli', ratPublic: 'Yıldızlar ve yorumlar müşteri sayfasında gösterilir. Genel puan Treatwell ile birlikte hesaplanır (5,0 · 454).',
     pwSetH: 'Şifreni oluştur', pwSetInfo: 'Hoş geldin! Giriş için kullanacağın şifreyi oluştur.', resetBtn: 'Şifremi unuttum', tReset: 'Bu e-posta kayıtlıysa şifre sıfırlama linki gönderdik.', needEmail: 'Yukarıya e-postanı yaz.',
     accH: 'Hesap', pwBtn: 'Şifreyi değiştir', pwNew: 'Yeni şifre (en az 10 karakter)', pwRep: 'Şifreyi tekrarla', pwSave: 'Kaydet', pwShort: 'Şifre çok kısa (en az 10 karakter).', pwDiff: 'Şifreler eşleşmiyor.', tPw: 'Şifre değiştirildi', pushH: 'Bu telefonda bildirimler', pushOn: 'Bildirimleri aç', pushOff: 'Kapat', pushTest: 'Test bildirimi gönder', pushFor: 'Şu berberin randevularını bildir:', pushIsOn: n => `Açık: biri ${n} için randevu alınca bildirim alacaksın.`, pushIos: 'iPhone: önce bu sayfayı ana ekrana ekle (Paylaş → Ana Ekrana Ekle) ve simgeden aç.', pushNo: 'Bu tarayıcı bildirimleri desteklemiyor.', pushDenied: 'Bildirimler engellendi. Telefon ayarlarından bu uygulama için izin ver.', tPushOn: 'Bildirimler açıldı', tPushOff: 'Bildirimler kapatıldı', tPushTest: 'Gönderildi – birkaç saniye içinde gelmeli',
     move: 'Taşı', mDay: 'Gün', mSave: 'Buraya taşı', tMoved: 'Taşındı', dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
@@ -326,11 +326,12 @@ function stats() {
 
 function tabsHtml() {
   const t = T();
-  return `<div class="tabs" role="tablist">${[['cal', t.tabCal], ['clients', t.tabCli], ['ratings', t.tabRat]].map(([k, l]) => `<button role="tab" data-view="${k}" aria-selected="${ad.view === k}">${l}</button>`).join('')}</div>`;
+  return `<div class="tabs" role="tablist">${[['cal', t.tabCal], ['clients', t.tabCli], ['ratings', t.tabRat], ['team', t.tabTeam]].map(([k, l]) => `<button role="tab" data-view="${k}" aria-selected="${ad.view === k}">${l}</button>`).join('')}</div>`;
 }
 function renderDash() {
   if (ad.view === 'clients') return renderClients();
   if (ad.view === 'ratings') return renderRatings();
+  if (ad.view === 'team') return renderTeam();
   const t = T(), now = shopNow(), s = stats();
   const OPEN = SET.open_min, CLOSE = SET.close_min, H = (CLOSE - OPEN) * PX;
   const dayList = ROWS.filter(r => r.day === ad.date);
@@ -464,6 +465,47 @@ function renderRatings() {
     if (error) { toast(t.tFail); return; }
     const r = RATINGS.find(y => y.id === x.dataset.hide); if (r) r.hidden = x.dataset.h === '1'; render();
   });
+}
+const media = p => p ? `${SUPABASE_URL}/storage/v1/object/public/media/${p.split('/').map(encodeURIComponent).join('/')}` : '';
+async function shrink(file, max = 1200) {
+  const img = await createImageBitmap(file);
+  const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+}
+async function upPhoto(bid, file, max) {
+  const blob = await shrink(file, max), path = `barbers/${bid}/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}.jpg`;
+  const { error } = await sb.storage.from('media').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+  if (error) throw error; return path;
+}
+async function saveProfile(b) {
+  const { error } = await sb.rpc('set_barber_profile', { p_barber: b.id, p_title: b.title || '', p_about: b.about || '', p_photo: b.photo || '', p_gallery: b.gallery || [] });
+  if (error) throw error;
+}
+function renderTeam() {
+  const t = T(), list = visibleBarbers();
+  if (!list.some(b => b.id === ad.tb)) ad.tb = (ME && ME.barber_id && list.some(b => b.id === ME.barber_id)) ? ME.barber_id : list[0]?.id;
+  const b = BARBERS.find(x => x.id === ad.tb);
+  if (!b) { admin.innerHTML = tabsHtml(); bindTabs(); return; }
+  const gal = (b.gallery || []).map((g, i) => `<div class="pg"><img src="${esc(media(g))}" alt="" loading="lazy"><button class="pg-x" data-rm="${i}" aria-label="${t.tmRemove}">×</button></div>`).join('');
+  admin.innerHTML = `${tabsHtml()}<section class="panel">
+    ${list.length > 1 ? `<div class="field"><label for="tm-b">${t.bBarber}</label><select id="tm-b">${list.map(x => `<option value="${esc(x.id)}" ${x.id === b.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></div>` : ''}
+    <div class="tm-head">${b.photo ? `<img class="tm-av" src="${esc(media(b.photo))}" alt="">` : `<div class="tm-av avatar">${esc(b.name[0])}</div>`}
+      <label class="btn ghost">${t.tmPhoto}<input type="file" id="tm-photo" accept="image/*" hidden></label></div>
+    <div class="field"><label for="tm-about">${t.tmAbout}</label><textarea id="tm-about" rows="3" maxlength="600">${esc(b.about || '')}</textarea></div>
+    <button class="btn" id="tm-save">${t.cliSave}</button>
+    <h3 style="margin-top:22px">${t.tmGallery} (${(b.gallery || []).length})</h3>
+    <label class="btn ghost" style="margin-bottom:12px">${t.tmAdd}<input type="file" id="tm-add" accept="image/*" multiple hidden></label>
+    <div class="pgrid">${gal || `<p class="info" style="margin:0">${t.tmNone}</p>`}</div>
+    <p class="info">${t.tmInfo}</p></section>`;
+  bindTabs();
+  const sel = admin.querySelector('#tm-b'); if (sel) sel.onchange = () => { ad.tb = sel.value; render(); };
+  const run = async (fn, okMsg) => { if (busyAct) return; busyAct = true; toast(t.tmUploading); try { await fn(); toast(okMsg || t.tSaved); } catch (e) { console.error(e); toast(t.tFail); } finally { busyAct = false; render(); } };
+  admin.querySelector('#tm-save').onclick = () => run(async () => { b.about = admin.querySelector('#tm-about').value.trim(); await saveProfile(b); });
+  admin.querySelector('#tm-photo').onchange = e => { const f = e.target.files[0]; if (f) run(async () => { const old = b.photo; b.photo = await upPhoto(b.id, f, 600); await saveProfile(b); if (old) sb.storage.from('media').remove([old]); }); };
+  admin.querySelector('#tm-add').onchange = e => { const fs = [...e.target.files].slice(0, 30 - (b.gallery || []).length); if (fs.length) run(async () => { const add = []; for (const f of fs) add.push(await upPhoto(b.id, f, 1200)); b.gallery = [...add, ...(b.gallery || [])]; await saveProfile(b); }); };
+  admin.querySelectorAll('[data-rm]').forEach(x => x.onclick = () => { if (!confirm(t.tmConfirm)) return; run(async () => { const g = [...b.gallery], [gone] = g.splice(+x.dataset.rm, 1); b.gallery = g; await saveProfile(b); sb.storage.from('media').remove([gone]); }); });
 }
 function bindTabs() {
   admin.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { ad.view = b.dataset.view; if (ad.view === 'ratings') RATINGS = null; if (ad.view === 'clients') CLI_FOR = null; render(); });

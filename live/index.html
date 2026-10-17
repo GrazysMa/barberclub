@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=17">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="fonts.css?v=18">
+<link rel="stylesheet" href="style.css?v=18">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=17"></script>
+<script src="shared.js?v=18"></script>
 <script>
 const I18N = {
   lt: {
@@ -64,7 +64,7 @@ const I18N = {
     keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams',
     revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
-    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti'
+    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
   },
   en: {
     steps: ['Service','Barber','Time','Details'],
@@ -83,7 +83,7 @@ const I18N = {
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers',
-    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close'
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
   },
   tr: {
     steps: ['Hizmet','Berber','Saat','Bilgiler'],
@@ -102,7 +102,7 @@ const I18N = {
     confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
     keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
     again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için',
-    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat'
+    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -126,7 +126,7 @@ async function loadAll() {
   try {
     const [s, b, c, h] = await Promise.all([
       sb.from('services').select('*').order('sort'),
-      sb.from('barbers').select('id,name,role,sort').order('sort'),
+      sb.from('barbers').select('id,name,role,sort,about,photo,gallery,tw_avg,tw_count').order('sort'),
       sb.from('settings').select('*').limit(1),
       sb.from('barber_hours').select('*')
     ]);
@@ -166,7 +166,38 @@ function overall() {
   const tn = SET && SET.tw_count || 0, ta = SET && Number(SET.tw_avg) || 0, n = PR ? PR.n : 0, sum = PR ? PR.sum : 0;
   const tot = tn + n; return tot ? { avg: (ta * tn + sum) / tot, n: tot } : null;
 }
-const brbRating = id => { const r = PR && PR.barbers.find(x => x.id === id); return r && r.n ? r : null; };
+const media = p => p ? `${SUPABASE_URL}/storage/v1/object/public/media/${p.split('/').map(encodeURIComponent).join('/')}` : '';
+const brbRating = id => {
+  const b = brb(id), r = PR && PR.barbers.find(x => x.id === id), on = r ? r.n : 0, tn = b ? b.tw_count || 0 : 0;
+  const n = on + tn; if (!n) return null;
+  return { n, avg: ((r ? Number(r.avg) * on : 0) + (b ? Number(b.tw_avg) * tn : 0)) / n };
+};
+const avatar = (b, cls = '') => b.photo ? `<img class="avatar ${cls}" src="${esc(media(b.photo))}" alt="" width="42" height="42" loading="lazy">` : `<div class="avatar ${cls}" aria-hidden="true">${esc(b.name[0])}</div>`;
+let teamSel = null;
+const gl = b => Array.isArray(b && b.gallery) ? b.gallery : [];
+function teamHtml() {
+  if (!BARBERS.length) return '';
+  const t = T(); if (!teamSel || !brb(teamSel)) teamSel = BARBERS[0].id;
+  const b = brb(teamSel);
+  const list = BARBERS.map(x => { const r = brbRating(x.id); return `<button type="button" class="team-item" data-team="${esc(x.id)}" aria-pressed="${x.id === teamSel}">
+      ${avatar(x, 'lg')}<span class="team-name"><b>${esc(x.name)}</b><small>${t.role[x.role] || ''}</small></span>
+      ${r ? `<span class="team-rate"><span><b>${nf(r.avg)}</b> ${starsHtml(Math.round(r.avg))}</span><small>${t.revs(r.n)}</small></span>` : ''}</button>`; }).join('');
+  const gal = gl(b).map((g, i) => `<button type="button" class="gal-img" data-gal="${i}"><img src="${esc(media(g))}" alt="${esc(t.workOf(b.name))} ${i + 1}" loading="lazy" width="200" height="266"></button>`).join('');
+  return `<section class="panel team" id="team"><h2>${t.team}</h2><div class="team-grid"><div class="team-list">${list}</div>
+    <div class="team-detail">${b.about ? `<h3>${t.about}</h3><p>${esc(b.about)}</p>` : ''}
+      <button type="button" class="btn red" id="team-book">${t.bookWith(b.name)}</button>
+      ${gal ? `<h3>${t.gallery}</h3><div class="gal">${gal}</div>` : ''}</div></div></section>`;
+}
+function openPhoto(i) {
+  const b = brb(teamSel), g = gl(b); if (!g.length) return;
+  let d = document.getElementById('lb'); if (!d) { d = document.createElement('dialog'); d.id = 'lb'; d.className = 'lb'; document.body.appendChild(d); }
+  const show = k => { i = (k + g.length) % g.length; d.innerHTML = `<img src="${esc(media(g[i]))}" alt=""><button class="lb-x" aria-label="×">×</button>${g.length > 1 ? '<button class="lb-p" aria-label="‹">‹</button><button class="lb-n" aria-label="›">›</button>' : ''}`;
+    d.querySelector('.lb-x').onclick = () => d.close(); const pv = d.querySelector('.lb-p'), nx = d.querySelector('.lb-n');
+    if (pv) { pv.onclick = e => { e.stopPropagation(); show(i - 1); }; nx.onclick = e => { e.stopPropagation(); show(i + 1); }; } };
+  d.onclick = e => { if (e.target === d) d.close(); };
+  d.onkeydown = e => { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); };
+  show(i); d.showModal();
+}
 const starsHtml = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span class="star-off">${'★'.repeat(5 - n)}</span></span>`;
 function paintRating() {
   const t = T(), b = document.getElementById('rating-btn'), o = overall();
@@ -178,7 +209,7 @@ function paintRating() {
 function reviewsHtml() {
   if (!revOpen) return '';
   const t = T(), o = overall(), rec = PR ? PR.recent : [];
-  const per = BARBERS.map(b => { const r = brbRating(b.id); return r ? `<div class="sum-row"><span>${esc(b.name)}</span><span><span class="stars-s">★</span> ${nf(Number(r.avg))} · ${t.revs(r.n)}</span></div>` : ''; }).join('');
+  const per = BARBERS.map(b => { const r = brbRating(b.id); return r ? `<div class="sum-row"><span>${esc(b.name)}</span><span><span class="stars-s">★</span> ${nf(r.avg)} · ${t.revs(r.n)}</span></div>` : ''; }).join('');
   const items = rec.map(r => `<div class="rev"><div class="rev-top">${starsHtml(r.stars)}<b>${esc(r.name || '')}</b><span>${esc((brb(r.barber_id) || {}).name || '')} · ${shortDate(r.day)}</span></div><p>${esc(r.comment)}</p></div>`).join('');
   return `<section class="panel reviews" id="reviews"><div class="rev-head"><h2>${t.revTitle}</h2><button type="button" class="btn ghost" id="rev-close">${t.revClose}</button></div>
     <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsHtml(Math.round(o.avg))}<div class="rev-sub">${t.revs(o.n)} · ${t.revInc}</div></div></div>
@@ -210,7 +241,7 @@ function render() {
   } else if (st.step === 1) {
     body = `<h2>${t.pickBrb}</h2><div class="list">
       <button class="opt" data-brb="any" aria-pressed="${st.barber === 'any'}"><div class="avatar any" aria-hidden="true">✂</div><div class="main"><div class="t">${t.any}</div><div class="s">${t.anyS}</div></div></button>
-      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}"><div class="avatar" aria-hidden="true">${esc(b.name[0])}</div><div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}${brbRating(b.id) ? ` · <span class="stars-s">★</span> ${nf(Number(brbRating(b.id).avg))} (${brbRating(b.id).n})` : ''}</div></div></button>`).join('')}</div>`;
+      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}">${avatar(b)}<div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}${brbRating(b.id) ? ` · <span class="stars-s">★</span> ${nf(brbRating(b.id).avg)} (${brbRating(b.id).n})` : ''}</div></div></button>`).join('')}</div>`;
   } else if (st.step === 2) {
     const len = svc(st.service).minutes;
     if (!st.date) st.date = firstDayWithSlots();
@@ -234,9 +265,15 @@ function render() {
   const showBack = st.step > 0;
   const nav = `<div class="nav">${showBack ? `<button class="btn ghost" id="back">${t.back}</button>` : '<span></span>'}
     <button class="btn ${st.step === 3 ? 'red' : ''}" id="next" ${canNext ? '' : 'disabled'} ${st.sending ? 'aria-busy="true"' : ''}>${st.step === 3 ? (st.sending ? t.sending : t.confirm) : t.next}</button></div>`;
-  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>`;
+  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>${teamHtml()}`;
   bindClient();
   const rc = document.getElementById('rev-close'); if (rc) rc.onclick = () => { revOpen = false; render(); };
+  client.querySelectorAll('[data-team]').forEach(x => x.onclick = () => { teamSel = x.dataset.team; render(); });
+  client.querySelectorAll('[data-gal]').forEach(x => x.onclick = () => openPhoto(+x.dataset.gal));
+  const tb = document.getElementById('team-book'); if (tb) tb.onclick = () => {
+    if (st.barber !== teamSel) { st.barber = teamSel; st.date = null; st.time = null; }
+    go(st.service ? 2 : 0); client.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 }
 function summary() {
   const t = T(), s = st.service && svc(st.service);
