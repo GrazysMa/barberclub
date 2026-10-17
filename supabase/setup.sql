@@ -259,10 +259,9 @@ insert into public.barbers (id, name, role, sort) values
 
 insert into public.services (id, name_lt, name_en, name_tr, minutes, price, sort) values
   ('cut',     'Vyrų kirpimas', 'Men’s haircut', 'Erkek saç kesimi', 60, 25, 1),
-  ('combo',   'Vyrų kirpimas + barzdos modeliavimas', 'Men’s haircut + beard styling', 'Saç kesimi + sakal şekillendirme', 75, 35, 2),
-  ('kid',     'Vaikų kirpimas (iki 12 m.)', 'Kids’ haircut (up to 12)', 'Çocuk saç kesimi (12 yaşa kadar)', 30, 20, 3),
-  ('beard',   'Barzdos kirpimas ir modeliavimas', 'Beard trim & styling', 'Sakal kesimi ve şekillendirme', 35, 20, 4),
-  ('premium', 'Premium kirpimas + skutimas', 'Premium haircut + shave', 'Premium saç kesimi + tıraş', 90, 45, 5),
-  ('perm',    'Cheminis plaukų garbanojimas', 'Chemical perm', 'Kimyasal perma', 180, 120, 6),
-  ('facial',  'Veido procedūra', 'Facial treatment', 'Yüz bakımı', 45, 45, 7),
-  ('brow',    'Barzdos + antakių korekcija', 'Beard + eyebrow shaping', 'Sakal + kaş şekillendirme', 45, 25, 8);
+  ('combo',   'Plaukų kirpimas ir barzdos modeliavimas', 'Haircut and beard styling', 'Saç kesimi ve sakal şekillendirme', 75, 35, 2),
+  ('kid',     'Vaikų kirpimas', 'Kids’ haircut', 'Çocuk saç kesimi', 30, 20, 3),
+  ('beard',   'Barzdos kirpimas ir modeliavimas arba skutimas', 'Beard trim and styling or shave', 'Sakal kesimi ve şekillendirme veya tıraş', 35, 20, 4),
+  ('premium', 'Viskas viename: Premium skutimas + plaukų kirpimas', 'All in one: Premium shave + haircut', 'Hepsi bir arada: Premium tıraş + saç kesimi', 90, 45, 5),
+  ('perm',    'Cheminis sušukavimas', 'Chemical perm', 'Kimyasal perma', 180, 120, 6),
+  ('facial',  'Veido procedūros vyrams', 'Facial treatments for men', 'Erkekler için yüz bakımı', 45, 45, 7);
