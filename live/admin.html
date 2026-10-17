@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </head>
@@ -40,7 +40,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=7"></script>
+<script src="shared.js?v=8"></script>
 <script>
 const I18N = {
   lt: {
@@ -58,7 +58,12 @@ const I18N = {
     tBusy: 'Tuo metu jau yra vizitas. Pasirink kitą laiką.', tBlocked: 'Laikas užblokuotas', tFail: 'Nepavyko. Patikrink internetą ir bandyk dar kartą.', refreshed: 'Atnaujinta',
     linkH: 'Registracijos nuoroda klientams', copy: 'Kopijuoti', tCopied: 'Nuoroda nukopijuota', tSelect: 'Pažymėta, nukopijuok ranka',
     linkInfo: 'Įdėk į Instagram bio, Google Maps profilį ir Facebook.', qrAlt: 'QR kodas registracijai',
-    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.', allDay: 'Visa diena'
+    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.', allDay: 'Visa diena',
+    addV: '+ Vizitas', vName: 'Kliento vardas', vPhone: 'Telefonas (nebūtina)', vSrc: 'Iš kur', vNote: 'Pastaba (nebūtina)', vSave: 'Pridėti vizitą', tAdded: 'Vizitas pridėtas', vNeedName: 'Įvesk kliento vardą',
+    src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
+    hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
+    hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
+    dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
   },
   en: {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
@@ -75,7 +80,12 @@ const I18N = {
     tBusy: 'There’s already an appointment then. Pick another time.', tBlocked: 'Time blocked', tFail: 'Something went wrong. Check your connection and try again.', refreshed: 'Updated',
     linkH: 'Client booking link', copy: 'Copy', tCopied: 'Link copied', tSelect: 'Selected, copy it manually',
     linkInfo: 'Add it to your Instagram bio, Google Maps profile and Facebook.', qrAlt: 'Booking QR code',
-    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.', allDay: 'All day'
+    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.', allDay: 'All day',
+    addV: '+ Appointment', vName: 'Client name', vPhone: 'Phone (optional)', vSrc: 'Source', vNote: 'Note (optional)', vSave: 'Add appointment', tAdded: 'Appointment added', vNeedName: 'Enter the client’s name',
+    src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
+    hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
+    hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
+    dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   },
   tr: {
     title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
@@ -92,7 +102,12 @@ const I18N = {
     tBusy: 'O saatte zaten randevu var. Başka bir saat seçin.', tBlocked: 'Saat kapatıldı', tFail: 'Bir hata oluştu. Bağlantınızı kontrol edip tekrar deneyin.', refreshed: 'Güncellendi',
     linkH: 'Müşteri randevu linki', copy: 'Kopyala', tCopied: 'Link kopyalandı', tSelect: 'Seçildi, elle kopyalayın',
     linkInfo: 'Instagram biyografinize, Google Maps profilinize ve Facebook’a ekleyin.', qrAlt: 'Randevu QR kodu',
-    qrInfo: 'Müşteri telefonuyla tarar ve doğrudan randevu sayfasına gelir.', none: 'Bu gün randevu yok.', allDay: 'Tüm gün'
+    qrInfo: 'Müşteri telefonuyla tarar ve doğrudan randevu sayfasına gelir.', none: 'Bu gün randevu yok.', allDay: 'Tüm gün',
+    addV: '+ Randevu', vName: 'Müşteri adı', vPhone: 'Telefon (isteğe bağlı)', vSrc: 'Kaynak', vNote: 'Not (isteğe bağlı)', vSave: 'Randevu ekle', tAdded: 'Randevu eklendi', vNeedName: 'Müşterinin adını girin',
+    src: 'Kaynak', srcN: { web: 'Web sitesi', phone: 'Telefon', walkin: 'Kapıdan', treatwell: 'Treatwell' },
+    hoursT: 'Çalışma saatleri', hSave: 'Saatleri kaydet', tHours: 'Saatler kaydedildi', dayOff: 'Kapalı', hTo: '–',
+    hInfo: 'Müşteriler yalnızca çalışma saatlerindeki saatleri görür. Tatil veya tek bir gün için “Saati kapat”ı kullanın.',
+    dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -100,9 +115,9 @@ const admin = document.getElementById('admin');
 const BOOK_URL = new URL('./', location.href).href;
 const PX = 1.1;
 
-let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], FROM, TO;
+let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;
 let view = 'loading', session = null, lastLoad = null, busyAct = false;
-const ad = { date: null, sel: null, blocking: false };
+const ad = { date: null, sel: null, panel: null, hb: null };
 const login = { email: '', err: '', sending: false };
 
 const svc = id => SERVICES.find(s => s.id === id);
@@ -112,13 +127,15 @@ const brb = id => BARBERS.find(b => b.id === id) || { name: id };
 let QR = ''; function qrSvg() { if (QR) return QR; try { const q = qrcode(0, 'M'); q.addData(BOOK_URL); q.make(); QR = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) {} return QR; }
 
 async function loadRef() {
-  const [s, b, c] = await Promise.all([
+  const [s, b, c, h, m] = await Promise.all([
     sb.from('services').select('*').order('sort'),
     sb.from('barbers').select('*').order('sort'),
-    sb.from('settings').select('*').limit(1)
+    sb.from('settings').select('*').limit(1),
+    sb.from('barber_hours').select('*'),
+    sb.rpc('my_staff')
   ]);
-  for (const r of [s, b, c]) if (r.error) throw r.error;
-  SERVICES = s.data; BARBERS = b.data.filter(x => x.active); SET = c.data[0];
+  for (const r of [s, b, c, h, m]) if (r.error) throw r.error;
+  SERVICES = s.data; BARBERS = b.data.filter(x => x.active); SET = c.data[0]; HOURS = h.data || []; ME = (m.data || [])[0] || null;
   const today = shopNow().date;
   FROM = addDays(today, -7); TO = addDays(today, 30);
   DAYS = Array.from({ length: 32 }, (_, i) => addDays(today, i - 3));
@@ -201,8 +218,11 @@ function renderDash() {
       return `<button class="appt ${cls}" data-id="${r.id}" aria-pressed="${ad.sel === r.id}" style="top:${top * PX + 1}px;height:${Math.max(18, (bottom - top) * PX - 2)}px"><b>${hm(r.start_min)} ${label}</b>${r.service_id ? esc(sName(svc(r.service_id))) : ''}</button>`;
     }).join('');
     const lines = hours.map(x => `<div class="gl" style="top:${(x - OPEN) * PX}px"></div>`).join('');
+    const wh = HOURS.find(h => h.barber_id === br.id && h.dow === parseYmd(ad.date).getDay());
+    const offs = (wh ? [[OPEN, Math.max(OPEN, Math.min(CLOSE, wh.start_min))], [Math.min(CLOSE, Math.max(OPEN, wh.end_min)), CLOSE]] : [[OPEN, CLOSE]])
+      .filter(([a, b]) => b > a).map(([a, b]) => `<div class="off" style="top:${(a - OPEN) * PX}px;height:${(b - a) * PX}px">${!wh && a === OPEN ? `<span>${t.dayOff}</span>` : ''}</div>`).join('');
     const nowLine = ad.date === now.date && now.min >= OPEN && now.min <= CLOSE ? `<div class="now" style="top:${(now.min - OPEN) * PX}px"></div>` : '';
-    return `<div class="col" style="height:${H}px">${lines}${nowLine}${items}</div>`;
+    return `<div class="col" style="height:${H}px">${offs}${lines}${nowLine}${items}</div>`;
   }).join('');
   const heads = BARBERS.map(b => `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x => x.barber_id === b.id && x.kind === 'booking').length} ${t.vShort}</span></div>`).join('');
   const days = DAYS.map(d => { const n = ROWS.filter(r => r.day === d && r.kind === 'booking' && r.status === 'confirmed').length; return dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d) + (n ? ` · ${n} ${t.vShort}` : ''), n); }).join('');
@@ -222,8 +242,10 @@ function renderDash() {
       <div class="days" id="days">${days}</div>
       <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${niceDate(ad.date)}</h3>
         <div class="row"><span class="who">${upd}</span><button class="btn ghost" id="ref" style="padding:7px 12px;font-size:13px">${t.refresh}</button>
-        <button class="btn ghost" id="blk" style="padding:7px 12px;font-size:13px">${ad.blocking ? t.close : t.blockT}</button></div></div>
-      ${ad.blocking ? blockForm() : ''}
+        <button class="btn" data-panel="visit" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'visit'}">${ad.panel === 'visit' ? t.close : t.addV}</button>
+        <button class="btn ghost" data-panel="block" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'block'}">${ad.panel === 'block' ? t.close : t.blockT}</button>
+        <button class="btn ghost" data-panel="hours" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'hours'}">${ad.panel === 'hours' ? t.close : t.hoursT}</button></div></div>
+      ${ad.panel === 'block' ? blockForm() : ad.panel === 'visit' ? visitForm() : ad.panel === 'hours' ? hoursForm() : ''}
       ${dayList.length ? '' : `<p class="info" style="margin-top:0">${t.none}</p>`}
       <div class="sched-wrap"><div class="sched" style="grid-template-columns:52px repeat(${BARBERS.length},minmax(150px,1fr))">
         <div class="head" style="padding:10px 0"></div>${heads}
@@ -257,6 +279,35 @@ function findHtml() {
 function bindFind() {
   admin.querySelectorAll('[data-hit]').forEach(b => b.onclick = () => { ad.date = b.dataset.day; ad.sel = b.dataset.hit; ad.q = ''; ad.scroll = null; render(); });
 }
+function timeOpts(from, to, step, sel) { const o = []; for (let x = from; x <= to; x += step) o.push(`<option value="${x}" ${x === sel ? 'selected' : ''}>${hm(x)}</option>`); return o.join(''); }
+function visitForm() {
+  const t = T();
+  return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+    <div class="field"><label for="v-brb">${t.bBarber}</label><select id="v-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}" ${ME && ME.barber_id === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-svc">${t.service}</label><select id="v-svc" name="service">${SERVICES.filter(x => x.active).map(x => `<option value="${esc(x.id)}">${esc(sName(x))} · ${t.dur(x.minutes)}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-start">${t.bFrom}</label><select id="v-start" name="start">${timeOpts(SET.open_min, SET.close_min - 15, SET.step_min, -1)}</select></div>
+    <div class="field"><label for="v-src">${t.vSrc}</label><select id="v-src" name="source">${['phone','walkin','treatwell'].map(k => `<option value="${k}">${t.srcN[k]}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-name">${t.vName}</label><input id="v-name" name="client_name" autocomplete="off" maxlength="60"></div>
+    <div class="field"><label for="v-phone">${t.vPhone}</label><input id="v-phone" name="client_phone" type="tel" inputmode="tel" autocomplete="off" maxlength="20"></div>
+    <div class="field" style="grid-column:1/-1"><label for="v-note">${t.vNote}</label><input id="v-note" name="note" autocomplete="off" maxlength="300"></div>
+  </div><button class="btn" id="v-save">${t.vSave}</button></div>`;
+}
+function editableBarbers() { return BARBERS.filter(b => ME && (ME.is_owner || ME.barber_id === b.id)); }
+function hoursForm() {
+  const t = T(), list = editableBarbers();
+  if (!list.length) return `<div class="panel" style="margin-bottom:12px"><p class="info" style="margin:0">${t.notStaff}</p></div>`;
+  if (!list.some(b => b.id === ad.hb)) ad.hb = list[0].id;
+  const rows = [1, 2, 3, 4, 5, 6, 0].map(d => {
+    const h = HOURS.find(x => x.barber_id === ad.hb && x.dow === d);
+    return `<div class="hrow"><label class="hday"><input type="checkbox" data-hd="${d}" ${h ? 'checked' : ''}> ${t.dowL[d]}</label>
+      <select data-hs="${d}" aria-label="${t.dowL[d]} ${t.bFrom}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min, SET.close_min - 30, 30, h ? h.start_min : SET.open_min)}</select>
+      <span>${t.hTo}</span>
+      <select data-he="${d}" aria-label="${t.dowL[d]} ${t.hTo}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min + 30, SET.close_min, 30, h ? h.end_min : SET.close_min)}</select></div>`;
+  }).join('');
+  return `<div class="panel" style="margin-bottom:12px">
+    ${list.length > 1 ? `<div class="field" style="max-width:220px"><label for="h-brb">${t.bBarber}</label><select id="h-brb">${list.map(b => `<option value="${esc(b.id)}" ${b.id === ad.hb ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>` : `<h3>${esc(list[0].name)}</h3>`}
+    <div class="hours-grid">${rows}</div><p class="info">${t.hInfo}</p><button class="btn" id="h-save">${t.hSave}</button></div>`;
+}
 function blockForm() {
   const t = T(), opts = []; for (let x = SET.open_min; x < SET.close_min; x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
   return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
@@ -279,6 +330,7 @@ function detail(r) {
     <div class="sum-row"><span>${t.time}</span><span>${hm(r.start_min)}–${hm(r.end_min)}</span></div>
     <div class="sum-row"><span>${t.barberL}</span><span>${esc(brb(r.barber_id).name)}</span></div>
     <div class="sum-row"><span>${t.price}</span><span>${s ? eur(s.price) : '—'}</span></div>
+    <div class="sum-row"><span>${t.src}</span><span>${t.srcN[r.source] || t.srcN.web}</span></div>
     <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(r.code)}</span></div>
     <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
     ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
@@ -308,12 +360,39 @@ function bindDash() {
   const qi = admin.querySelector('#q');
   if (qi) qi.oninput = () => { ad.q = qi.value; admin.querySelector('#qres').innerHTML = findHtml(); bindFind(); };
   bindFind();
-  admin.querySelector('#blk').onclick = () => { ad.blocking = !ad.blocking; render(); };
+  admin.querySelectorAll('[data-panel]').forEach(b => b.onclick = () => { ad.panel = ad.panel === b.dataset.panel ? null : b.dataset.panel; render(); });
+  const vs = admin.querySelector('#v-save'); if (vs) vs.onclick = () => {
+    const name = admin.querySelector('#v-name').value.trim();
+    if (!name) { toast(t.vNeedName); admin.querySelector('#v-name').focus(); return; }
+    const args = { p_barber: admin.querySelector('#v-brb').value, p_service: admin.querySelector('#v-svc').value, p_day: ad.date,
+      p_start_min: +admin.querySelector('#v-start').value, p_name: name, p_phone: admin.querySelector('#v-phone').value.trim() || null,
+      p_note: admin.querySelector('#v-note').value.trim() || null, p_source: admin.querySelector('#v-src').value };
+    ad.panel = null;
+    act(() => sb.rpc('staff_create_booking', args), t.tAdded);
+  };
+  const hbSel = admin.querySelector('#h-brb'); if (hbSel) hbSel.onchange = () => { ad.hb = hbSel.value; render(); };
+  admin.querySelectorAll('[data-hd]').forEach(c => c.onchange = () => {
+    const d = c.dataset.hd; admin.querySelector(`[data-hs="${d}"]`).disabled = !c.checked; admin.querySelector(`[data-he="${d}"]`).disabled = !c.checked;
+  });
+  const hs = admin.querySelector('#h-save'); if (hs) hs.onclick = async () => {
+    const out = [];
+    for (const c of admin.querySelectorAll('[data-hd]')) {
+      if (!c.checked) continue;
+      const d = +c.dataset.hd, a = +admin.querySelector(`[data-hs="${d}"]`).value, e = +admin.querySelector(`[data-he="${d}"]`).value;
+      if (e <= a) { toast(t.tFail); return; }
+      out.push({ dow: d, start: a, end: e });
+    }
+    const barber = ad.hb;
+    act(async () => {
+      const r = await sb.rpc('set_hours', { p_barber: barber, p_hours: out }); if (r.error) return r;
+      const h = await sb.from('barber_hours').select('*'); if (!h.error) HOURS = h.data || []; return h;
+    }, t.tHours);
+  };
   admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
   const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
     const barber = admin.querySelector('#b-brb').value, start = +admin.querySelector('#b-start').value;
     const len = Math.min(+admin.querySelector('#b-len').value, SET.close_min - start);
-    ad.blocking = false;
+    ad.panel = null;
     act(() => sb.rpc('add_block', { p_barber: barber, p_day: ad.date, p_start_min: start, p_minutes: len }), t.tBlocked);
   };
   admin.querySelector('#copy').onclick = () => {
@@ -331,8 +410,8 @@ bindLangButtons(render);
   session = data.session;
   if (session) enter(); else { view = 'login'; render(); }
 })();
-setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.blocking && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.blocking) loadRows().then(render).catch(() => {}); });
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.panel && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.panel) loadRows().then(render).catch(() => {}); });
 </script>
 </body>
 </html>

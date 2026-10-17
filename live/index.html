@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=8">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=5"></script>
+<script src="shared.js?v=8"></script>
 <script>
 const I18N = {
   lt: {
@@ -100,7 +100,7 @@ const I18N = {
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
 
-let SERVICES = [], BARBERS = [], SET = null, BUSY = [], DAYS = [];
+let SERVICES = [], BARBERS = [], SET = null, BUSY = [], DAYS = [], HOURS = [];
 let loadState = 'loading';
 const st = { step: 0, service: null, barber: null, date: null, time: null, name: '', phone: '', email: '', note: '', errors: {}, done: null, sending: false };
 const client = document.getElementById('client');
@@ -117,13 +117,14 @@ async function loadBusy() {
 async function loadAll() {
   loadState = 'loading'; render();
   try {
-    const [s, b, c] = await Promise.all([
+    const [s, b, c, h] = await Promise.all([
       sb.from('services').select('*').order('sort'),
       sb.from('barbers').select('id,name,role,sort').order('sort'),
-      sb.from('settings').select('*').limit(1)
+      sb.from('settings').select('*').limit(1),
+      sb.from('barber_hours').select('*')
     ]);
-    for (const r of [s, b, c]) if (r.error) throw r.error;
-    SERVICES = s.data; BARBERS = b.data; SET = c.data[0];
+    for (const r of [s, b, c, h]) if (r.error) throw r.error;
+    SERVICES = s.data; BARBERS = b.data; SET = c.data[0]; HOURS = h.data || [];
     const today = shopNow().date, n = Math.min(29, SET.days_ahead + 1);
     DAYS = Array.from({ length: n }, (_, i) => addDays(today, i));
     await loadBusy();
@@ -136,12 +137,16 @@ async function loadAll() {
 function busy(barber, date, start, len) {
   return BUSY.some(b => b.barber_id === barber && b.day === date && start < b.end_min && b.start_min < start + len);
 }
+function works(barber, date, start, len) {
+  const dow = parseYmd(date).getDay();
+  return HOURS.some(h => h.barber_id === barber && h.dow === dow && start >= h.start_min && start + len <= h.end_min);
+}
 function freeBarbers(date, start, len, which) {
-  return (which === 'any' ? BARBERS.map(b => b.id) : [which]).filter(id => !busy(id, date, start, len));
+  return (which === 'any' ? BARBERS.map(b => b.id) : [which]).filter(id => works(id, date, start, len) && !busy(id, date, start, len));
 }
 function slotsFor(date, len, which) {
   const now = shopNow(), out = [];
-  for (let t = SET.open_min; t + len <= SET.close_min; t += SET.step_min) {
+  for (let t = 0; t + len <= 1440; t += SET.step_min) {
     if (date === now.date && t < now.min + SET.lead_min) continue;
     if (freeBarbers(date, t, len, which).length) out.push(t);
   }
