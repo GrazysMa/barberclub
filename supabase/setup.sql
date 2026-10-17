@@ -1,5 +1,6 @@
 -- Barber Club Vilnius – booking system database
 -- Paste the whole file into Supabase → SQL Editor → Run. Safe to run once on a new project.
+-- After this, run every file in supabase/migrations/ in order (002_…).
 
 create extension if not exists btree_gist with schema extensions;
 
