@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=15">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="fonts.css?v=16">
+<link rel="stylesheet" href="style.css?v=16">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,12 +42,12 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=15"></script>
+<script src="shared.js?v=16"></script>
 <script>
 const I18N = {
   lt: {
     title: 'Barber Club – skydelis', loginH: 'Barberių prisijungimas', email: 'El. paštas', pass: 'Slaptažodis', login: 'Prisijungti', logging: 'Jungiamasi…',
-    badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Kreipkis į administratorių.',
+    badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Įrašyk el. paštą ir spausk mygtuką žemiau.',
     logout: 'Atsijungti', signedAs: e => `Prisijungta: ${e}`,
     sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sDay: 'Vizitų', sDayRev: 'Pajamos', findL: 'Rasti vizitą', findPh: 'Kodas, vardas arba telefonas', findNone: 'Nieko nerasta', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
     blockT: 'Užblokuoti laiką', close: 'Uždaryti', refresh: 'Atnaujinti', updated: t => `Atnaujinta ${t}`,
@@ -65,12 +65,14 @@ const I18N = {
     src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
     hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
     hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
+    tabCal: 'Kalendorius', tabCli: 'Klientai', tabRat: 'Įvertinimai', cliSearch: 'Ieškoti: vardas, telefonas, el. paštas', cliCount: n => `${n} klientų`, cliVisits: 'vizitų', cliNo: 'neatvyko', cliLast: 'Paskutinis', cliNext: 'Kitas', cliNote: 'Pastaba', cliSave: 'Išsaugoti', cliMore: 'Rodyti daugiau', cliCsv: 'Atsisiųsti CSV', cliNone: 'Klientų nerasta', cliMk: 'sutinka gauti naujienas', tNote: 'Pastaba išsaugota', ratAvg: 'Vidurkis', ratCount: n => `${n} įvert.`, ratNone: 'Įvertinimų dar nėra. Klientai gaus nuorodą el. paštu po vizito, arba nusiųsk ją pats iš vizito kortelės.', rateLink: 'Įvertinimo nuoroda', tRateCopied: 'Įvertinimo nuoroda nukopijuota – nusiųsk klientui', revShort: 'pajamos',
+    pwSetH: 'Sukurk slaptažodį', pwSetInfo: 'Sveiki! Susikurk slaptažodį, kuriuo jungsiesi prie skydelio.', resetBtn: 'Pamiršau slaptažodį', tReset: 'Jei toks el. paštas yra, išsiuntėme nuorodą slaptažodžiui atkurti.', needEmail: 'Įrašyk el. paštą viršuje.',
     accH: 'Paskyra', pwBtn: 'Pakeisti slaptažodį', pwNew: 'Naujas slaptažodis (bent 10 simbolių)', pwRep: 'Pakartok slaptažodį', pwSave: 'Išsaugoti', pwShort: 'Slaptažodis per trumpas (bent 10 simbolių).', pwDiff: 'Slaptažodžiai nesutampa.', tPw: 'Slaptažodis pakeistas', pushH: 'Pranešimai šiame telefone', pushOn: 'Įjungti pranešimus', pushOff: 'Išjungti', pushTest: 'Bandomasis pranešimas', pushFor: 'Pranešti apie vizitus pas', pushIsOn: n => `Įjungta: gausi pranešimą, kai kas nors užsiregistruos pas ${n}.`, pushIos: 'iPhone: pirmiausia įsidėk šį puslapį į pradinį ekraną (Dalintis → Add to Home Screen) ir atidaryk iš ikonėlės.', pushNo: 'Ši naršyklė pranešimų nepalaiko.', pushDenied: 'Pranešimai užblokuoti. Įjunk juos telefono nustatymuose šiai programėlei.', tPushOn: 'Pranešimai įjungti', tPushOff: 'Pranešimai išjungti', tPushTest: 'Išsiųsta – pranešimas turėtų atsirasti per kelias sekundes',
     move: 'Perkelti', mDay: 'Diena', mSave: 'Perkelti čia', tMoved: 'Perkelta', dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
   },
   en: {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
-    badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Ask the administrator.',
+    badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Enter your email and press the button below.',
     logout: 'Sign out', signedAs: e => `Signed in: ${e}`,
     sToday: 'Visits today', sTodayRev: 'Revenue today', sDay: 'Visits', sDayRev: 'Revenue', findL: 'Find a visit', findPh: 'Code, name or phone', findNone: 'Nothing found', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
     blockT: 'Block time', close: 'Close', refresh: 'Refresh', updated: t => `Updated ${t}`,
@@ -88,12 +90,14 @@ const I18N = {
     src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
     hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
     hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
+    tabCal: 'Calendar', tabCli: 'Clients', tabRat: 'Ratings', cliSearch: 'Search: name, phone, email', cliCount: n => `${n} clients`, cliVisits: 'visits', cliNo: 'no-shows', cliLast: 'Last', cliNext: 'Next', cliNote: 'Note', cliSave: 'Save', cliMore: 'Show more', cliCsv: 'Download CSV', cliNone: 'No clients found', cliMk: 'agrees to marketing', tNote: 'Note saved', ratAvg: 'Average', ratCount: n => `${n} ratings`, ratNone: 'No ratings yet. Clients get a link by email after the visit, or send it yourself from the visit card.', rateLink: 'Rating link', tRateCopied: 'Rating link copied – send it to the client', revShort: 'revenue',
+    pwSetH: 'Create your password', pwSetInfo: 'Welcome! Create the password you’ll use to sign in.', resetBtn: 'Forgot password', tReset: 'If that email exists, we sent a link to reset the password.', needEmail: 'Enter your email above.',
     accH: 'Account', pwBtn: 'Change password', pwNew: 'New password (at least 10 characters)', pwRep: 'Repeat password', pwSave: 'Save', pwShort: 'Password too short (at least 10 characters).', pwDiff: 'Passwords don’t match.', tPw: 'Password changed', pushH: 'Notifications on this phone', pushOn: 'Turn on notifications', pushOff: 'Turn off', pushTest: 'Send a test', pushFor: 'Notify me about bookings with', pushIsOn: n => `On: you’ll get a notification when someone books with ${n}.`, pushIos: 'iPhone: first add this page to your Home Screen (Share → Add to Home Screen) and open it from the icon.', pushNo: 'This browser doesn’t support notifications.', pushDenied: 'Notifications are blocked. Allow them in your phone settings for this app.', tPushOn: 'Notifications on', tPushOff: 'Notifications off', tPushTest: 'Sent – it should show up in a few seconds',
     move: 'Move', mDay: 'Day', mSave: 'Move here', tMoved: 'Moved', dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   },
   tr: {
     title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
-    badLogin: 'E-posta veya şifre yanlış.', notStaff: 'Bu hesabın panele erişimi yok.', forgot: 'Şifrenizi mi unuttunuz? Yöneticiye başvurun.',
+    badLogin: 'E-posta veya şifre yanlış.', notStaff: 'Bu hesabın panele erişimi yok.', forgot: 'Şifreni mi unuttun? E-postanı yaz ve aşağıdaki butona bas.',
     logout: 'Çıkış yap', signedAs: e => `Giriş yapıldı: ${e}`,
     sToday: 'Bugünkü randevular', sTodayRev: 'Bugünkü gelir', sDay: 'Randevular', sDayRev: 'Gelir', findL: 'Randevu bul', findPh: 'Kod, isim veya telefon', findNone: 'Sonuç yok', sWeek: 'Önümüzdeki 7 gün', sNew: 'Son 24 saatte yeni', vShort: 'randevu',
     blockT: 'Saati kapat', close: 'Kapat', refresh: 'Yenile', updated: t => `Güncellendi ${t}`,
@@ -111,6 +115,8 @@ const I18N = {
     src: 'Kaynak', srcN: { web: 'Web sitesi', phone: 'Telefon', walkin: 'Kapıdan', treatwell: 'Treatwell' },
     hoursT: 'Çalışma saatleri', hSave: 'Saatleri kaydet', tHours: 'Saatler kaydedildi', dayOff: 'Kapalı', hTo: '–',
     hInfo: 'Müşteriler yalnızca çalışma saatlerindeki saatleri görür. Tatil veya tek bir gün için “Saati kapat”ı kullanın.',
+    tabCal: 'Takvim', tabCli: 'Müşteriler', tabRat: 'Değerlendirmeler', cliSearch: 'Ara: isim, telefon, e-posta', cliCount: n => `${n} müşteri`, cliVisits: 'ziyaret', cliNo: 'gelmedi', cliLast: 'Son', cliNext: 'Sonraki', cliNote: 'Not', cliSave: 'Kaydet', cliMore: 'Daha fazla', cliCsv: 'CSV indir', cliNone: 'Müşteri bulunamadı', cliMk: 'pazarlamaya izin veriyor', tNote: 'Not kaydedildi', ratAvg: 'Ortalama', ratCount: n => `${n} değerlendirme`, ratNone: 'Henüz değerlendirme yok. Müşteriler ziyaretten sonra e-postayla link alır veya ziyaret kartından linki kendin gönder.', rateLink: 'Değerlendirme linki', tRateCopied: 'Link kopyalandı – müşteriye gönder', revShort: 'gelir',
+    pwSetH: 'Şifreni oluştur', pwSetInfo: 'Hoş geldin! Giriş için kullanacağın şifreyi oluştur.', resetBtn: 'Şifremi unuttum', tReset: 'Bu e-posta kayıtlıysa şifre sıfırlama linki gönderdik.', needEmail: 'Yukarıya e-postanı yaz.',
     accH: 'Hesap', pwBtn: 'Şifreyi değiştir', pwNew: 'Yeni şifre (en az 10 karakter)', pwRep: 'Şifreyi tekrarla', pwSave: 'Kaydet', pwShort: 'Şifre çok kısa (en az 10 karakter).', pwDiff: 'Şifreler eşleşmiyor.', tPw: 'Şifre değiştirildi', pushH: 'Bu telefonda bildirimler', pushOn: 'Bildirimleri aç', pushOff: 'Kapat', pushTest: 'Test bildirimi gönder', pushFor: 'Şu berberin randevularını bildir:', pushIsOn: n => `Açık: biri ${n} için randevu alınca bildirim alacaksın.`, pushIos: 'iPhone: önce bu sayfayı ana ekrana ekle (Paylaş → Ana Ekrana Ekle) ve simgeden aç.', pushNo: 'Bu tarayıcı bildirimleri desteklemiyor.', pushDenied: 'Bildirimler engellendi. Telefon ayarlarından bu uygulama için izin ver.', tPushOn: 'Bildirimler açıldı', tPushOff: 'Bildirimler kapatıldı', tPushTest: 'Gönderildi – birkaç saniye içinde gelmeli',
     move: 'Taşı', mDay: 'Gün', mSave: 'Buraya taşı', tMoved: 'Taşındı', dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
   }
@@ -122,7 +128,9 @@ const PX = 1.1;
 
 let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;
 let view = 'loading', session = null, lastLoad = null, busyAct = false;
-const ad = { date: null, sel: null, panel: null, hb: null, moving: false };
+const ad = { date: null, sel: null, panel: null, hb: null, moving: false, view: 'cal', cb: null, cq: '', cn: 60 };
+const INVITE = /type=(invite|recovery|signup)/.test(location.hash);
+let CLIENTS = [], CLI_FOR = null, RATINGS = null;
 const login = { email: '', err: '', sending: false };
 
 const svc = id => SERVICES.find(s => s.id === id);
@@ -250,9 +258,30 @@ function render() {
   if (view === 'loading') { admin.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
   if (view === 'error') { admin.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; admin.querySelector('#retry').onclick = enter; return; }
   if (view === 'login') return renderLogin();
+  if (view === 'setpw') return renderSetPw();
   renderDash();
 }
 
+function renderSetPw() {
+  const t = T();
+  admin.innerHTML = `<section class="panel login"><h2>${t.pwSetH}</h2><p class="info">${t.pwSetInfo}</p><p class="info" style="margin-top:0"><b>${esc(session ? session.user.email : '')}</b></p>
+    <form id="spf" novalidate>
+      <input type="email" autocomplete="username" value="${esc(session ? session.user.email : '')}" hidden readonly>
+      <div class="field"><label for="sp1">${t.pwNew}</label><input id="sp1" type="password" autocomplete="new-password" minlength="10" required></div>
+      <div class="field"><label for="sp2">${t.pwRep}</label><input id="sp2" type="password" autocomplete="new-password" minlength="10" required></div>
+      ${ad.pwErr ? `<p class="alert bad" role="alert">${t[ad.pwErr]}</p>` : ''}
+      <button class="btn" type="submit">${t.pwSave}</button></form></section>`;
+  admin.querySelector('#spf').onsubmit = async ev => {
+    ev.preventDefault();
+    const a = admin.querySelector('#sp1').value, b = admin.querySelector('#sp2').value;
+    if (a.length < 10) { ad.pwErr = 'pwShort'; render(); return; }
+    if (a !== b) { ad.pwErr = 'pwDiff'; render(); return; }
+    const { error } = await sb.auth.updateUser({ password: a });
+    if (error) { console.error(error); toast(t.tFail); return; }
+    ad.pwErr = ''; history.replaceState(null, '', location.pathname); toast(t.tPw); enter();
+  };
+  admin.querySelector('#sp1').focus();
+}
 function renderLogin() {
   const t = T();
   admin.innerHTML = `<section class="panel login"><h2>${t.loginH}</h2>
@@ -261,7 +290,13 @@ function renderLogin() {
       <div class="field"><label for="l-email">${t.email}</label><input id="l-email" name="email" type="email" autocomplete="username" inputmode="email" spellcheck="false" required value="${esc(login.email)}"></div>
       <div class="field"><label for="l-pass">${t.pass}</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
       <button class="btn" type="submit" ${login.sending ? 'disabled aria-busy="true"' : ''}>${login.sending ? t.logging : t.login}</button>
-    </form><p class="info">${t.forgot}</p></section>`;
+    </form><p class="info">${t.forgot}</p><button class="btn ghost" id="l-reset" type="button">${t.resetBtn}</button></section>`;
+  admin.querySelector('#l-reset').onclick = async () => {
+    const em = admin.querySelector('#l-email').value.trim();
+    if (!em) { toast(t.needEmail); admin.querySelector('#l-email').focus(); return; }
+    await sb.auth.resetPasswordForEmail(em, { redirectTo: new URL('admin.html', location.href).href });
+    toast(t.tReset);
+  };
   admin.querySelector('#lf').onsubmit = async ev => {
     ev.preventDefault();
     login.email = admin.querySelector('#l-email').value.trim();
@@ -289,7 +324,13 @@ function stats() {
   };
 }
 
+function tabsHtml() {
+  const t = T();
+  return `<div class="tabs" role="tablist">${[['cal', t.tabCal], ['clients', t.tabCli], ['ratings', t.tabRat]].map(([k, l]) => `<button role="tab" data-view="${k}" aria-selected="${ad.view === k}">${l}</button>`).join('')}</div>`;
+}
 function renderDash() {
+  if (ad.view === 'clients') return renderClients();
+  if (ad.view === 'ratings') return renderRatings();
   const t = T(), now = shopNow(), s = stats();
   const OPEN = SET.open_min, CLOSE = SET.close_min, H = (CLOSE - OPEN) * PX;
   const dayList = ROWS.filter(r => r.day === ad.date);
@@ -308,12 +349,13 @@ function renderDash() {
     const nowLine = ad.date === now.date && now.min >= OPEN && now.min <= CLOSE ? `<div class="now" style="top:${(now.min - OPEN) * PX}px"></div>` : '';
     return `<div class="col" style="height:${H}px">${offs}${lines}${nowLine}${items}</div>`;
   }).join('');
-  const heads = BARBERS.map(b => `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x => x.barber_id === b.id && x.kind === 'booking').length} ${t.vShort}</span></div>`).join('');
+  const heads = BARBERS.map(b => { const mine = dayList.filter(x => x.barber_id === b.id && x.kind === 'booking'); const rev = mine.filter(x => x.status === 'confirmed').reduce((a, x) => a + Number(svc(x.service_id)?.price || 0), 0);
+    return `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px;text-align:right;line-height:1.25">${mine.length} ${t.vShort}<br><b style="color:var(--ink)">${eur(rev)}</b></span></div>`; }).join('');
   const days = DAYS.map(d => { const n = ROWS.filter(r => r.day === d && r.kind === 'booking' && r.status === 'confirmed').length; return dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d) + (n ? ` · ${n} ${t.vShort}` : ''), n); }).join('');
   const sel = ROWS.find(r => r.id === ad.sel);
   const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LOC[LANG], { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
 
-  admin.innerHTML = `
+  admin.innerHTML = `${tabsHtml()}
   <div class="stats">
     <div class="stat"><small>${ad.date === now.date ? t.sToday : `${t.sDay} · ${shortDate(ad.date)}`}</small><b>${s.today}</b></div>
     <div class="stat"><small>${ad.date === now.date ? t.sTodayRev : `${t.sDayRev} · ${shortDate(ad.date)}`}</small><b>${eur(s.rev)}</b></div>
@@ -350,6 +392,76 @@ function renderDash() {
   const strip = admin.querySelector('#days'), cur = strip && strip.querySelector('[aria-pressed="true"]');
   if (cur) strip.scrollLeft = ad.scroll ?? Math.max(0, cur.offsetLeft - strip.clientWidth / 2 + cur.clientWidth / 2);
   if (strip) strip.onscroll = () => { ad.scroll = strip.scrollLeft; };
+}
+function visibleBarbers() { return BARBERS.filter(b => ME && (ME.is_owner || ME.barber_id === b.id)); }
+async function loadClients(barber) {
+  const { data, error } = await sb.rpc('staff_clients', { p_barber: barber });
+  if (error) throw error; CLIENTS = data || []; CLI_FOR = barber;
+}
+function cliMatch(c, q) {
+  if (!q) return true;
+  const d = q.replace(/\D/g, '');
+  return String(c.name || '').toLowerCase().includes(q) || String(c.email || '').toLowerCase().includes(q) || (d.length >= 3 && String(c.phone || '').replace(/\D/g, '').includes(d));
+}
+function renderClients() {
+  const t = T(), list = visibleBarbers();
+  if (!list.length) { admin.innerHTML = tabsHtml() + `<section class="panel"><p class="info">${t.notStaff}</p></section>`; bindTabs(); return; }
+  if (!list.some(b => b.id === ad.cb)) ad.cb = (ME && ME.barber_id && list.some(b => b.id === ME.barber_id)) ? ME.barber_id : list[0].id;
+  if (CLI_FOR !== ad.cb) {
+    admin.innerHTML = tabsHtml() + `<section class="panel"><p class="loading">${t.loading}</p></section>`; bindTabs();
+    loadClients(ad.cb).then(render).catch(e => { console.error(e); toast(t.tFail); }); return;
+  }
+  const q = ad.cq.trim().toLowerCase(), rows = CLIENTS.filter(c => cliMatch(c, q)), shown = rows.slice(0, ad.cn);
+  const fmt = d => d ? shortDate(d) : '—';
+  const cards = shown.map(c => {
+    const tel = String(c.phone || '').replace(/[^\d+]/g, '');
+    return `<div class="cli"><div class="cli-top"><b>${esc(c.name)}</b>${c.marketing_ok ? `<span class="pill ok" title="${t.cliMk}">✉</span>` : ''}<span class="cli-v">${c.visits} ${t.cliVisits}${c.noshows ? ` · <span style="color:var(--red)">${c.noshows} ${t.cliNo}</span>` : ''}</span></div>
+      <div class="cli-c">${c.phone ? `<a class="tel" href="tel:${esc(tel)}">${esc(c.phone)}</a>` : ''}${c.email ? ` · <span style="user-select:all">${esc(c.email)}</span>` : ''}</div>
+      <div class="cli-d">${t.cliLast}: ${fmt(c.last_visit)}${c.next_visit ? ` · ${t.cliNext}: <b>${fmt(c.next_visit)}</b>` : ''}</div>
+      ${ad.noteFor === c.id ? `<div class="row" style="margin-top:6px"><input id="cn-in" maxlength="1000" value="${esc(c.notes || '')}" style="flex:1;min-width:0;padding:8px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit"><button class="btn" data-nsave="${c.id}" style="padding:7px 12px">${t.cliSave}</button></div>`
+        : `<button class="cli-note" data-note="${c.id}">${c.notes ? '📝 ' + esc(c.notes) : '+ ' + t.cliNote}</button>`}</div>`;
+  }).join('');
+  admin.innerHTML = `${tabsHtml()}<section class="panel">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+      ${list.length > 1 ? `<select id="cb" aria-label="${t.bBarber}" style="padding:8px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit">${list.map(b => `<option value="${esc(b.id)}" ${b.id === ad.cb ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select>` : `<h3 style="margin:0">${esc(list[0].name)}</h3>`}
+      <span class="who">${t.cliCount(rows.length)}</span><button class="btn ghost" id="csv" style="padding:7px 12px;font-size:13px">${t.cliCsv}</button></div>
+    <div class="find"><input id="cq" type="search" autocomplete="off" spellcheck="false" placeholder="🔍 ${t.cliSearch}" value="${esc(ad.cq)}"></div>
+    <div class="cli-list">${cards || `<p class="info">${t.cliNone}</p>`}</div>
+    ${rows.length > shown.length ? `<button class="btn ghost" id="cmore" style="margin-top:10px">${t.cliMore} (${rows.length - shown.length})</button>` : ''}
+  </section>`;
+  bindTabs();
+  const cb = admin.querySelector('#cb'); if (cb) cb.onchange = () => { ad.cb = cb.value; ad.cn = 60; ad.noteFor = null; render(); };
+  const cq = admin.querySelector('#cq'); cq.oninput = () => { ad.cq = cq.value; ad.cn = 60; const pos = cq.selectionStart; render(); const n = admin.querySelector('#cq'); n.focus(); n.setSelectionRange(pos, pos); };
+  const cm = admin.querySelector('#cmore'); if (cm) cm.onclick = () => { ad.cn += 100; render(); };
+  admin.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { ad.noteFor = b.dataset.note; render(); admin.querySelector('#cn-in')?.focus(); });
+  admin.querySelectorAll('[data-nsave]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.nsave, v = admin.querySelector('#cn-in').value;
+    const { error } = await sb.rpc('set_client_note', { p_id: id, p_notes: v });
+    if (error) { toast(t.tFail); return; }
+    const c = CLIENTS.find(x => x.id === id); if (c) c.notes = v.trim() || null; ad.noteFor = null; toast(t.tNote); render();
+  });
+  admin.querySelector('#csv').onclick = () => {
+    const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csv = ['name,phone,email,visits,noshows,last_visit,next_visit,marketing_ok,notes', ...rows.map(c => [c.name, c.phone, c.email, c.visits, c.noshows, c.last_visit, c.next_visit, c.marketing_ok ? 'T' : 'N', c.notes].map(cell).join(','))].join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+    a.download = `klientai-${ad.cb}-${shopNow().date}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  };
+}
+function renderRatings() {
+  const t = T();
+  if (RATINGS === null) {
+    admin.innerHTML = tabsHtml() + `<section class="panel"><p class="loading">${t.loading}</p></section>`; bindTabs();
+    sb.rpc('staff_ratings').then(({ data, error }) => { if (error) { toast(t.tFail); RATINGS = []; } else RATINGS = data || []; render(); }); return;
+  }
+  const star = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span style="color:var(--line)">${'★'.repeat(5 - n)}</span></span>`;
+  const sum = visibleBarbers().map(b => { const r = RATINGS.filter(x => x.barber_id === b.id); const avg = r.length ? r.reduce((a, x) => a + x.stars, 0) / r.length : 0;
+    return `<div class="stat"><small>${esc(b.name)}</small><b>${r.length ? avg.toFixed(1) : '—'}</b><div class="note">${r.length ? star(Math.round(avg)) + ' · ' + t.ratCount(r.length) : t.ratCount(0)}</div></div>`; }).join('');
+  const items = RATINGS.slice(0, 200).map(r => `<div class="cli"><div class="cli-top">${star(r.stars)}<b style="margin-left:8px">${esc(r.client_name || '')}</b><span class="cli-v">${esc(brb(r.barber_id).name)} · ${shortDate(r.day)}</span></div>${r.comment ? `<div class="cli-c" style="font-family:inherit">“${esc(r.comment)}”</div>` : ''}</div>`).join('');
+  admin.innerHTML = `${tabsHtml()}<div class="stats">${sum}</div><section class="panel">${items ? `<div class="cli-list">${items}</div>` : `<p class="info" style="margin:0">${t.ratNone}</p>`}</section>`;
+  bindTabs();
+}
+function bindTabs() {
+  admin.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { ad.view = b.dataset.view; if (ad.view === 'ratings') RATINGS = null; if (ad.view === 'clients') CLI_FOR = null; render(); });
 }
 function findHtml() {
   const t = T(), raw = (ad.q || '').trim(); if (raw.length < 2) return '';
@@ -429,7 +541,7 @@ function detail(r) {
     <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
     ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
     ${ad.moving ? `<div style="margin-top:14px">${moveForm(r)}</div>` : ''}
-    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button>${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button><button class="btn ghost" id="r-link">${t.rateLink}</button>${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
 }
 async function act(fn, okMsg) {
   if (busyAct) return; busyAct = true;
@@ -439,6 +551,7 @@ async function act(fn, okMsg) {
 }
 function bindDash() {
   const t = T();
+  bindTabs();
   admin.querySelectorAll('[data-aday]').forEach(b => b.onclick = () => { ad.date = b.dataset.aday; ad.sel = null; ad.moving = false; render(); });
   admin.querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ad.sel = b.dataset.id; ad.moving = false; render(); });
   admin.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
@@ -469,6 +582,12 @@ function bindDash() {
   const pon = admin.querySelector('#p-on'); if (pon) pon.onclick = () => pushOn(admin.querySelector('#p-brb').value);
   const poff = admin.querySelector('#p-off'); if (poff) poff.onclick = () => pushOff(false);
   const pt = admin.querySelector('#p-test'); if (pt) pt.onclick = pushTest;
+  const rl = admin.querySelector('#r-link'); if (rl) rl.onclick = async () => {
+    const { data, error } = await sb.rpc('staff_booking_token', { p_id: ad.sel });
+    if (error || !data) { toast(t.tFail); return; }
+    const url = new URL('rate.html?t=' + data, location.href).href;
+    try { await navigator.clipboard.writeText(url); toast(t.tRateCopied); } catch (e) { prompt(t.rateLink, url); }
+  };
   const mo = admin.querySelector('#m-open'); if (mo) mo.onclick = () => { ad.moving = true; render(); admin.querySelector('#m-start')?.focus(); };
   const mc = admin.querySelector('#m-close'); if (mc) mc.onclick = () => { ad.moving = false; render(); };
   const ms = admin.querySelector('#m-save'); if (ms) ms.onclick = () => {
@@ -524,9 +643,11 @@ bindLangButtons(render);
 (async () => {
   const { data } = await sb.auth.getSession();
   session = data.session;
-  if (session) enter(); else { view = 'login'; render(); }
+  if (!session && INVITE) { await new Promise(r => setTimeout(r, 800)); session = (await sb.auth.getSession()).data.session; }
+  if (session && INVITE) { view = 'setpw'; render(); }
+  else if (session) enter(); else { view = 'login'; render(); }
 })();
-setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.panel && !ad.moving && !ad.pw && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && ad.view === 'cal' && !ad.panel && !ad.moving && !ad.pw && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.panel) loadRows().then(render).catch(() => {}); });
 </script>
 </body>

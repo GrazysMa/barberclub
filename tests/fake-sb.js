@@ -4,7 +4,7 @@ window.supabase = { createClient: () => {
   const lit = v => v === null || v === undefined ? 'NULL' : typeof v === 'number' ? String(v) : typeof v === 'object' ? "'" + JSON.stringify(v).replace(/'/g, "''") + "'::jsonb" : "'" + String(v).replace(/'/g, "''") + "'";
   const pre = () => session ? `set role authenticated; set request.jwt.claim.sub='${session.user.id}';` : 'set role anon;';
   const q = sql => { const r = run(pre() + sql); return Promise.resolve(r); };
-  const SETOF = ['busy_slots','create_booking','staff_bookings','my_staff','booking_by_token'];
+  const SETOF = ['busy_slots','create_booking','staff_bookings','my_staff','booking_by_token','staff_clients','staff_ratings','rating_info'];
   return {
     from(t) { let order = null, limit = null; const b = {
       select() { return b; }, order(c) { order = c; return b; }, limit(n) { limit = n; return b; },

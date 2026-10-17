@@ -14,8 +14,8 @@ Kodas paruoštas. Įjungiama, kai bus nupirktas barberclub.lt.
 2. Edge Functions → Secrets:
    - `RESEND_API_KEY` = raktas iš Resend
    - `MAIL_FROM` = `Barber Club Vilnius <info@barberclub.lt>`
-   - `SITE_URL` = `https://barberclub.lt`
-3. SQL Editor → paleisti `migrations/003_email_queue.sql`.
+   - `SITE_URL` = `https://barberclub.lt/live`
+3. SQL Editor → paleisti `migrations/007_email_queue.sql`.
 4. Database → Extensions → įjungti `pg_cron` ir `pg_net`, tada SQL Editor:
    ```sql
    select cron.schedule('send-emails', '*/10 * * * *', $$

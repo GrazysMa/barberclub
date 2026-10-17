@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Barber Club Vilnius – registracija internetu. K. Ulvydo g. 11-432, Vilnius.">
+<title>Barber Club Vilnius – įvertinimas</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo.webp" type="image/webp">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Barber Club">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="fonts.css?v=16">
+<link rel="stylesheet" href="style.css?v=16">
+<script src="vendor/supabase-2.118.0.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
+<div class="pole" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
+      <p id="t-addr"></p>
+      <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a></p>
+    </div>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+        <button id="lang-tr" lang="tr" aria-pressed="false">TR</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="client" tabindex="-1"><section class="panel"><p class="loading">…</p></section></main>
+
+  <footer><div class="foot-row"><span id="t-foot"></span></div></footer>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=16"></script>
+<script>
+const C = {
+  lt: { title: 'Įvertink vizitą', notFound: 'Vizitas nerastas. Patikrink nuorodą.', q: b => `Kaip vertini vizitą pas ${b}?`, comment: 'Komentaras (nebūtina)', send: 'Siųsti įvertinimą', sending: 'Siunčiama…',
+        thanks: 'Ačiū už įvertinimą! 🙏', done: s => `Jau įvertinai: ${'★'.repeat(s)}${'☆'.repeat(5 - s)}. Ačiū!`, early: 'Įvertinti galėsi po vizito.', late: 'Šio vizito įvertinti nebegalima.', pick: 'Pasirink žvaigždučių skaičių.', fail: 'Nepavyko. Bandyk dar kartą.', again: 'Užsirašyti dar kartą', foot: '© Barber Club Vilnius', stars: ['Labai blogai','Blogai','Normaliai','Gerai','Puikiai'] },
+  en: { title: 'Rate your visit', notFound: 'Visit not found. Check the link.', q: b => `How was your visit with ${b}?`, comment: 'Comment (optional)', send: 'Send rating', sending: 'Sending…',
+        thanks: 'Thanks for your rating! 🙏', done: s => `Already rated: ${'★'.repeat(s)}${'☆'.repeat(5 - s)}. Thank you!`, early: 'You can rate after your visit.', late: 'This visit can no longer be rated.', pick: 'Pick a number of stars.', fail: 'Something went wrong. Try again.', again: 'Book again', foot: '© Barber Club Vilnius', stars: ['Very bad','Bad','Okay','Good','Excellent'] },
+  tr: { title: 'Ziyaretini değerlendir', notFound: 'Ziyaret bulunamadı. Linki kontrol et.', q: b => `${b} ile ziyaretin nasıldı?`, comment: 'Yorum (isteğe bağlı)', send: 'Gönder', sending: 'Gönderiliyor…',
+        thanks: 'Değerlendirmen için teşekkürler! 🙏', done: s => `Zaten değerlendirdin: ${'★'.repeat(s)}${'☆'.repeat(5 - s)}. Teşekkürler!`, early: 'Ziyaretten sonra değerlendirebilirsin.', late: 'Bu ziyaret artık değerlendirilemez.', pick: 'Yıldız sayısını seç.', fail: 'Bir hata oluştu. Tekrar dene.', again: 'Yeni randevu al', foot: '© Barber Club Vilnius', stars: ['Çok kötü','Kötü','İdare eder','İyi','Mükemmel'] }
+};
+const P = new URLSearchParams(location.search), TOKEN = P.get('t') || '';
+if (['lt','en','tr'].includes(P.get('lang'))) LANG = P.get('lang');
+const main = document.getElementById('client');
+let R = null, state = 'loading', pick = Math.min(5, Math.max(0, parseInt(P.get('s') || '0', 10) || 0)), comment = '';
+function render() {
+  const t = { ...COMMON[LANG], ...C[LANG] }; paintCommon(); document.title = `Barber Club Vilnius – ${t.title}`;
+  document.getElementById('t-foot').textContent = t.foot;
+  const box = inner => { main.innerHTML = `<section class="panel" style="max-width:520px;margin:0 auto"><h2>${t.title}</h2>${inner}</section>`; };
+  if (state === 'loading') return box(`<p class="loading">${t.loading}</p>`);
+  if (state === 'missing') return box(`<p class="alert bad">${t.notFound}</p>`);
+  if (state === 'thanks') return box(`<p class="alert">${t.thanks}</p><a class="btn" href="./">${t.again}</a>`);
+  if (R.stars) return box(`<p class="alert">${t.done(R.stars)}</p><a class="btn" href="./">${t.again}</a>`);
+  if (!R.can_rate) return box(`<p class="alert">${new Date(R.day + 'T00:00:00') > new Date() ? t.early : t.late}</p>`);
+  const stars = [1,2,3,4,5].map(n => `<button type="button" class="star" data-s="${n}" aria-pressed="${pick >= n}" aria-label="${n} – ${t.stars[n-1]}">★</button>`).join('');
+  box(`<p style="margin:0 0 4px">${esc(t.q(R.barber_name))}</p><p class="info" style="margin:0 0 10px">${niceDate(R.day)}, ${hm(R.start_min)}</p>
+    <div class="stars" role="group" aria-label="${t.title}">${stars}</div><p class="info" style="min-height:1.4em;margin:4px 0 12px">${pick ? t.stars[pick-1] : ''}</p>
+    <div class="field"><label for="cm">${t.comment}</label><textarea id="cm" rows="3" maxlength="500">${esc(comment)}</textarea></div>
+    <button class="btn red" id="go" ${state === 'sending' ? 'disabled aria-busy="true"' : ''}>${state === 'sending' ? t.sending : t.send}</button>`);
+  main.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { comment = main.querySelector('#cm').value; pick = +b.dataset.s; render(); });
+  main.querySelector('#go').onclick = async () => {
+    comment = main.querySelector('#cm').value;
+    if (!pick) { toast(t.pick); return; }
+    state = 'sending'; render();
+    const { error } = await sb.rpc('rate_by_token', { p_token: TOKEN, p_stars: pick, p_comment: comment || null });
+    if (!error) { state = 'thanks'; return render(); }
+    const m = String(error.message || '');
+    if (m.includes('already')) { R.stars = pick; state = 'ok'; }
+    else if (m.includes('too_late')) { R.can_rate = false; state = 'ok'; }
+    else { state = 'ok'; toast(t.fail); }
+    render();
+  };
+}
+bindLangButtons(render);
+document.getElementById('skip').onclick = e => { e.preventDefault(); main.focus(); };
+(async () => {
+  render();
+  if (!/^[0-9a-f-]{36}$/i.test(TOKEN)) { state = 'missing'; return render(); }
+  const r = await sb.rpc('rating_info', { p_token: TOKEN });
+  R = (r.data || [])[0]; if (r.error || !R) { state = 'missing'; return render(); }
+  if (!P.get('lang') && ['lt','en','tr'].includes(R.lang)) LANG = R.lang;
+  state = 'ok'; render();
+})();
+</script>
+</body>
+</html>

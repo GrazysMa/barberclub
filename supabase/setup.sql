@@ -263,7 +263,7 @@ insert into public.services (id, name_lt, name_en, name_tr, minutes, price, sort
   ('kid',     'Vaikų kirpimas (iki 12 m.)', 'Kids’ haircut (up to 12)', 'Çocuk saç kesimi (12 yaşa kadar)', 30, 20, 3),
   ('beard',   'Barzdos kirpimas ir modeliavimas', 'Beard trim & styling', 'Sakal kesimi ve şekillendirme', 35, 20, 4),
   ('premium', 'Premium kirpimas + skutimas', 'Premium haircut + shave', 'Premium saç kesimi + tıraş', 90, 45, 5),
-  ('perm',    'Cheminis plaukų garbanojimas', 'Chemical perm', 'Kimyasal perma', 60, 120, 6),
+  ('perm',    'Cheminis plaukų garbanojimas', 'Chemical perm', 'Kimyasal perma', 180, 120, 6),
   ('facial',  'Veido procedūra', 'Facial treatment', 'Yüz bakımı', 45, 45, 7),
   ('brow',    'Barzdos + antakių korekcija', 'Beard + eyebrow shaping', 'Sakal + kaş şekillendirme', 45, 25, 8),
   ('ritual',  'Premium skutimo ritualas', 'Premium shave ritual', 'Premium tıraş ritüeli', 60, 35, 9);

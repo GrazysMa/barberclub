@@ -1,7 +1,7 @@
 // Email texts for Barber Club Vilnius (LT / EN / TR). Pure functions, no network.
 
 export type Row = {
-  id: string; kind: 'confirm' | 'reminder'; code: string; cancel_token: string; lang: string | null;
+  id: string; kind: 'confirm' | 'reminder' | 'review'; code: string; cancel_token: string; lang: string | null;
   client_name: string; client_email: string; service_lt: string; service_en: string; service_tr: string | null;
   price: number | string; minutes: number; barber_name: string; day: string; start_min: number;
 };
@@ -81,4 +81,28 @@ ${rows.map(([k, v]) => `<tr><td style="padding:7px 0;color:#666;border-bottom:1p
     ...rows.map(([k, v]) => `${k}: ${v}`), '', `${t.cancelBtn}: ${cancelUrl}`, `${t.cancelInfo} ${SHOP.phone}.`, '', t.bye, SHOP.name].join('\n');
 
   return { subject, html, text, to: r.client_email };
+}
+
+const RV = {
+  lt: { subj: 'Kaip sekėsi? Įvertink vizitą', lead: (b: string) => `Ačiū, kad lankeisi! Kaip vertini vizitą pas ${b}?`, btn: 'Įvertinti', note: 'Tai užtruks 10 sekundžių.' },
+  en: { subj: 'How did it go? Rate your visit', lead: (b: string) => `Thanks for coming in! How was your visit with ${b}?`, btn: 'Rate', note: 'It takes 10 seconds.' },
+  tr: { subj: 'Nasıldı? Ziyaretini değerlendir', lead: (b: string) => `Geldiğin için teşekkürler! ${b} ile ziyaretin nasıldı?`, btn: 'Değerlendir', note: '10 saniye sürer.' },
+};
+
+export function buildReview(r: Row, site: string) {
+  const lang = (r.lang === 'en' || r.lang === 'tr') ? r.lang : 'lt';
+  const t = RV[lang], h = TXT[lang];
+  const base = `${site.replace(/\/$/, '')}/rate.html?t=${encodeURIComponent(r.cancel_token)}&lang=${lang}`;
+  const stars = [1, 2, 3, 4, 5].map(n => `<a href="${esc(base + '&s=' + n)}" style="font-size:34px;line-height:1;color:#e9a94a;text-decoration:none;padding:0 3px">★</a>`).join('');
+  const html = `<!doctype html><html lang="${lang}"><body style="margin:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;color:#111">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#fff;border-radius:12px;overflow:hidden">
+<tr><td style="height:6px;background-color:#b3261e"></td></tr>
+<tr><td style="padding:24px 24px 8px"><div style="font-size:22px;font-weight:800;letter-spacing:.02em">${SHOP.name.toUpperCase()}</div></td></tr>
+<tr><td style="padding:8px 24px 0;font-size:16px;line-height:1.5">${esc(h.hello(r.client_name))}<br>${esc(t.lead(r.barber_name))}</td></tr>
+<tr><td align="center" style="padding:20px 24px 6px">${stars}</td></tr>
+<tr><td align="center" style="padding:6px 24px 24px"><a href="${esc(base)}" style="display:inline-block;padding:11px 18px;border:1px solid #111;border-radius:8px;color:#111;text-decoration:none;font-weight:700">${t.btn}</a><div style="font-size:13px;color:#666;margin-top:10px">${t.note}</div></td></tr>
+</table></td></tr></table></body></html>`;
+  const text = [h.hello(r.client_name), t.lead(r.barber_name), '', `${t.btn}: ${base}`, '', SHOP.name].join('\n');
+  return { subject: t.subj, html, text, to: r.client_email };
 }

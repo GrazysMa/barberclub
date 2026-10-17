@@ -87,6 +87,24 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)process.exitCode=1};
    await wait(()=>B('#lf')); B('#l-email').value='owner@barberclub.lt'; B('#l-pass').value='pw'; B('#lf').dispatchEvent(new w3.Event('submit'));
    await wait(()=>B('.sched')&&B('#m-open')); ok(B(`[data-aday="${vday}"]`).getAttribute('aria-pressed')==='true'&&/Telefonas Tomas/.test(doc3.getElementById('admin').textContent),'admin: ?visit=<id> opens that visit');
    ok(/nepalaiko|support/.test(doc3.getElementById('admin').textContent),'admin: push panel shows (unsupported in test browser)'); }
+
+ // ---------- clients tab, per-barber revenue, ratings ----------
+ ok(/€/.test(doc.querySelector('.sched .head:nth-child(2)')?.textContent||''),'admin: column header shows revenue');
+ A('[data-view="clients"]').click(); await wait(()=>A('.cli')||/nerasta|No clients/.test(atx()));
+ ok(doc.querySelectorAll('.cli').length>0,'admin: clients tab lists clients ('+doc.querySelectorAll('.cli').length+')');
+ A('#cq').value='Jonas'; A('#cq').dispatchEvent(new w.Event('input')); await new Promise(r=>setTimeout(r,50));
+ ok([...doc.querySelectorAll('.cli')].every(c=>/jonas/i.test(c.textContent)),'admin: client search filters');
+ A('[data-note]').click(); await wait(()=>A('#cn-in')); A('#cn-in').value='Mėgsta trumpai'; A('[data-nsave]').click();
+ await wait(()=>/Mėgsta trumpai/.test(atx())); ok(pg(`select json_agg(notes) from clients where notes is not null`).data.includes('Mėgsta trumpai'),'db: client note saved');
+ A('[data-view="ratings"]').click(); await wait(()=>A('.stats')&&/Metin/.test(atx())); ok(true,'admin: ratings tab renders');
+ A('[data-view="cal"]').click(); await wait(()=>A('.sched'));
+ // rate page
+ { const tok=pg(`select to_json(cancel_token) from bookings where kind='booking' and status='confirmed' order by starts_at limit 1`).data;
+   pg(`update bookings set starts_at=now()-interval '2 hours', ends_at=now()-interval '1 hour' where cancel_token='${tok}'`);
+   const d4=page('rate.html?t='+tok+'&s=4'), w4=d4.window, doc4=w4.document, Q=s=>doc4.querySelector(s);
+   await wait(()=>Q('#go')); ok(Q('[data-s="4"]').getAttribute('aria-pressed')==='true'&&Q('[data-s="5"]').getAttribute('aria-pressed')==='false','rate: ?s=4 preselects 4 stars');
+   Q('[data-s="5"]').click(); Q('#cm').value='Labai gerai'; Q('#go').click(); await wait(()=>/Ačiū|Thanks/.test(doc4.getElementById('client').textContent));
+   ok(pg(`select to_json(stars) from ratings r join bookings b on b.id=r.booking_id where b.cancel_token='${tok}'`).data===5,'db: 5-star rating saved'); }
  // ---------- new: hours ----------
  const dow=new Date(day+'T12:00:00').getDay();
  A('[data-panel="hours"]').click(); await wait(()=>A('#h-save')); A('#h-brb').value='metin'; A('#h-brb').dispatchEvent(new w.Event('change')); await wait(()=>A('#h-save'));

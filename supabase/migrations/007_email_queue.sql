@@ -1,4 +1,5 @@
--- 003: email queue for the send-emails Edge Function (confirmation + 24 h reminder)
+-- 007: email queue for the send-emails Edge Function (confirmation, 24 h reminder, rating request after the visit)
+-- Run when emails are switched on (needs 006).
 -- Only the server (service_role) can read the queue or mark emails as sent.
 
 create or replace function public.email_queue(p_code text default null)
@@ -24,9 +25,14 @@ begin
        where b.confirm_sent_at is not null and b.reminder_sent_at is null
          and b.starts_at > now() and b.starts_at <= now() + interval '24 hours'
          and b.created_at < b.starts_at - interval '24 hours'
+      union all
+      select 'review'
+       where b.review_sent_at is null and b.ends_at < now() - interval '1 hour' and b.ends_at > now() - interval '2 days'
+         and not exists (select 1 from public.ratings r where r.booking_id = b.id)
     ) q
     where b.kind = 'booking' and b.status = 'confirmed' and b.source = 'web'
-      and coalesce(b.client_email, '') <> '' and b.starts_at > now()
+      and coalesce(b.client_email, '') <> '' and b.ends_at > now() - interval '2 days'
+      and (q.kind = 'review' or b.starts_at > now())
       and (p_code is null or b.code = p_code)
     order by b.created_at
     limit 50;
@@ -37,6 +43,7 @@ returns void
 language sql volatile security definer set search_path = public as $$
   update public.bookings
      set confirm_sent_at  = case when p_kind = 'confirm'  then now() else confirm_sent_at end,
+         review_sent_at   = case when p_kind = 'review'   then now() else review_sent_at end,
          -- a booking made less than 24 h ahead never gets a separate reminder
          reminder_sent_at = case when p_kind = 'reminder' or (p_kind = 'confirm' and starts_at - interval '24 hours' <= created_at)
                                  then now() else reminder_sent_at end
@@ -47,4 +54,5 @@ revoke execute on function public.email_queue(text), public.email_mark(uuid, tex
 grant execute on function public.email_queue(text), public.email_mark(uuid, text) to service_role;
 
 -- Bookings that already exist before emails are switched on: don't send old confirmations
-update public.bookings set confirm_sent_at = coalesce(confirm_sent_at, now()) where confirm_sent_at is null;
+update public.bookings set confirm_sent_at = coalesce(confirm_sent_at, now()), review_sent_at = coalesce(review_sent_at, now())
+ where confirm_sent_at is null or review_sent_at is null;

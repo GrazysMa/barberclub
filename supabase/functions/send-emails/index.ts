@@ -3,7 +3,7 @@
 // Safe to call by anyone: it only sends emails that are due, to the address stored with the booking.
 // Secrets to set in Supabase → Edge Functions → Secrets: RESEND_API_KEY, MAIL_FROM, SITE_URL
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
-import { buildEmail, type Row } from './templates.ts';
+import { buildEmail, buildReview, type Row } from './templates.ts';
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization, apikey, x-client-info', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
@@ -14,19 +14,21 @@ Deno.serve(async (req) => {
 
   const key = Deno.env.get('RESEND_API_KEY');
   const from = Deno.env.get('MAIL_FROM') ?? 'Barber Club Vilnius <info@barberclub.lt>';
-  const site = Deno.env.get('SITE_URL') ?? 'https://barberclub.lt';
+  const site = Deno.env.get('SITE_URL') ?? 'https://barberclub.lt/live';
   if (!key) return json({ error: 'not_configured' }, 503);
 
   let code: string | null = null;
   try { const b = await req.json(); if (typeof b?.code === 'string' && /^BC-[A-Z0-9]{5}$/.test(b.code)) code = b.code; } catch { /* cron sends {} */ }
 
-  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+  let sk = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  if (!sk) { try { const k = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}'); sk = k.default ?? Object.values(k)[0] ?? ''; } catch { /* none */ } }
+  const db = createClient(Deno.env.get('SUPABASE_URL')!, sk, { auth: { persistSession: false } });
   const { data, error } = await db.rpc('email_queue', { p_code: code });
   if (error) return json({ error: error.message }, 500);
 
   const sent: string[] = [], failed: string[] = [];
   for (const r of (data ?? []) as Row[]) {
-    const m = buildEmail(r, site);
+    const m = r.kind === 'review' ? buildReview(r, site) : buildEmail(r, site);
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'Idempotency-Key': `${r.id}-${r.kind}` },
