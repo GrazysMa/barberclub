@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=16">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="fonts.css?v=17">
+<link rel="stylesheet" href="style.css?v=17">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -24,6 +24,7 @@
     <div class="brand">
       <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
       <p id="t-addr"></p>
+      <p class="rating-line"><button type="button" class="rating-btn" id="rating-btn" hidden></button></p>
       <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a></p>
     </div>
     <div class="controls">
@@ -42,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=16"></script>
+<script src="shared.js?v=17"></script>
 <script>
 const I18N = {
   lt: {
@@ -61,7 +62,9 @@ const I18N = {
     failed: `Nepavyko užregistruoti. Bandyk dar kartą arba paskambink ${SHOP_PHONE}.`,
     confirmed: 'Patvirtinta', seeYou: n => `Iki pasimatymo, ${n}!`, with: 'pas', code: 'Rezervacijos kodas',
     keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
-    again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams'
+    again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams',
+    revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
+    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti'
   },
   en: {
     steps: ['Service','Barber','Time','Details'],
@@ -79,7 +82,8 @@ const I18N = {
     failed: `Booking failed. Please try again or call ${SHOP_PHONE}.`,
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
-    again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers'
+    again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers',
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close'
   },
   tr: {
     steps: ['Hizmet','Berber','Saat','Bilgiler'],
@@ -97,13 +101,14 @@ const I18N = {
     failed: `Randevu alınamadı. Tekrar deneyin veya ${SHOP_PHONE} numarasını arayın.`,
     confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
     keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
-    again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için'
+    again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için',
+    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat'
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
 
 let SERVICES = [], BARBERS = [], SET = null, BUSY = [], DAYS = [], HOURS = [];
-let loadState = 'loading';
+let loadState = 'loading', PR = null, revOpen = false;
 const st = { step: 0, service: null, barber: null, date: null, time: null, name: '', phone: '', email: '', note: '', errors: {}, done: null, sending: false };
 const client = document.getElementById('client');
 
@@ -130,6 +135,7 @@ async function loadAll() {
     const today = shopNow().date, n = Math.min(29, SET.days_ahead + 1);
     DAYS = Array.from({ length: n }, (_, i) => addDays(today, i));
     await loadBusy();
+    sb.rpc('public_ratings').then(({ data }) => { if (data) { PR = data; render(); } });
     if (BARBERS.length === 1) st.barber = BARBERS[0].id;
     loadState = 'ok';
   } catch (e) { console.error(e); loadState = 'error'; }
@@ -155,6 +161,30 @@ function slotsFor(date, len, which) {
   return out;
 }
 const firstDayWithSlots = () => DAYS.find(d => slotsFor(d, svc(st.service).minutes, st.barber).length) || DAYS[0];
+const nf = (x, d = 1) => x.toLocaleString(LANG === 'tr' ? 'tr-TR' : LANG === 'en' ? 'en-GB' : 'lt-LT', { minimumFractionDigits: d, maximumFractionDigits: d });
+function overall() {
+  const tn = SET && SET.tw_count || 0, ta = SET && Number(SET.tw_avg) || 0, n = PR ? PR.n : 0, sum = PR ? PR.sum : 0;
+  const tot = tn + n; return tot ? { avg: (ta * tn + sum) / tot, n: tot } : null;
+}
+const brbRating = id => { const r = PR && PR.barbers.find(x => x.id === id); return r && r.n ? r : null; };
+const starsHtml = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span class="star-off">${'★'.repeat(5 - n)}</span></span>`;
+function paintRating() {
+  const t = T(), b = document.getElementById('rating-btn'), o = overall();
+  if (!o) { b.hidden = true; return; }
+  b.hidden = false; b.setAttribute('aria-expanded', String(revOpen));
+  b.innerHTML = `<span class="stars-s">★</span> <b>${nf(o.avg)}</b> · ${t.revs(o.n)}`;
+  b.onclick = () => { revOpen = !revOpen; render(); if (revOpen) document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+}
+function reviewsHtml() {
+  if (!revOpen) return '';
+  const t = T(), o = overall(), rec = PR ? PR.recent : [];
+  const per = BARBERS.map(b => { const r = brbRating(b.id); return r ? `<div class="sum-row"><span>${esc(b.name)}</span><span><span class="stars-s">★</span> ${nf(Number(r.avg))} · ${t.revs(r.n)}</span></div>` : ''; }).join('');
+  const items = rec.map(r => `<div class="rev"><div class="rev-top">${starsHtml(r.stars)}<b>${esc(r.name || '')}</b><span>${esc((brb(r.barber_id) || {}).name || '')} · ${shortDate(r.day)}</span></div><p>${esc(r.comment)}</p></div>`).join('');
+  return `<section class="panel reviews" id="reviews"><div class="rev-head"><h2>${t.revTitle}</h2><button type="button" class="btn ghost" id="rev-close">${t.revClose}</button></div>
+    <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsHtml(Math.round(o.avg))}<div class="rev-sub">${t.revs(o.n)} · ${t.revInc}</div></div></div>
+    ${per ? `<div class="rev-per">${per}</div>` : ''}
+    ${items || `<p class="info">${t.revNone}</p>`}</section>`;
+}
 const firstStep = () => BARBERS.length === 1 ? [0, 2, 3] : [0, 1, 2, 3];
 
 function render() {
@@ -162,6 +192,7 @@ function render() {
   paintCommon();
   document.title = { lt: 'Barber Club Vilnius – registracija', en: 'Barber Club Vilnius – booking', tr: 'Barber Club Vilnius – randevu' }[LANG];
   document.getElementById('t-foot').textContent = t.foot;
+  paintRating();
   if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
   if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
   if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
@@ -179,7 +210,7 @@ function render() {
   } else if (st.step === 1) {
     body = `<h2>${t.pickBrb}</h2><div class="list">
       <button class="opt" data-brb="any" aria-pressed="${st.barber === 'any'}"><div class="avatar any" aria-hidden="true">✂</div><div class="main"><div class="t">${t.any}</div><div class="s">${t.anyS}</div></div></button>
-      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}"><div class="avatar" aria-hidden="true">${esc(b.name[0])}</div><div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}</div></div></button>`).join('')}</div>`;
+      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}"><div class="avatar" aria-hidden="true">${esc(b.name[0])}</div><div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}${brbRating(b.id) ? ` · <span class="stars-s">★</span> ${nf(Number(brbRating(b.id).avg))} (${brbRating(b.id).n})` : ''}</div></div></button>`).join('')}</div>`;
   } else if (st.step === 2) {
     const len = svc(st.service).minutes;
     if (!st.date) st.date = firstDayWithSlots();
@@ -203,8 +234,9 @@ function render() {
   const showBack = st.step > 0;
   const nav = `<div class="nav">${showBack ? `<button class="btn ghost" id="back">${t.back}</button>` : '<span></span>'}
     <button class="btn ${st.step === 3 ? 'red' : ''}" id="next" ${canNext ? '' : 'disabled'} ${st.sending ? 'aria-busy="true"' : ''}>${st.step === 3 ? (st.sending ? t.sending : t.confirm) : t.next}</button></div>`;
-  client.innerHTML = `<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>`;
+  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>`;
   bindClient();
+  const rc = document.getElementById('rev-close'); if (rc) rc.onclick = () => { revOpen = false; render(); };
 }
 function summary() {
   const t = T(), s = st.service && svc(st.service);

@@ -199,3 +199,19 @@ footer{margin-top:28px;font-size:12px;color:var(--muted)}
 .cli-d{font-size:12px;color:var(--muted);margin-top:4px}
 .cli-note{background:none;border:0;padding:0;margin-top:6px;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;text-align:left}
 .stars-s{color:var(--warn);letter-spacing:1px}
+
+.rating-line{margin:4px 0 0}
+.rating-btn{background:none;border:0;padding:2px 0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.rating-btn:hover{text-decoration-color:currentColor}
+.star-off{color:var(--line)}
+.reviews{margin-bottom:20px}
+.rev-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rev-head h2{margin:0}
+.rev-big{display:flex;align-items:center;gap:14px;margin:14px 0}
+.rev-big>b{font-size:44px;line-height:1}
+.rev-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.rev-per{margin-bottom:12px}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev-top{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.rev-top span:last-child{color:var(--muted);font-size:13px}
+.rev p{margin:6px 0 0;overflow-wrap:anywhere}
