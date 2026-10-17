@@ -33,7 +33,10 @@ async function vapid(db: any) {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
-  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+  let key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  if (!key) { try { const k = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}'); key = k.default ?? Object.values(k)[0] ?? ''; } catch { /* none */ } }
+  if (!key) return json({ error: 'no_server_key', env: Object.keys(Deno.env.toObject()).filter(n => n.startsWith('SUPABASE')) }, 500);
+  const db = createClient(Deno.env.get('SUPABASE_URL')!, key, { auth: { persistSession: false } });
   const keys = await vapid(db);
   if (req.method === 'GET') return json({ publicKey: keys.publicKey });
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
