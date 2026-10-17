@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef1ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Barber Club Vilnius – registracija internetu. K. Ulvydo g. 11-432, Vilnius.">
+<title>Barber Club Vilnius – vizito atšaukimas</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css?v=9">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
+<div class="pole" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
+      <p id="t-addr"></p>
+      <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a></p>
+    </div>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+        <button id="lang-tr" lang="tr" aria-pressed="false">TR</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="client" tabindex="-1"><section class="panel"><p class="loading">…</p></section></main>
+
+  <footer><div class="foot-row"><span id="t-foot"></span></div></footer>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=9"></script>
+<script>
+const C = {
+  lt: { title: 'Vizito atšaukimas', notFound: 'Rezervacija nerasta. Patikrink nuorodą arba paskambink.', service: 'Paslauga', barber: 'Barberis', time: 'Laikas', code: 'Kodas',
+        ask: 'Ar tikrai nori atšaukti šį vizitą?', btn: 'Taip, atšaukti vizitą', sending: 'Atšaukiama…', done: 'Vizitas atšauktas. Laikas atlaisvintas kitiems klientams.',
+        already: 'Šis vizitas jau atšauktas.', late: `Atšaukti internetu jau per vėlu. Paskambink ${SHOP_PHONE}.`, fail: 'Nepavyko. Bandyk dar kartą arba paskambink.', again: 'Užsirašyti iš naujo', foot: '© Barber Club Vilnius' },
+  en: { title: 'Cancel appointment', notFound: 'Booking not found. Check the link or call us.', service: 'Service', barber: 'Barber', time: 'Time', code: 'Code',
+        ask: 'Do you really want to cancel this appointment?', btn: 'Yes, cancel appointment', sending: 'Cancelling…', done: 'Appointment cancelled. The slot is free for others now.',
+        already: 'This appointment is already cancelled.', late: `It’s too late to cancel online. Please call ${SHOP_PHONE}.`, fail: 'Something went wrong. Try again or call us.', again: 'Book again', foot: '© Barber Club Vilnius' },
+  tr: { title: 'Randevu iptali', notFound: 'Randevu bulunamadı. Linki kontrol edin veya bizi arayın.', service: 'Hizmet', barber: 'Berber', time: 'Saat', code: 'Kod',
+        ask: 'Bu randevuyu iptal etmek istediğinize emin misiniz?', btn: 'Evet, iptal et', sending: 'İptal ediliyor…', done: 'Randevu iptal edildi. Saat artık başkaları için açık.',
+        already: 'Bu randevu zaten iptal edilmiş.', late: `Online iptal için çok geç. Lütfen ${SHOP_PHONE} numarasını arayın.`, fail: 'Bir hata oluştu. Tekrar deneyin veya bizi arayın.', again: 'Yeni randevu al', foot: '© Barber Club Vilnius' }
+};
+const P = new URLSearchParams(location.search), TOKEN = P.get('t') || '';
+if (['lt','en','tr'].includes(P.get('lang'))) LANG = P.get('lang');
+const main = document.getElementById('client');
+let B = null, SVC = null, state = 'loading';
+function render() {
+  const t = { ...COMMON[LANG], ...C[LANG] }; paintCommon(); document.title = `Barber Club Vilnius – ${t.title}`;
+  document.getElementById('t-foot').textContent = t.foot;
+  if (state === 'loading') { main.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (state === 'missing') { main.innerHTML = `<section class="panel"><h2>${t.title}</h2><p class="alert bad">${t.notFound}</p></section>`; return; }
+  const rows = `<div class="sum-row"><span>${t.service}</span><span>${esc(svcName(SVC) || '')}</span></div>
+    <div class="sum-row"><span>${t.barber}</span><span>${esc(B.barber_name)}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${niceDate(B.day)}, ${hm(B.start_min)}–${hm(B.end_min)}</span></div>
+    <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(B.code)}</span></div>`;
+  let body;
+  if (state === 'cancelled') body = `<p class="alert">${t.done}</p><a class="btn" href="./">${t.again}</a>`;
+  else if (B.status === 'cancelled') body = `<p class="alert">${t.already}</p><a class="btn" href="./">${t.again}</a>`;
+  else if (!B.can_cancel) body = `<p class="alert bad">${t.late}</p><a class="btn" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>`;
+  else body = `<p>${t.ask}</p><button class="btn red" id="go" ${state === 'sending' ? 'disabled aria-busy="true"' : ''}>${state === 'sending' ? t.sending : t.btn}</button>`;
+  main.innerHTML = `<section class="panel" style="max-width:520px;margin:0 auto"><h2>${t.title}</h2>${rows}<div style="margin-top:16px">${body}</div></section>`;
+  const go = document.getElementById('go');
+  if (go) go.onclick = async () => {
+    state = 'sending'; render();
+    const { error } = await sb.rpc('cancel_by_token', { p_token: TOKEN });
+    if (error) { const m = String(error.message || ''); if (m.includes('too_late')) { B.can_cancel = false; state = 'ok'; } else { state = 'ok'; toast(C[LANG].fail); } }
+    else state = 'cancelled';
+    render();
+  };
+}
+bindLangButtons(render);
+document.getElementById('skip').onclick = e => { e.preventDefault(); main.focus(); };
+(async () => {
+  render();
+  if (!/^[0-9a-f-]{36}$/i.test(TOKEN)) { state = 'missing'; return render(); }
+  const [r, s] = await Promise.all([sb.rpc('booking_by_token', { p_token: TOKEN }), sb.from('services').select('*')]);
+  B = (r.data || [])[0]; if (r.error || !B) { state = 'missing'; return render(); }
+  SVC = (s.data || []).find(x => x.id === B.service_id) || null;
+  state = 'ok'; render();
+})();
+</script>
+</body>
+</html>
