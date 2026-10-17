@@ -160,7 +160,9 @@ function render() {
   if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
 
   const visible = firstStep();
-  const steps = visible.map((s, i) => `<span class="${s === st.step ? 'on' : s < st.step ? 'done' : ''}">${i + 1}. ${t.steps[s]}</span>`).join('');
+  const steps = visible.map((s, i) => s < st.step
+    ? `<button type="button" class="done" data-go="${s}">${i + 1}. ${t.steps[s]}</button>`
+    : `<span class="${s === st.step ? 'on' : ''}" ${s === st.step ? 'aria-current="step"' : ''}>${i + 1}. ${t.steps[s]}</span>`).join('');
   let body = '';
   if (st.step === 0) {
     body = `<h2>${t.pickSvc}</h2><div class="list">${SERVICES.map(s => `
@@ -219,6 +221,7 @@ function bindClient() {
   client.querySelectorAll('[data-brb]').forEach(b => b.onclick = () => { if (st.barber !== b.dataset.brb) { st.barber = b.dataset.brb; st.date = null; st.time = null; } go(2); });
   client.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { st.date = b.dataset.day; st.time = null; render(); });
   client.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { st.time = +b.dataset.t; render(); });
+  client.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { saveFields(); go(+b.dataset.go); });
   const back = client.querySelector('#back'); if (back) back.onclick = () => { saveFields(); go(prevOf(st.step)); };
   client.querySelector('#next').onclick = () => { if (st.step < 3) { go(nextOf(st.step)); return; } submit(); };
 }
