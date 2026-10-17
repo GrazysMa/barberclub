@@ -1,7 +1,7 @@
 const {JSDOM}=require('jsdom');const fs=require('fs');const {execFileSync}=require('child_process');
 const D=require('path').join(__dirname,'..','live')+'/', S=__dirname;
 function pg(sql){try{const out=execFileSync('psql',['-h','/var/tmp/pgtest','-p','5544','-U','postgres','-d','e2e','-tAq','-v','ON_ERROR_STOP=1','-c',sql],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();return {data:out?JSON.parse(out):null,error:null}}catch(e){const m=(e.stderr||'').match(/ERROR:\s+(.*)/);return {data:null,error:{message:m?m[1]:String(e)}}}}
-function page(file){let h=fs.readFileSync(D+file,'utf8')
+function page(file){let h=fs.readFileSync(D+file.split('?')[0],'utf8')
   .replace(/<script src="vendor\/supabase[^"]*"><\/script>/,`<script>${fs.readFileSync(__dirname+'/fake-sb.js','utf8')}</script>`)
   .replace(/<script src="vendor\/qrcode[^"]*"><\/script>/,'<script>window.qrcode=()=>({addData(){},make(){},createSvgTag(){return "<svg></svg>"}})</script>')
   .replace(/<script src="shared\.js[^"]*"><\/script>/,`<script>${fs.readFileSync(D+'shared.js','utf8')}</script>`);
@@ -80,6 +80,13 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)process.exitCode=1};
  A('#ref').click(); await wait(()=>[...doc.querySelectorAll('.appt')].some(a=>a.textContent.includes('Telefonas Tomas')));
  [...doc.querySelectorAll('.appt')].find(a=>a.textContent.includes('Telefonas Tomas')).click(); await wait(()=>A('#m-open')); A('#m-open').click(); await wait(()=>A('#m-save'));
  A('#m-start').value='615'; A('#m-save').click(); await wait(()=>/jau yra|already/.test(doc.getElementById('toast').textContent)); ok(true,'admin: move onto busy time refused');
+
+ // ---------- deep link from notification ----------
+ { const vid=pg(`select to_json(id) from bookings where client_name='Telefonas Tomas'`).data; const vday=pg(`select to_json((starts_at at time zone 'Europe/Vilnius')::date) from bookings where client_name='Telefonas Tomas'`).data;
+   const d3=page('admin.html?visit='+vid), w3=d3.window, doc3=w3.document, B=s=>doc3.querySelector(s);
+   await wait(()=>B('#lf')); B('#l-email').value='owner@barberclub.lt'; B('#l-pass').value='pw'; B('#lf').dispatchEvent(new w3.Event('submit'));
+   await wait(()=>B('.sched')&&B('#m-open')); ok(B(`[data-aday="${vday}"]`).getAttribute('aria-pressed')==='true'&&/Telefonas Tomas/.test(doc3.getElementById('admin').textContent),'admin: ?visit=<id> opens that visit');
+   ok(/nepalaiko|support/.test(doc3.getElementById('admin').textContent),'admin: push panel shows (unsupported in test browser)'); }
  // ---------- new: hours ----------
  const dow=new Date(day+'T12:00:00').getDay();
  A('[data-panel="hours"]').click(); await wait(()=>A('#h-save')); A('#h-brb').value='metin'; A('#h-brb').dispatchEvent(new w.Event('change')); await wait(()=>A('#h-save'));

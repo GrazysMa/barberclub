@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=13">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="fonts.css?v=14">
+<link rel="stylesheet" href="style.css?v=14">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=13"></script>
+<script src="shared.js?v=14"></script>
 <script>
 const I18N = {
   lt: {
@@ -65,6 +65,7 @@ const I18N = {
     src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
     hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
     hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
+    pushH: 'Pranešimai šiame telefone', pushOn: 'Įjungti pranešimus', pushOff: 'Išjungti', pushTest: 'Bandomasis pranešimas', pushFor: 'Pranešti apie vizitus pas', pushIsOn: n => `Įjungta: gausi pranešimą, kai kas nors užsiregistruos pas ${n}.`, pushIos: 'iPhone: pirmiausia įsidėk šį puslapį į pradinį ekraną (Dalintis → Add to Home Screen) ir atidaryk iš ikonėlės.', pushNo: 'Ši naršyklė pranešimų nepalaiko.', pushDenied: 'Pranešimai užblokuoti. Įjunk juos telefono nustatymuose šiai programėlei.', tPushOn: 'Pranešimai įjungti', tPushOff: 'Pranešimai išjungti', tPushTest: 'Išsiųsta – pranešimas turėtų atsirasti per kelias sekundes',
     move: 'Perkelti', mDay: 'Diena', mSave: 'Perkelti čia', tMoved: 'Perkelta', dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
   },
   en: {
@@ -87,6 +88,7 @@ const I18N = {
     src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
     hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
     hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
+    pushH: 'Notifications on this phone', pushOn: 'Turn on notifications', pushOff: 'Turn off', pushTest: 'Send a test', pushFor: 'Notify me about bookings with', pushIsOn: n => `On: you’ll get a notification when someone books with ${n}.`, pushIos: 'iPhone: first add this page to your Home Screen (Share → Add to Home Screen) and open it from the icon.', pushNo: 'This browser doesn’t support notifications.', pushDenied: 'Notifications are blocked. Allow them in your phone settings for this app.', tPushOn: 'Notifications on', tPushOff: 'Notifications off', tPushTest: 'Sent – it should show up in a few seconds',
     move: 'Move', mDay: 'Day', mSave: 'Move here', tMoved: 'Moved', dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   },
   tr: {
@@ -109,6 +111,7 @@ const I18N = {
     src: 'Kaynak', srcN: { web: 'Web sitesi', phone: 'Telefon', walkin: 'Kapıdan', treatwell: 'Treatwell' },
     hoursT: 'Çalışma saatleri', hSave: 'Saatleri kaydet', tHours: 'Saatler kaydedildi', dayOff: 'Kapalı', hTo: '–',
     hInfo: 'Müşteriler yalnızca çalışma saatlerindeki saatleri görür. Tatil veya tek bir gün için “Saati kapat”ı kullanın.',
+    pushH: 'Bu telefonda bildirimler', pushOn: 'Bildirimleri aç', pushOff: 'Kapat', pushTest: 'Test bildirimi gönder', pushFor: 'Şu berberin randevularını bildir:', pushIsOn: n => `Açık: biri ${n} için randevu alınca bildirim alacaksın.`, pushIos: 'iPhone: önce bu sayfayı ana ekrana ekle (Paylaş → Ana Ekrana Ekle) ve simgeden aç.', pushNo: 'Bu tarayıcı bildirimleri desteklemiyor.', pushDenied: 'Bildirimler engellendi. Telefon ayarlarından bu uygulama için izin ver.', tPushOn: 'Bildirimler açıldı', tPushOff: 'Bildirimler kapatıldı', tPushTest: 'Gönderildi – birkaç saniye içinde gelmeli',
     move: 'Taşı', mDay: 'Gün', mSave: 'Buraya taşı', tMoved: 'Taşındı', dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
   }
 };
@@ -148,9 +151,78 @@ async function loadRows() {
   if (error) throw error;
   ROWS = data || []; lastLoad = new Date();
 }
+/* ---------- Push notifications ---------- */
+const PUSH = { state: 'unknown', barber: null, reg: null, sub: null, busy: false };
+const FN_NOTIFY = `${SUPABASE_URL}/functions/v1/notify`;
+const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function b64u(s) { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
+async function pushInit() {
+  try {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { PUSH.state = isIos && !standalone() ? 'ios' : 'no'; return; }
+    PUSH.reg = await navigator.serviceWorker.register('sw.js');
+    if (Notification.permission === 'denied') { PUSH.state = 'denied'; return; }
+    PUSH.sub = await PUSH.reg.pushManager.getSubscription();
+    if (PUSH.sub) { const { data } = await sb.rpc('my_push_sub', { p_endpoint: PUSH.sub.endpoint }); PUSH.barber = data || null; }
+    PUSH.state = PUSH.sub && PUSH.barber ? 'on' : 'off';
+  } catch (e) { console.error(e); PUSH.state = 'no'; }
+}
+async function pushOn(barber) {
+  const t = T();
+  PUSH.busy = true; render();
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { PUSH.state = perm === 'denied' ? 'denied' : 'off'; return; }
+    const { publicKey } = await fetch(FN_NOTIFY).then(r => r.json());
+    PUSH.sub = (await PUSH.reg.pushManager.getSubscription()) || await PUSH.reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(publicKey) });
+    const k = PUSH.sub.toJSON().keys;
+    const { error } = await sb.rpc('save_push_sub', { p_barber: barber, p_endpoint: PUSH.sub.endpoint, p_p256dh: k.p256dh, p_auth: k.auth, p_lang: LANG });
+    if (error) throw error;
+    PUSH.barber = barber; PUSH.state = 'on'; toast(t.tPushOn);
+  } catch (e) { console.error(e); toast(t.tFail); }
+  finally { PUSH.busy = false; render(); }
+}
+async function pushOff(silent) {
+  try {
+    if (PUSH.sub) { await sb.rpc('delete_push_sub', { p_endpoint: PUSH.sub.endpoint }); await PUSH.sub.unsubscribe(); }
+    PUSH.sub = null; PUSH.barber = null; PUSH.state = 'off'; if (!silent) toast(T().tPushOff);
+  } catch (e) { console.error(e); if (!silent) toast(T().tFail); }
+  if (!silent) render();
+}
+async function pushTest() {
+  const t = T();
+  try { const r = await fetch(FN_NOTIFY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ test: true, endpoint: PUSH.sub.endpoint }) }).then(r => r.json()); toast(r.sent ? t.tPushTest : t.tFail); }
+  catch (e) { toast(t.tFail); }
+}
+function pushPanel() {
+  const t = T(), list = editableBarbers();
+  if (!list.length || PUSH.state === 'unknown') return '';
+  let inner;
+  if (PUSH.state === 'ios') inner = `<p class="info" style="margin:0">${t.pushIos}</p>`;
+  else if (PUSH.state === 'no') inner = `<p class="info" style="margin:0">${t.pushNo}</p>`;
+  else if (PUSH.state === 'denied') inner = `<p class="info" style="margin:0">${t.pushDenied}</p>`;
+  else if (PUSH.state === 'on') inner = `<p class="info" style="margin:0 0 10px">${esc(t.pushIsOn(brb(PUSH.barber).name))}</p><div class="row"><button class="btn" id="p-test">${t.pushTest}</button><button class="btn ghost" id="p-off">${t.pushOff}</button></div>`;
+  else {
+    const def = ME && ME.barber_id && list.some(b => b.id === ME.barber_id) ? ME.barber_id : list[0].id;
+    inner = `${list.length > 1 ? `<div class="field" style="max-width:240px"><label for="p-brb">${t.pushFor}</label><select id="p-brb">${list.map(b => `<option value="${esc(b.id)}" ${b.id === def ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>` : `<input type="hidden" id="p-brb" value="${esc(def)}">`}
+      <button class="btn" id="p-on" ${PUSH.busy ? 'disabled aria-busy="true"' : ''}>🔔 ${t.pushOn}</button>`;
+  }
+  return `<div class="panel"><h3>${t.pushH}</h3>${inner}</div>`;
+}
+function openVisitFromUrl(u) {
+  try {
+    const id = new URL(u, location.href).searchParams.get('visit'); if (!id) return false;
+    const r = ROWS.find(x => x.id === id); if (!r) return false;
+    ad.date = r.day; ad.sel = r.id; ad.moving = false; ad.panel = null; ad.scroll = null; return true;
+  } catch (e) { return false; }
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => {
+  if (ev.data && ev.data.type === 'open' && view === 'dash') loadRows().then(() => { openVisitFromUrl(ev.data.url); render(); }).catch(() => {});
+});
+
 async function enter() {
   view = 'loading'; render();
-  try { await loadRef(); await loadRows(); view = 'dash'; }
+  try { await loadRef(); await loadRows(); view = 'dash'; if (openVisitFromUrl(location.href)) history.replaceState(null, '', location.pathname); pushInit().then(render); }
   catch (e) {
     console.error(e);
     if (errCode(e) === 'not_staff') { await sb.auth.signOut(); session = null; login.err = 'notStaff'; view = 'login'; }
@@ -257,6 +329,7 @@ function renderDash() {
     </section>
     <div class="side">
       ${sel ? detail(sel) : `<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
+      ${pushPanel()}
       <div class="panel"><h3>${t.linkH}</h3>
         <div class="share"><input id="f-link" name="booking_link" autocomplete="off" spellcheck="false" readonly value="${esc(BOOK_URL)}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
         <p class="info">${t.linkInfo}</p><div class="qr"><div class="qr-box" role="img" aria-label="${t.qrAlt}">${qrSvg()}</div><p class="info">${t.qrInfo}</p></div></div>
@@ -371,6 +444,9 @@ function bindDash() {
   const qi = admin.querySelector('#q');
   if (qi) qi.oninput = () => { ad.q = qi.value; admin.querySelector('#qres').innerHTML = findHtml(); bindFind(); };
   bindFind();
+  const pon = admin.querySelector('#p-on'); if (pon) pon.onclick = () => pushOn(admin.querySelector('#p-brb').value);
+  const poff = admin.querySelector('#p-off'); if (poff) poff.onclick = () => pushOff(false);
+  const pt = admin.querySelector('#p-test'); if (pt) pt.onclick = pushTest;
   const mo = admin.querySelector('#m-open'); if (mo) mo.onclick = () => { ad.moving = true; render(); admin.querySelector('#m-start')?.focus(); };
   const mc = admin.querySelector('#m-close'); if (mc) mc.onclick = () => { ad.moving = false; render(); };
   const ms = admin.querySelector('#m-save'); if (ms) ms.onclick = () => {
@@ -420,7 +496,7 @@ function bindDash() {
 }
 
 document.getElementById('skip').onclick = e => { e.preventDefault(); admin.focus(); };
-document.getElementById('logout').onclick = async () => { await sb.auth.signOut(); session = null; ROWS = []; ad.sel = null; view = 'login'; render(); };
+document.getElementById('logout').onclick = async () => { if (PUSH.state === 'on') await pushOff(true); await sb.auth.signOut(); session = null; ROWS = []; ad.sel = null; view = 'login'; render(); };
 bindLangButtons(render);
 
 (async () => {
