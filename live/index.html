@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=18">
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="fonts.css?v=19">
+<link rel="stylesheet" href="style.css?v=19">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=18"></script>
+<script src="shared.js?v=19"></script>
 <script>
 const I18N = {
   lt: {
@@ -181,7 +181,7 @@ function teamHtml() {
   const b = brb(teamSel);
   const list = BARBERS.map(x => { const r = brbRating(x.id); return `<button type="button" class="team-item" data-team="${esc(x.id)}" aria-pressed="${x.id === teamSel}">
       ${avatar(x, 'lg')}<span class="team-name"><b>${esc(x.name)}</b><small>${t.role[x.role] || ''}</small></span>
-      ${r ? `<span class="team-rate"><span><b>${nf(r.avg)}</b> ${starsHtml(Math.round(r.avg))}</span><small>${t.revs(r.n)}</small></span>` : ''}</button>`; }).join('');
+      ${r ? `<span class="team-rate"><span><b>${nf(r.avg)}</b> ${starsFrac(r.avg)}</span><small>${t.revs(r.n)}</small></span>` : ''}</button>`; }).join('');
   const gal = gl(b).map((g, i) => `<button type="button" class="gal-img" data-gal="${i}"><img src="${esc(media(g))}" alt="${esc(t.workOf(b.name))} ${i + 1}" loading="lazy" width="200" height="266"></button>`).join('');
   return `<section class="panel team" id="team"><h2>${t.team}</h2><div class="team-grid"><div class="team-list">${list}</div>
     <div class="team-detail">${b.about ? `<h3>${t.about}</h3><p>${esc(b.about)}</p>` : ''}
@@ -198,6 +198,7 @@ function openPhoto(i) {
   d.onkeydown = e => { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); };
   show(i); d.showModal();
 }
+const starsFrac = v => `<span class="stars-f" style="--p:${Math.max(0, Math.min(100, v / 5 * 100)).toFixed(1)}%" aria-label="${nf(v)}/5">★★★★★</span>`;
 const starsHtml = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span class="star-off">${'★'.repeat(5 - n)}</span></span>`;
 function paintRating() {
   const t = T(), b = document.getElementById('rating-btn'), o = overall();
@@ -212,7 +213,7 @@ function reviewsHtml() {
   const per = BARBERS.map(b => { const r = brbRating(b.id); return r ? `<div class="sum-row"><span>${esc(b.name)}</span><span><span class="stars-s">★</span> ${nf(r.avg)} · ${t.revs(r.n)}</span></div>` : ''; }).join('');
   const items = rec.map(r => `<div class="rev"><div class="rev-top">${starsHtml(r.stars)}<b>${esc(r.name || '')}</b><span>${esc((brb(r.barber_id) || {}).name || '')} · ${shortDate(r.day)}</span></div><p>${esc(r.comment)}</p></div>`).join('');
   return `<section class="panel reviews" id="reviews"><div class="rev-head"><h2>${t.revTitle}</h2><button type="button" class="btn ghost" id="rev-close">${t.revClose}</button></div>
-    <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsHtml(Math.round(o.avg))}<div class="rev-sub">${t.revs(o.n)} · ${t.revInc}</div></div></div>
+    <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsFrac(o.avg)}<div class="rev-sub">${t.revs(o.n)} · ${t.revInc}</div></div></div>
     ${per ? `<div class="rev-per">${per}</div>` : ''}
     ${items || `<p class="info">${t.revNone}</p>`}</section>`;
 }
