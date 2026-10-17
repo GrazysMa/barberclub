@@ -8,12 +8,10 @@
 <meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
 <title>Barber Club – skydelis</title>
 <link rel="icon" href="logo.webp" type="image/webp">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="style.css?v=9">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<link rel="stylesheet" href="fonts.css?v=10">
+<link rel="stylesheet" href="style.css?v=10">
+<script src="vendor/supabase-2.118.0.js"></script>
+<script src="vendor/qrcode-1.4.4.js"></script>
 </head>
 <body>
 <a class="skip" id="skip" href="#admin">Pereiti prie turinio</a>
@@ -40,7 +38,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=9"></script>
+<script src="shared.js?v=10"></script>
 <script>
 const I18N = {
   lt: {

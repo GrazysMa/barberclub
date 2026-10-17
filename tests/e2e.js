@@ -2,8 +2,8 @@ const {JSDOM}=require('jsdom');const fs=require('fs');const {execFileSync}=requi
 const D=require('path').join(__dirname,'..','live')+'/', S=__dirname;
 function pg(sql){try{const out=execFileSync('psql',['-h','/var/tmp/pgtest','-p','5544','-U','postgres','-d','e2e','-tAq','-v','ON_ERROR_STOP=1','-c',sql],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();return {data:out?JSON.parse(out):null,error:null}}catch(e){const m=(e.stderr||'').match(/ERROR:\s+(.*)/);return {data:null,error:{message:m?m[1]:String(e)}}}}
 function page(file){let h=fs.readFileSync(D+file,'utf8')
-  .replace(/<script src="https:\/\/cdn\.jsdelivr[^>]*><\/script>/,`<script>${fs.readFileSync(__dirname+'/fake-sb.js','utf8')}</script>`)
-  .replace(/<script src="https:\/\/cdnjs[^>]*><\/script>/,'<script>window.qrcode=()=>({addData(){},make(){},createSvgTag(){return "<svg></svg>"}})</script>')
+  .replace(/<script src="vendor\/supabase[^"]*"><\/script>/,`<script>${fs.readFileSync(__dirname+'/fake-sb.js','utf8')}</script>`)
+  .replace(/<script src="vendor\/qrcode[^"]*"><\/script>/,'<script>window.qrcode=()=>({addData(){},make(){},createSvgTag(){return "<svg></svg>"}})</script>')
   .replace(/<script src="shared\.js[^"]*"><\/script>/,`<script>${fs.readFileSync(D+'shared.js','utf8')}</script>`);
   const dom=new JSDOM(h,{runScripts:'dangerously',url:'https://grazysma.github.io/barberclub/live/'+file,beforeParse(w){w.__pg=pg;w.__users={'owner@barberclub.lt':'11111111-1111-1111-1111-111111111111','stranger@x.lt':'22222222-2222-2222-2222-222222222222'};w.console.error=(...a)=>console.log("CE",String(a[0]&&(a[0].message||a[0])))}});return dom}
 const wait=(f,ms=4000)=>new Promise((res,rej)=>{const t0=Date.now();(function p(){let v;try{v=f()}catch(e){}if(v)return res(v);if(Date.now()-t0>ms)return rej(new Error('timeout'));setTimeout(p,30)})()});

@@ -4,6 +4,12 @@ const SUPABASE_KEY = 'sb_publishable_Or0aSP6ils6yLYKClpZAIw_ZyTSyBnt'; // public
 const SHOP_PHONE = '+370 603 18712';
 const SHOP_TEL = '+37060318712';
 const TZ = 'Europe/Vilnius';
+// Cloudflare Web Analytics (cookieless). Paste the site token from Cloudflare → Analytics & Logs → Web Analytics.
+const CF_ANALYTICS_TOKEN = '';
+if (CF_ANALYTICS_TOKEN && !/admin\.html/.test(location.pathname)) {
+  const s = document.createElement('script'); s.defer = true; s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', JSON.stringify({ token: CF_ANALYTICS_TOKEN })); document.head.appendChild(s);
+}
 const EMAILS_ON = false; // switch to true once the send-emails function and Resend are set up
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
