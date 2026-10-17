@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
 <title>Barber Club – skydelis</title>
 <link rel="icon" href="logo.webp" type="image/webp">
-<link rel="stylesheet" href="fonts.css?v=11">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="fonts.css?v=12">
+<link rel="stylesheet" href="style.css?v=12">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -38,7 +38,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=11"></script>
+<script src="shared.js?v=12"></script>
 <script>
 const I18N = {
   lt: {
@@ -61,7 +61,7 @@ const I18N = {
     src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
     hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
     hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
-    dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
+    move: 'Perkelti', mDay: 'Diena', mSave: 'Perkelti čia', tMoved: 'Perkelta', dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
   },
   en: {
     title: 'Barber Club – dashboard', loginH: 'Barber sign-in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
@@ -83,7 +83,7 @@ const I18N = {
     src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
     hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
     hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
-    dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    move: 'Move', mDay: 'Day', mSave: 'Move here', tMoved: 'Moved', dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   },
   tr: {
     title: 'Barber Club – panel', loginH: 'Berber girişi', email: 'E-posta', pass: 'Şifre', login: 'Giriş yap', logging: 'Giriş yapılıyor…',
@@ -105,7 +105,7 @@ const I18N = {
     src: 'Kaynak', srcN: { web: 'Web sitesi', phone: 'Telefon', walkin: 'Kapıdan', treatwell: 'Treatwell' },
     hoursT: 'Çalışma saatleri', hSave: 'Saatleri kaydet', tHours: 'Saatler kaydedildi', dayOff: 'Kapalı', hTo: '–',
     hInfo: 'Müşteriler yalnızca çalışma saatlerindeki saatleri görür. Tatil veya tek bir gün için “Saati kapat”ı kullanın.',
-    dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
+    move: 'Taşı', mDay: 'Gün', mSave: 'Buraya taşı', tMoved: 'Taşındı', dowL: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -115,7 +115,7 @@ const PX = 1.1;
 
 let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;
 let view = 'loading', session = null, lastLoad = null, busyAct = false;
-const ad = { date: null, sel: null, panel: null, hb: null };
+const ad = { date: null, sel: null, panel: null, hb: null, moving: false };
 const login = { email: '', err: '', sending: false };
 
 const svc = id => SERVICES.find(s => s.id === id);
@@ -314,9 +314,17 @@ function blockForm() {
     <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option><option value="660">${t.allDay}</option></select></div>
   </div><button class="btn" id="b-save">${t.bSave}</button></div>`;
 }
+function moveForm(r) {
+  const t = T();
+  return `<div class="move-box"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">
+    <div class="field"><label for="m-brb">${t.bBarber}</label><select id="m-brb">${BARBERS.map(b => `<option value="${esc(b.id)}" ${b.id === r.barber_id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="m-day">${t.mDay}</label><select id="m-day">${DAYS.map(d => `<option value="${d}" ${d === r.day ? 'selected' : ''}>${shortDate(d)} ${COMMON[LANG].dow[parseYmd(d).getDay()]}</option>`).join('')}</select></div>
+    <div class="field"><label for="m-start">${t.bFrom}</label><select id="m-start">${timeOpts(SET.open_min, SET.close_min - 15, SET.step_min, r.start_min)}</select></div>
+  </div><div class="row"><button class="btn" id="m-save">${t.mSave}</button><button class="btn ghost" id="m-close">${t.close}</button></div></div>`;
+}
 function detail(r) {
   const t = T();
-  if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`;
+  if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p>${ad.moving ? moveForm(r) : `<div class="row"><button class="btn ghost" id="m-open">${t.move}</button><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`}</div>`;
   const s = svc(r.service_id);
   const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
   const created = new Intl.DateTimeFormat(LOC[LANG], { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
@@ -332,7 +340,8 @@ function detail(r) {
     <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(r.code)}</span></div>
     <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
     ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
-    <div class="row" style="margin-top:14px">${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+    ${ad.moving ? `<div style="margin-top:14px">${moveForm(r)}</div>` : ''}
+    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button>${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
 }
 async function act(fn, okMsg) {
   if (busyAct) return; busyAct = true;
@@ -342,8 +351,8 @@ async function act(fn, okMsg) {
 }
 function bindDash() {
   const t = T();
-  admin.querySelectorAll('[data-aday]').forEach(b => b.onclick = () => { ad.date = b.dataset.aday; ad.sel = null; render(); });
-  admin.querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ad.sel = b.dataset.id; render(); });
+  admin.querySelectorAll('[data-aday]').forEach(b => b.onclick = () => { ad.date = b.dataset.aday; ad.sel = null; ad.moving = false; render(); });
+  admin.querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ad.sel = b.dataset.id; ad.moving = false; render(); });
   admin.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     const r = ROWS.find(x => x.id === ad.sel); if (!r) return;
     if (b.dataset.confirm && !b.dataset.armed) {
@@ -358,6 +367,13 @@ function bindDash() {
   const qi = admin.querySelector('#q');
   if (qi) qi.oninput = () => { ad.q = qi.value; admin.querySelector('#qres').innerHTML = findHtml(); bindFind(); };
   bindFind();
+  const mo = admin.querySelector('#m-open'); if (mo) mo.onclick = () => { ad.moving = true; render(); admin.querySelector('#m-start')?.focus(); };
+  const mc = admin.querySelector('#m-close'); if (mc) mc.onclick = () => { ad.moving = false; render(); };
+  const ms = admin.querySelector('#m-save'); if (ms) ms.onclick = () => {
+    const id = ad.sel, day = admin.querySelector('#m-day').value;
+    const args = { p_id: id, p_barber: admin.querySelector('#m-brb').value, p_day: day, p_start_min: +admin.querySelector('#m-start').value };
+    act(async () => { const r = await sb.rpc('move_booking', args); if (!r.error) { ad.moving = false; ad.date = day; ad.scroll = null; } return r; }, t.tMoved);
+  };
   admin.querySelectorAll('[data-panel]').forEach(b => b.onclick = () => { ad.panel = ad.panel === b.dataset.panel ? null : b.dataset.panel; render(); });
   const vs = admin.querySelector('#v-save'); if (vs) vs.onclick = () => {
     const name = admin.querySelector('#v-name').value.trim();
@@ -408,7 +424,7 @@ bindLangButtons(render);
   session = data.session;
   if (session) enter(); else { view = 'login'; render(); }
 })();
-setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.panel && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && !ad.panel && !ad.moving && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.panel) loadRows().then(render).catch(() => {}); });
 </script>
 </body>
