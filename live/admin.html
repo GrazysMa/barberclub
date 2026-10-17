@@ -121,7 +121,7 @@ async function loadRef() {
   SERVICES = s.data; BARBERS = b.data.filter(x => x.active); SET = c.data[0];
   const today = shopNow().date;
   FROM = addDays(today, -7); TO = addDays(today, 30);
-  DAYS = Array.from({ length: 21 }, (_, i) => addDays(today, i - 3));
+  DAYS = Array.from({ length: 32 }, (_, i) => addDays(today, i - 3));
   if (!ad.date) ad.date = today;
 }
 async function loadRows() {
@@ -205,7 +205,7 @@ function renderDash() {
     return `<div class="col" style="height:${H}px">${lines}${nowLine}${items}</div>`;
   }).join('');
   const heads = BARBERS.map(b => `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px">${dayList.filter(x => x.barber_id === b.id && x.kind === 'booking').length} ${t.vShort}</span></div>`).join('');
-  const days = DAYS.map(d => dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d))).join('');
+  const days = DAYS.map(d => { const n = ROWS.filter(r => r.day === d && r.kind === 'booking' && r.status === 'confirmed').length; return dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d) + (n ? ` · ${n} ${t.vShort}` : ''), n); }).join('');
   const sel = ROWS.find(r => r.id === ad.sel);
   const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LOC[LANG], { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
 

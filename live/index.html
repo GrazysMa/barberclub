@@ -124,7 +124,7 @@ async function loadAll() {
     ]);
     for (const r of [s, b, c]) if (r.error) throw r.error;
     SERVICES = s.data; BARBERS = b.data; SET = c.data[0];
-    const today = shopNow().date, n = Math.min(14, SET.days_ahead + 1);
+    const today = shopNow().date, n = Math.min(29, SET.days_ahead + 1);
     DAYS = Array.from({ length: n }, (_, i) => addDays(today, i));
     await loadBusy();
     if (BARBERS.length === 1) st.barber = BARBERS[0].id;

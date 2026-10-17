@@ -73,9 +73,9 @@ const niceDate = s => DF[LANG].format(parseYmd(s));
 const shortDate = s => DS[LANG].format(parseYmd(s));
 const eur = v => EUR[LANG].format(Number(v));
 
-function dayBtn(d, attr, pressed, disabled, label) {
+function dayBtn(d, attr, pressed, disabled, label, count) {
   const dt = parseYmd(d), c = COMMON[LANG];
-  return `<button class="day" ${attr}="${d}" aria-pressed="${pressed}" ${disabled ? 'disabled' : ''} aria-label="${esc(label)}"><small>${c.dow[dt.getDay()]}</small><b>${dt.getDate()}</b><small>${c.monS[dt.getMonth()]}</small></button>`;
+  return `<button class="day${count ? ' has' : ''}" ${attr}="${d}" aria-pressed="${pressed}" ${disabled ? 'disabled' : ''} aria-label="${esc(label)}">${count ? `<i class="cnt" aria-hidden="true">${count}</i>` : ''}<small>${c.dow[dt.getDay()]}</small><b>${dt.getDate()}</b><small>${c.monS[dt.getMonth()]}</small></button>`;
 }
 
 let _tt, _at;
