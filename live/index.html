@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=22">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="fonts.css?v=23">
+<link rel="stylesheet" href="style.css?v=23">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=22"></script>
+<script src="shared.js?v=23"></script>
 <script>
 const I18N = {
   lt: {
@@ -64,7 +64,7 @@ const I18N = {
     keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams',
     revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
-    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', gRev: 'Įvertink mus Google ★', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
+    revTitle: 'Klientų atsiliepimai', revInc: 'Bendras įvertinimas, įskaitant Treatwell', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', gRev: 'Įvertink mus Google ★', revBy: 'Paslaugą atliko', revVer: 'Patvirtintas vizitas', revFBrb: 'Barberis', revAll: 'Visi barberiai', revFSvc: 'Paslauga', revAllS: 'Visos paslaugos', revFStar: 'Įvertinimas', revClear: 'Išvalyti filtrus', revNoMatch: 'Pagal pasirinktus filtrus atsiliepimų nėra.', revNote: 'Komentarus palieka tik klientai, kurie tikrai lankėsi. Skaičiai apima ir Treatwell įvertinimus.', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
   },
   en: {
     steps: ['Service','Barber','Time','Details'],
@@ -83,7 +83,7 @@ const I18N = {
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers',
-    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close', gRev: 'Review us on Google ★', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', revInc: 'Overall rating, including Treatwell', revNone: 'No new comments yet.', revClose: 'Close', gRev: 'Review us on Google ★', revBy: 'Done by', revVer: 'Verified visit', revFBrb: 'Barber', revAll: 'All barbers', revFSvc: 'Service', revAllS: 'All services', revFStar: 'Rating', revClear: 'Clear filters', revNoMatch: 'No reviews match these filters.', revNote: 'Only clients who actually visited can leave comments. Counts include Treatwell ratings.', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
   },
   tr: {
     steps: ['Hizmet','Berber','Saat','Bilgiler'],
@@ -102,7 +102,7 @@ const I18N = {
     confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
     keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
     again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için',
-    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', gRev: 'Google’da değerlendir ★', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
+    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', revInc: 'Treatwell dahil genel puan', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', gRev: 'Google’da değerlendir ★', revBy: 'Hizmeti veren', revVer: 'Doğrulanmış ziyaret', revFBrb: 'Berber', revAll: 'Tüm berberler', revFSvc: 'Hizmet', revAllS: 'Tüm hizmetler', revFStar: 'Puan', revClear: 'Filtreleri temizle', revNoMatch: 'Bu filtrelere uyan yorum yok.', revNote: 'Yalnızca gerçekten gelen müşteriler yorum bırakabilir. Sayılara Treatwell puanları dahildir.', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -207,15 +207,36 @@ function paintRating() {
   b.innerHTML = `<span class="stars-s">★</span> <b>${nf(o.avg)}</b> · ${t.revs(o.n)}`;
   b.onclick = () => { revOpen = !revOpen; render(); if (revOpen) document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 }
+const revF = { brb: '', svc: '', stars: [] };
 function reviewsHtml() {
   if (!revOpen) return '';
   const t = T(), o = overall(), rec = PR ? PR.recent : [];
-  const per = BARBERS.map(b => { const r = brbRating(b.id); return r ? `<div class="sum-row"><span>${esc(b.name)}</span><span><span class="stars-s">★</span> ${nf(r.avg)} · ${t.revs(r.n)}</span></div>` : ''; }).join('');
-  const items = rec.map(r => `<div class="rev"><div class="rev-top">${starsHtml(r.stars)}<b>${esc(r.name || '')}</b><span>${esc((brb(r.barber_id) || {}).name || '')} · ${shortDate(r.day)}</span></div><p>${esc(r.comment)}</p></div>`).join('');
+  const tw = (SET && Array.isArray(SET.tw_dist)) ? SET.tw_dist : [0, 0, 0, 0, 0], own = PR && PR.dist ? PR.dist : [0, 0, 0, 0, 0];
+  const dist = [0, 1, 2, 3, 4].map(i => (tw[i] || 0) + (own[i] || 0)), dmax = Math.max(1, ...dist);
+  const list = rec.filter(r => (!revF.brb || r.barber_id === revF.brb) && (!revF.svc || r.service_id === revF.svc) && (!revF.stars.length || revF.stars.includes(r.stars)));
+  const brbOpts = BARBERS.map(b => { const r = brbRating(b.id); return `<option value="${esc(b.id)}" ${revF.brb === b.id ? 'selected' : ''}>${esc(b.name)}${r ? ` · ★ ${nf(r.avg)}` : ''}</option>`; }).join('');
+  const svcIds = [...new Set(rec.map(r => r.service_id))];
+  const svcOpts = SERVICES.filter(x => svcIds.includes(x.id)).map(x => `<option value="${esc(x.id)}" ${revF.svc === x.id ? 'selected' : ''}>${esc(sName(x))}</option>`).join('');
+  const starRows = [5, 4, 3, 2, 1].map((n, i) => `<label class="rf-star"><input type="checkbox" data-rstar="${n}" ${revF.stars.includes(n) ? 'checked' : ''}>${starsHtml(n)}<span class="rf-bar"><span style="width:${(dist[i] / dmax * 100).toFixed(1)}%"></span></span><span class="rf-n">${dist[i]}</span></label>`).join('');
+  const items = list.slice(0, 60).map(r => { const sv = svc(r.service_id);
+    return `<div class="rev">${starsHtml(r.stars)}<p>${esc(r.comment)}</p><div class="rev-meta">${t.revBy} ${esc((brb(r.barber_id) || {}).name || '')}${sv ? ` <span class="rev-tag">${esc(sName(sv))}</span>` : ''}</div><div class="rev-who"><b>${esc(r.name || '')}</b> · ${shortDate(r.day)}<span class="rev-ok">✓ ${t.revVer}</span></div></div>`; }).join('');
+  const any = revF.brb || revF.svc || revF.stars.length;
   return `<section class="panel reviews" id="reviews"><div class="rev-head"><h2>${t.revTitle}</h2><button type="button" class="btn ghost" id="rev-close">${t.revClose}</button></div>
     <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsFrac(o.avg)}<div class="rev-sub">${t.revs(o.n)} · ${t.revInc}</div></div></div>
-    ${per ? `<div class="rev-per">${per}</div>` : ''}
-    ${items || `<p class="info">${t.revNone}</p>`}</section>`;
+    <div class="rev-grid"><aside class="rev-filters">
+      <label class="rf-l" for="rf-b">${t.revFBrb}</label><select id="rf-b"><option value="">${t.revAll}</option>${brbOpts}</select>
+      ${svcOpts ? `<label class="rf-l" for="rf-s">${t.revFSvc}</label><select id="rf-s"><option value="">${t.revAllS}</option>${svcOpts}</select>` : ''}
+      <div class="rf-l">${t.revFStar}</div>${starRows}
+      ${any ? `<button type="button" class="btn ghost" id="rf-clear" style="margin-top:10px;width:100%">${t.revClear}</button>` : ''}
+      <p class="rev-sub" style="margin-top:12px">${t.revNote}</p></aside>
+    <div class="rev-list">${items || `<p class="info">${rec.length ? t.revNoMatch : t.revNone}</p>`}</div></div></section>`;
+}
+function bindReviews() {
+  const b = document.getElementById('rf-b'); if (!b) return;
+  b.onchange = () => { revF.brb = b.value; render(); };
+  const sv = document.getElementById('rf-s'); if (sv) sv.onchange = () => { revF.svc = sv.value; render(); };
+  document.querySelectorAll('[data-rstar]').forEach(c => c.onchange = () => { const n = +c.dataset.rstar; revF.stars = c.checked ? [...revF.stars, n] : revF.stars.filter(x => x !== n); render(); });
+  const cl = document.getElementById('rf-clear'); if (cl) cl.onclick = () => { revF.brb = ''; revF.svc = ''; revF.stars = []; render(); };
 }
 const firstStep = () => BARBERS.length === 1 ? [0, 2, 3] : [0, 1, 2, 3];
 
@@ -270,6 +291,7 @@ function render() {
   client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>${teamHtml()}`;
   bindClient();
   const rc = document.getElementById('rev-close'); if (rc) rc.onclick = () => { revOpen = false; render(); };
+  bindReviews();
   client.querySelectorAll('[data-team]').forEach(x => x.onclick = () => { teamSel = x.dataset.team; render(); });
   client.querySelectorAll('[data-gal]').forEach(x => x.onclick = () => openPhoto(+x.dataset.gal));
   const tb = document.getElementById('team-book'); if (tb) tb.onclick = () => {
