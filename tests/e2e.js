@@ -66,6 +66,20 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)process.exitCode=1};
  // overlap -> busy toast
  A('[data-panel="visit"]').click(); await wait(()=>A('#v-save')); A('#v-brb').value='mehmet'; A('#v-svc').value='cut'; A('#v-start').value='1200'; A('#v-name').value='Dvigubas'; A('#v-save').click();
  await wait(()=>/jau yra|already/.test(doc.getElementById('toast').textContent)); ok(true,'admin: overlapping visit refused');
+
+ // ---------- move a visit ----------
+ [...doc.querySelectorAll('.appt')].find(a=>a.textContent.includes('Telefonas Tomas')).click(); await wait(()=>A('#m-open'));
+ A('#m-open').click(); await wait(()=>A('#m-save'));
+ const day2=[...A('#m-day').options].map(o=>o.value).find(v=>v>day); A('#m-day').value=day2; A('#m-brb').value='cagri'; A('#m-start').value='840'; A('#m-save').click();
+ await wait(()=>/Perkelta|Moved/.test(doc.getElementById('toast').textContent));
+ const mv=pg(`select json_agg(json_build_array(barber_id, (starts_at at time zone 'Europe/Vilnius')::date, extract(epoch from ends_at-starts_at)/60)) from bookings where client_name='Telefonas Tomas'`).data[0];
+ ok(mv[0]==='cagri'&&mv[1]===day2&&mv[2]===35,'admin: visit moved to cagri '+day2+' 14:00, length kept 35 min');
+ ok(A(`[data-aday="${day2}"]`).getAttribute('aria-pressed')==='true'&&[...doc.querySelectorAll('.appt')].some(a=>a.textContent.includes('14:00 Telefonas Tomas')),'admin: calendar jumps to new day and shows it');
+ // move onto a taken slot -> refused
+ pg(`set role anon; select * from create_booking('cut','cagri','${day2}',600,'Uzimtas','+37061112222','u@x.lt')`); await new Promise(r=>setTimeout(r,50));
+ A('#ref').click(); await wait(()=>[...doc.querySelectorAll('.appt')].some(a=>a.textContent.includes('Telefonas Tomas')));
+ [...doc.querySelectorAll('.appt')].find(a=>a.textContent.includes('Telefonas Tomas')).click(); await wait(()=>A('#m-open')); A('#m-open').click(); await wait(()=>A('#m-save'));
+ A('#m-start').value='615'; A('#m-save').click(); await wait(()=>/jau yra|already/.test(doc.getElementById('toast').textContent)); ok(true,'admin: move onto busy time refused');
  // ---------- new: hours ----------
  const dow=new Date(day+'T12:00:00').getDay();
  A('[data-panel="hours"]').click(); await wait(()=>A('#h-save')); A('#h-brb').value='metin'; A('#h-brb').dispatchEvent(new w.Event('change')); await wait(()=>A('#h-save'));
