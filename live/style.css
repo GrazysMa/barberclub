@@ -37,8 +37,8 @@ header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-co
 .brand h1{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,6vw,52px);line-height:.95;letter-spacing:.01em;text-transform:uppercase;margin:0}
 .brand-row{display:flex;align-items:center;gap:14px}
 .logo{width:clamp(56px,10vw,76px);height:auto;flex:none;border-radius:50%}
-.contact a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
-.contact a:hover{border-color:var(--ink)}
+.contact a,#map-l,.info-grid a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.contact a:hover,#map-l:hover,.info-grid a:hover{border-color:var(--ink)}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
 .proto{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:99px;margin-bottom:8px}
 .modes{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px}
