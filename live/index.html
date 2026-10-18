@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=24">
-<link rel="stylesheet" href="style.css?v=24">
+<link rel="stylesheet" href="fonts.css?v=25">
+<link rel="stylesheet" href="style.css?v=25">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
   <header>
     <div class="brand">
       <div class="brand-row"><img class="logo" src="logo.webp" width="76" height="76" alt="Barber Club"><h1>Barber Club Vilnius</h1></div>
-      <p id="t-addr"></p>
+      <p><span id="t-addr"></span> · <a id="map-l" href="https://www.google.com/maps/search/?api=1&amp;query=Barber+Club+Vilnius%2C+K.+Ulvydo+g.+11&amp;query_place_id=ChIJPR5CVL-R3UYRdWcgGH-9PzA" target="_blank" rel="noopener">Rasti žemėlapyje</a></p>
       <p class="rating-line"><button type="button" class="rating-btn" id="rating-btn" hidden></button></p>
       <p class="contact"><a href="tel:+37060318712">+370 603 18712</a> · <a href="https://www.instagram.com/barber_club_vilnius/" target="_blank" rel="noopener">Instagram</a> · <a id="g-rev" href="https://search.google.com/local/writereview?placeid=ChIJPR5CVL-R3UYRdWcgGH-9PzA" target="_blank" rel="noopener">Google ★</a> · <a id="tw-rev" href="https://www.treatwell.lt/en/place/barber-club-vilnius/reviews/" target="_blank" rel="noopener">Treatwell</a></p>
     </div>
@@ -43,7 +43,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=24"></script>
+<script src="shared.js?v=25"></script>
 <script>
 const I18N = {
   lt: {
@@ -64,7 +64,7 @@ const I18N = {
     keep: `Išsisaugok kodą. Jei negalėsi atvykti, paskambink <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'Nauja rezervacija', foot: '© Barber Club Vilnius', staff: 'Barberiams',
     revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
-    revTitle: 'Klientų atsiliepimai', twRev: 'Atsiliepimai Treatwell', twUrl: 'https://www.treatwell.lt/salonas/barber-club-vilnius/', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', gRev: 'Įvertink mus Google ★', revBy: 'Paslaugą atliko', revVer: 'Patvirtintas vizitas', revFBrb: 'Barberis', revAll: 'Visi barberiai', revFSvc: 'Paslauga', revAllS: 'Visos paslaugos', revFStar: 'Įvertinimas', revClear: 'Išvalyti filtrus', revNoMatch: 'Pagal pasirinktus filtrus atsiliepimų nėra.', revNote: 'Įvertinimus palieka tik klientai, kurie užsiregistravo per šią svetainę ir apsilankė.', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
+    revTitle: 'Klientų atsiliepimai', twRev: 'Atsiliepimai Treatwell', twUrl: 'https://www.treatwell.lt/salonas/barber-club-vilnius/', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', gRev: 'Palikite atsiliepimą Google', mapL: 'Rasti žemėlapyje', infoT: 'Naudinga žinoti', infoPlace: 'Vieta', infoPlaceD: 'K. Ulvydo g. 11-432, Vilnius, šalia PC Ozas.', infoHours: 'Darbo laikas', infoHoursD: 'Kasdien 10:00–21:00. Laisvi laikai rodomi registracijoje.', infoCancel: 'Atšaukimas ir vėlavimas', infoCancelD: `Negalite atvykti ar vėluojate? Kuo anksčiau paskambinkite <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>, kad laiką galėtume pasiūlyti kitam klientui.`, infoPay: 'Mokėjimas', infoPayD: 'Mokama salone po vizito.', revBy: 'Paslaugą atliko', revVer: 'Patvirtintas vizitas', revFBrb: 'Barberis', revAll: 'Visi barberiai', revFSvc: 'Paslauga', revAllS: 'Visos paslaugos', revFStar: 'Įvertinimas', revClear: 'Išvalyti filtrus', revNoMatch: 'Pagal pasirinktus filtrus atsiliepimų nėra.', revNote: 'Įvertinimus palieka tik klientai, kurie užsiregistravo per šią svetainę ir apsilankė.', team: 'Susipažink su komanda', about: 'Apie', gallery: 'Darbų galerija', bookWith: n => `Registruotis pas ${n}`, workOf: n => `${n} darbas`
   },
   en: {
     steps: ['Service','Barber','Time','Details'],
@@ -83,7 +83,7 @@ const I18N = {
     confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
     keep: `Save this code. If you can’t make it, call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>.`,
     again: 'New booking', foot: '© Barber Club Vilnius', staff: 'For barbers',
-    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', twRev: 'Reviews on Treatwell', twUrl: 'https://www.treatwell.lt/en/place/barber-club-vilnius/', revNone: 'No new comments yet.', revClose: 'Close', gRev: 'Review us on Google ★', revBy: 'Done by', revVer: 'Verified visit', revFBrb: 'Barber', revAll: 'All barbers', revFSvc: 'Service', revAllS: 'All services', revFStar: 'Rating', revClear: 'Clear filters', revNoMatch: 'No reviews match these filters.', revNote: 'Only clients who booked on this website and visited can leave a rating.', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', twRev: 'Reviews on Treatwell', twUrl: 'https://www.treatwell.lt/en/place/barber-club-vilnius/', revNone: 'No new comments yet.', revClose: 'Close', gRev: 'Leave a review on Google', mapL: 'Find on map', infoT: 'Good to know', infoPlace: 'Location', infoPlaceD: 'K. Ulvydo g. 11-432, Vilnius, next to Ozas mall.', infoHours: 'Opening hours', infoHoursD: 'Daily 10:00–21:00. Free times are shown when you book.', infoCancel: 'Cancelling or running late', infoCancelD: `Can’t make it or running late? Please call <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> as early as possible so we can offer the time to another client.`, infoPay: 'Payment', infoPayD: 'You pay at the shop after your visit.', revBy: 'Done by', revVer: 'Verified visit', revFBrb: 'Barber', revAll: 'All barbers', revFSvc: 'Service', revAllS: 'All services', revFStar: 'Rating', revClear: 'Clear filters', revNoMatch: 'No reviews match these filters.', revNote: 'Only clients who booked on this website and visited can leave a rating.', team: 'Meet the team', about: 'About', gallery: 'Work gallery', bookWith: n => `Book with ${n}`, workOf: n => `Work by ${n}`
   },
   tr: {
     steps: ['Hizmet','Berber','Saat','Bilgiler'],
@@ -102,7 +102,7 @@ const I18N = {
     confirmed: 'Onaylandı', seeYou: n => `Görüşmek üzere, ${n}!`, with: '·', code: 'Randevu kodu',
     keep: `Bu kodu saklayın. Gelemeyecekseniz <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`,
     again: 'Yeni randevu', foot: '© Barber Club Vilnius', staff: 'Berberler için',
-    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', twRev: 'Treatwell’deki yorumlar', twUrl: 'https://www.treatwell.lt/en/place/barber-club-vilnius/', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', gRev: 'Google’da değerlendir ★', revBy: 'Hizmeti veren', revVer: 'Doğrulanmış ziyaret', revFBrb: 'Berber', revAll: 'Tüm berberler', revFSvc: 'Hizmet', revAllS: 'Tüm hizmetler', revFStar: 'Puan', revClear: 'Filtreleri temizle', revNoMatch: 'Bu filtrelere uyan yorum yok.', revNote: 'Yalnızca bu siteden randevu alıp gelen müşteriler puan verebilir.', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
+    revs: n => `${n} değerlendirme`, revTitle: 'Müşteri yorumları', twRev: 'Treatwell’deki yorumlar', twUrl: 'https://www.treatwell.lt/en/place/barber-club-vilnius/', revNone: 'Henüz yeni yorum yok.', revClose: 'Kapat', gRev: 'Google’da yorum bırakın', mapL: 'Haritada bul', infoT: 'Bilmeniz gerekenler', infoPlace: 'Konum', infoPlaceD: 'K. Ulvydo g. 11-432, Vilnius, Ozas AVM’nin yanında.', infoHours: 'Çalışma saatleri', infoHoursD: 'Her gün 10:00–21:00. Boş saatler randevu sırasında gösterilir.', infoCancel: 'İptal ve gecikme', infoCancelD: `Gelemiyor veya gecikiyor musunuz? Saati başka bir müşteriye verebilmemiz için lütfen en kısa sürede <a class="tel" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a> numarasını arayın.`, infoPay: 'Ödeme', infoPayD: 'Ödeme randevudan sonra salonda yapılır.', revBy: 'Hizmeti veren', revVer: 'Doğrulanmış ziyaret', revFBrb: 'Berber', revAll: 'Tüm berberler', revFSvc: 'Hizmet', revAllS: 'Tüm hizmetler', revFStar: 'Puan', revClear: 'Filtreleri temizle', revNoMatch: 'Bu filtrelere uyan yorum yok.', revNote: 'Yalnızca bu siteden randevu alıp gelen müşteriler puan verebilir.', team: 'Ekibimiz', about: 'Hakkında', gallery: 'Çalışmalar', bookWith: n => `${n} ile randevu al`, workOf: n => `${n} çalışması`
   }
 };
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
@@ -183,6 +183,14 @@ function teamHtml() {
       <button type="button" class="btn red" id="team-book">${t.bookWith(b.name)}</button>
       ${gal ? `<h3>${t.gallery}</h3><div class="gal">${gal}</div>` : ''}</div></div></section>`;
 }
+function infoHtml() {
+  const t = T();
+  return `<section class="panel info-p"><h2>${t.infoT}</h2><div class="info-grid">
+    <div><h3>${t.infoPlace}</h3><p>${t.infoPlaceD}<br><a href="https://www.google.com/maps/search/?api=1&amp;query=Barber+Club+Vilnius%2C+K.+Ulvydo+g.+11&amp;query_place_id=ChIJPR5CVL-R3UYRdWcgGH-9PzA" target="_blank" rel="noopener">${t.mapL} ↗</a></p></div>
+    <div><h3>${t.infoHours}</h3><p>${t.infoHoursD}</p></div>
+    <div><h3>${t.infoCancel}</h3><p>${t.infoCancelD}</p></div>
+    <div><h3>${t.infoPay}</h3><p>${t.infoPayD}</p></div></div></section>`;
+}
 function openPhoto(i) {
   const b = brb(teamSel), g = gl(b); if (!g.length) return;
   let d = document.getElementById('lb'); if (!d) { d = document.createElement('dialog'); d.id = 'lb'; d.className = 'lb'; document.body.appendChild(d); }
@@ -242,6 +250,7 @@ function render() {
   document.getElementById('t-foot').textContent = t.foot;
   paintRating();
   document.getElementById('g-rev').textContent = t.gRev;
+  document.getElementById('map-l').textContent = t.mapL;
   const tr = document.getElementById('tw-rev'); tr.textContent = t.twRev; tr.href = t.twUrl;
   if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
   if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
@@ -284,7 +293,7 @@ function render() {
   const showBack = st.step > 0;
   const nav = `<div class="nav">${showBack ? `<button class="btn ghost" id="back">${t.back}</button>` : '<span></span>'}
     <button class="btn ${st.step === 3 ? 'red' : ''}" id="next" ${canNext ? '' : 'disabled'} ${st.sending ? 'aria-busy="true"' : ''}>${st.step === 3 ? (st.sending ? t.sending : t.confirm) : t.next}</button></div>`;
-  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>${teamHtml()}`;
+  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>${teamHtml()}${infoHtml()}`;
   bindClient();
   const rc = document.getElementById('rev-close'); if (rc) rc.onclick = () => { revOpen = false; render(); };
   bindReviews();
