@@ -9,7 +9,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization, apikey, x-client-info', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' };
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
-const SITE = 'https://grazysma.github.io/barberclub/live/';
+const SITE = 'https://barberclub.lt/live/';
 
 const T: Record<string, { title: string; test: string; testBody: string }> = {
   lt: { title: 'Naujas vizitas', test: 'Pranešimai veikia ✅', testBody: 'Taip atrodys pranešimas apie naują vizitą.' },
