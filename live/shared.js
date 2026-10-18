@@ -22,7 +22,7 @@ const LOC = { lt: 'lt-LT', en: 'en-GB', tr: 'tr-TR' };
 
 const COMMON = {
   lt: {
-    addr: 'K. Ulvydo g. 11-432, Vilnius (prie PC Ozas) · kasdien 10:00–21:00',
+    addr: 'K. Ulvydo g. 11-432, Vilnius, 08355 (prie PC Ozas) · kasdien 10:00–21:00',
     dow: ['Sk','Pr','An','Tr','Kt','Pn','Št'],
     monS: ['sau','vas','kov','bal','geg','bir','lie','rgp','rgs','spa','lap','gru'],
     dur: m => m >= 60 ? `${Math.floor(m/60)} val.${m%60 ? ' ' + (m%60) + ' min' : ''}` : `${m} min`,
@@ -32,7 +32,7 @@ const COMMON = {
     retry: 'Bandyti dar kartą'
   },
   en: {
-    addr: 'K. Ulvydo g. 11-432, Vilnius (near Ozas mall) · daily 10:00–21:00',
+    addr: 'K. Ulvydo g. 11-432, Vilnius, 08355 (near Ozas mall) · daily 10:00–21:00',
     dow: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
     monS: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
     dur: m => m >= 60 ? `${Math.floor(m/60)} h${m%60 ? ' ' + (m%60) + ' min' : ''}` : `${m} min`,
@@ -42,7 +42,7 @@ const COMMON = {
     retry: 'Try again'
   },
   tr: {
-    addr: 'K. Ulvydo g. 11-432, Vilnius (Ozas AVM yakını) · her gün 10:00–21:00',
+    addr: 'K. Ulvydo g. 11-432, Vilnius, 08355 (Ozas AVM yakını) · her gün 10:00–21:00',
     dow: ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],
     monS: ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'],
     dur: m => m >= 60 ? `${Math.floor(m/60)} sa${m%60 ? ' ' + (m%60) + ' dk' : ''}` : `${m} dk`,

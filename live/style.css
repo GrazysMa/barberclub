@@ -269,3 +269,4 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 @media (max-width:560px){.info-grid{grid-template-columns:minmax(0,1fr)}}
 .info-grid h3{margin:0 0 6px}
 .info-grid p{margin:0;overflow-wrap:anywhere}
+.ig-ico{vertical-align:-2px;margin-right:4px}
