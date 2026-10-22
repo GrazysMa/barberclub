@@ -18,5 +18,5 @@ Deno.serve(async (req) => {
     `DTSTART:${fmt(r.starts_at)}`, `DTEND:${fmt(r.ends_at)}`, 'SUMMARY:Užimta (barberclub.lt)', 'TRANSP:OPAQUE', 'END:VEVENT'].join('\r\n'));
   const body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Barber Club Vilnius//Booking//LT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
     'X-WR-CALNAME:Barber Club – užimta', ...ev, 'END:VCALENDAR', ''].join('\r\n');
-  return new Response(body, { headers: { 'Content-Type': 'text/calendar; charset=utf-8', 'Cache-Control': 'no-store' } });
+  return new Response(body, { headers: { 'Content-Type': 'text/calendar; charset=utf-8', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' } });
 });
