@@ -18,6 +18,9 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 let LANG = 'lt';
 try { const s = localStorage.getItem('bc-lang'); if (['lt','en','tr'].includes(s)) LANG = s; } catch (e) {}
+// Turkish is only for the staff dashboard (Mehmet); client pages offer LT/EN only
+const IS_ADMIN = /\/admin(\.html)?$/.test(location.pathname);
+if (!IS_ADMIN && LANG === 'tr') LANG = 'lt';
 const LOC = { lt: 'lt-LT', en: 'en-GB', tr: 'tr-TR' };
 
 const COMMON = {
@@ -111,4 +114,5 @@ function paintCommon() {
   document.getElementById('lang-lt').setAttribute('aria-pressed', LANG === 'lt');
   document.getElementById('lang-en').setAttribute('aria-pressed', LANG === 'en');
   document.getElementById('lang-tr').setAttribute('aria-pressed', LANG === 'tr');
+  document.getElementById('lang-tr').hidden = !IS_ADMIN;
 }
