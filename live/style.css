@@ -37,8 +37,8 @@ header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-co
 .brand h1{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,6vw,52px);line-height:.95;letter-spacing:.01em;text-transform:uppercase;margin:0}
 .brand-row{display:flex;align-items:center;gap:14px}
 .logo{width:clamp(56px,10vw,76px);height:auto;flex:none;border-radius:50%}
-.contact a,#map-l,.info-grid a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
-.contact a:hover,#map-l:hover,.info-grid a:hover{border-color:var(--ink)}
+.contact a,.info-grid a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.contact a:hover,.info-grid a:hover{border-color:var(--ink)}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
 .proto{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:99px;margin-bottom:8px}
 .modes{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px}
@@ -303,3 +303,12 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .team-quick{padding:8px 12px;font-size:13px;flex:none;margin-right:6px}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:50;border:0;border-radius:999px;padding:14px 20px;font:inherit;font-weight:700;background:var(--red);color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.3);cursor:pointer}
 .fab[hidden]{display:none}
+
+.addr{margin:6px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips-rev{margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px;line-height:1.2;font-weight:600}
+.chip:hover{border-color:var(--ink)}
+.chips-rev .chip{font-weight:500;font-size:13px;padding:6px 11px;color:var(--muted)}
+.chips-rev .chip:hover{color:var(--ink)}
+.chip-ico{flex:none}
