@@ -317,3 +317,6 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 
 .foot-co{line-height:1.6;margin-bottom:12px}
 .foot-co a{color:var(--muted)}
+.foot-row{justify-content:center;text-align:center}
+#t-foot{order:2;flex-basis:100%;text-align:center;border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+.foot-co{text-align:center}
