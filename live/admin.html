@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=28">
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="fonts.css?v=29">
+<link rel="stylesheet" href="style.css?v=29">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=28"></script>
+<script src="shared.js?v=29"></script>
 <script>
 const I18N = {
   lt: {
@@ -124,7 +124,10 @@ const I18N = {
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
 const admin = document.getElementById('admin');
 const BOOK_URL = new URL('./', location.href).href;
-const PX = 1.1;
+const ZL = [[0.45, 78], [0.6, 95], [0.8, 115], [1.1, 150], [1.5, 180]];
+let ZI = 3; try { const z = +localStorage.getItem('bc_zoom'); if (z >= 0 && z < ZL.length) ZI = z; } catch (e) {}
+let PX = ZL[ZI][0];
+function setZoom(d) { ZI = Math.max(0, Math.min(ZL.length - 1, ZI + d)); PX = ZL[ZI][0]; try { localStorage.setItem('bc_zoom', ZI); } catch (e) {} renderDash(); }
 
 let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;
 let view = 'loading', session = null, lastLoad = null, busyAct = false;
@@ -374,7 +377,8 @@ function renderDash() {
         <button class="btn ghost" data-panel="hours" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'hours'}">${ad.panel === 'hours' ? t.close : t.hoursT}</button></div></div>
       ${ad.panel === 'block' ? blockForm() : ad.panel === 'visit' ? visitForm() : ad.panel === 'hours' ? hoursForm() : ''}
       ${dayList.length ? '' : `<p class="info" style="margin-top:0">${t.none}</p>`}
-      <div class="sched-wrap"><div class="sched" style="grid-template-columns:52px repeat(${BARBERS.length},minmax(150px,1fr))">
+      <div class="zoom-bar"><button class="btn ghost" id="z-out" aria-label="Zoom out" ${ZI === 0 ? 'disabled' : ''}>−</button><button class="btn ghost" id="z-in" aria-label="Zoom in" ${ZI === ZL.length - 1 ? 'disabled' : ''}>+</button></div>
+      <div class="sched-wrap"><div class="sched${ZI < 3 ? ' compact' : ''}" style="min-width:0;grid-template-columns:44px repeat(${BARBERS.length},minmax(${ZL[ZI][1]}px,1fr))">
         <div class="head" style="padding:10px 0"></div>${heads}
         <div class="hours" style="height:${H}px">${hours.map(x => `<div style="top:${(x - OPEN) * PX}px">${hm(x)}</div>`).join('')}</div>${cols}
       </div></div>
@@ -670,6 +674,8 @@ function bindDash() {
       const h = await sb.from('barber_hours').select('*'); if (!h.error) HOURS = h.data || []; return h;
     }, t.tHours);
   };
+  admin.querySelector('#z-out').onclick = () => setZoom(-1);
+  admin.querySelector('#z-in').onclick = () => setZoom(1);
   admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
   const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
     const barber = admin.querySelector('#b-brb').value, start = +admin.querySelector('#b-start').value;

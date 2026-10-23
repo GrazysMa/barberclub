@@ -277,3 +277,12 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .policy .upd{color:var(--muted);font-size:13px;margin-top:-6px}
 .policy a{color:var(--ink)}
 .priv-note{font-size:12px;color:var(--muted);margin:-4px 0 12px}.priv-note a{color:var(--muted)}
+
+.zoom-bar{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}
+.zoom-bar .btn{width:38px;height:34px;padding:0;font-size:20px;line-height:1}
+.zoom-bar .btn:disabled{opacity:.4}
+.sched.compact .head{padding:6px 4px;font-size:12px;gap:4px}
+.sched.compact .head .avatar{display:none}
+.sched.compact .appt{font-size:10px;padding:1px 3px;line-height:1.15;overflow:hidden}
+.sched.compact .appt b{font-size:10px}
+.sched.compact .hours div{font-size:10px}
