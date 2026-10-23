@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://barberclub.lt/live/">
 <meta property="og:image" content="https://cdn1.treatwell.net/images/view/v2.i15641173.w1280.h800.x1C61D402/">
 <meta property="og:locale" content="lt_LT">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BarberShop", "name": "Barber Club Vilnius", "url": "https://barberclub.lt/live/", "image": "https://cdn1.treatwell.net/images/view/v2.i15641173.w1280.h800.x1C61D402/", "telephone": "+37060318712", "address": {"@type": "PostalAddress", "streetAddress": "K. Ulvydo g. 11-432", "addressLocality": "Vilnius", "postalCode": "08355", "addressCountry": "LT"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "10:00", "closes": "20:00"}], "sameAs": ["https://www.instagram.com/barber_club_vilnius/"], "priceRange": "€€"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BarberShop", "name": "Barber Club Vilnius", "url": "https://barberclub.lt/live/", "image": "https://cdn1.treatwell.net/images/view/v2.i15641173.w1280.h800.x1C61D402/", "telephone": "+37060318712", "email": "info@barberclub.lt", "address": {"@type": "PostalAddress", "streetAddress": "K. Ulvydo g. 11-432", "addressLocality": "Vilnius", "postalCode": "08355", "addressCountry": "LT"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "10:00", "closes": "20:00"}], "sameAs": ["https://www.instagram.com/barber_club_vilnius/"], "priceRange": "€€"}</script>
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
 <link rel="icon" href="logo.webp" type="image/webp">
@@ -23,8 +23,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=36">
-<link rel="stylesheet" href="style.css?v=36">
+<link rel="stylesheet" href="fonts.css?v=37">
+<link rel="stylesheet" href="style.css?v=37">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -63,12 +63,20 @@
   <main id="client" tabindex="-1"></main>
   <button type="button" class="fab" id="fab" hidden></button>
 
-  <footer><div class="foot-row"><span id="t-foot"></span><a href="privacy.html" id="t-priv">Privatumo politika</a></div></footer>
+  <footer>
+    <div class="foot-co">
+      <b>UAB Arslan</b> · <span id="f-code"></span> 308102266<br>
+      J. Kamarausko g. 11, LT-14193 Vilnius<br>
+      <a href="mailto:info@barberclub.lt">info@barberclub.lt</a> · <a href="tel:+37060318712">+370 603 18712</a><br>
+      <span id="f-shop"></span>
+    </div>
+    <div class="foot-row"><span id="t-foot"></span><a href="privacy.html" id="t-priv">Privatumo politika</a></div>
+  </footer>
 </div>
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=36"></script>
+<script src="shared.js?v=37"></script>
 <script>
 const I18N = {
   lt: {
@@ -287,6 +295,8 @@ function render() {
   paintCommon();
   document.title = { lt: 'Barber Club Vilnius – vyrų kirpykla, kirpimai ir barzdos formavimas', en: 'Barber Club Vilnius – men’s barbershop, haircuts and beard trims', tr: 'Barber Club Vilnius – erkek berberi, saç kesimi ve sakal' }[LANG];
   document.getElementById('t-foot').textContent = t.foot;
+  document.getElementById('f-code').textContent = { lt: 'įm. kodas', en: 'company code', tr: 'şirket kodu' }[LANG];
+  document.getElementById('f-shop').textContent = { lt: 'Salonas: K. Ulvydo g. 11-432, Vilnius, 08355', en: 'Salon: K. Ulvydo g. 11-432, Vilnius, 08355', tr: 'Salon: K. Ulvydo g. 11-432, Vilnius, 08355' }[LANG];
   document.getElementById('t-priv').textContent = t.priv;
   paintRating();
   document.getElementById('g-rev').textContent = t.gRev;

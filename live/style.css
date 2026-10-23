@@ -312,3 +312,6 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .chips-rev .chip{font-weight:500;font-size:13px;padding:6px 11px;color:var(--muted)}
 .chips-rev .chip:hover{color:var(--ink)}
 .chip-ico{flex:none}
+
+.foot-co{line-height:1.6;margin-bottom:12px}
+.foot-co a{color:var(--muted)}
