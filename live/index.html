@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=31">
-<link rel="stylesheet" href="style.css?v=31">
+<link rel="stylesheet" href="fonts.css?v=32">
+<link rel="stylesheet" href="style.css?v=32">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -49,7 +49,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=31"></script>
+<script src="shared.js?v=32"></script>
 <script>
 const I18N = {
   lt: {
@@ -258,7 +258,7 @@ function demoUi() {
   if (!window._fabObs && 'IntersectionObserver' in window) {
     const seen = new Set();
     window._fabObs = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target.id || e.target.className) : seen.delete(e.target.id || e.target.className)); fab.hidden = seen.size > 0; });
-    window._fabObs.observe(document.querySelector('.hero'));
+    window._fabObs.observe(document.querySelector('.hero')); const ft = document.querySelector('footer'); if (ft) window._fabObs.observe(ft);
   }
   const panel = document.querySelector('.grid .panel');
   if (panel && window._fabObs && window._fabPanel !== panel) { if (window._fabPanel) window._fabObs.unobserve(window._fabPanel); panel.id = 'book-panel'; window._fabObs.observe(panel); window._fabPanel = panel; }
