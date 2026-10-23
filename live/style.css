@@ -289,3 +289,17 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .sched-wrap{touch-action:pan-x pan-y}
 .hours div:first-child{transform:translateY(2px)}
 .hours div:last-child{transform:translateY(calc(-100% - 2px))}
+
+/* hero, quick book, floating button */
+.hero{position:relative;border-radius:var(--r);overflow:hidden;margin:0 0 16px;min-height:220px;display:flex;align-items:flex-end;background:#111}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.75) 100%)}
+.hero-txt{position:relative;z-index:1;padding:22px;color:#fff;max-width:560px}
+.hero-txt h2{margin:0 0 6px;font-size:clamp(24px,5vw,36px);line-height:1.1;color:#fff}
+.hero-txt p{margin:0 0 14px;color:rgba(255,255,255,.88)}
+@media (min-width:760px){.hero{min-height:320px}}
+.team-card{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.team-card .team-item{border-bottom:0;flex:1;min-width:0}
+.team-quick{padding:8px 12px;font-size:13px;flex:none;margin-right:6px}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:50;border:0;border-radius:999px;padding:14px 20px;font:inherit;font-weight:700;background:var(--red);color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.3);cursor:pointer}
+.fab[hidden]{display:none}
