@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=29">
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="fonts.css?v=30">
+<link rel="stylesheet" href="style.css?v=30">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=29"></script>
+<script src="shared.js?v=30"></script>
 <script>
 const I18N = {
   lt: {
@@ -127,6 +127,15 @@ const BOOK_URL = new URL('./', location.href).href;
 const ZL = [[0.45, 78], [0.6, 95], [0.8, 115], [1.1, 150], [1.5, 180]];
 let ZI = 3; try { const z = +localStorage.getItem('bc_zoom'); if (z >= 0 && z < ZL.length) ZI = z; } catch (e) {}
 let PX = ZL[ZI][0];
+let pinch = null;
+document.addEventListener('touchstart', e => { if (e.touches.length === 2 && e.target.closest('.sched-wrap')) { const [a, b] = e.touches; pinch = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); } }, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (pinch == null || e.touches.length !== 2) return;
+  e.preventDefault();
+  const [a, b] = e.touches, d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  if (d / pinch < 0.8 && ZI > 0) { pinch = d; setZoom(-1); } else if (d / pinch > 1.25 && ZI < ZL.length - 1) { pinch = d; setZoom(1); }
+}, { passive: false });
+document.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; });
 function setZoom(d) { ZI = Math.max(0, Math.min(ZL.length - 1, ZI + d)); PX = ZL[ZI][0]; try { localStorage.setItem('bc_zoom', ZI); } catch (e) {} renderDash(); }
 
 let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;

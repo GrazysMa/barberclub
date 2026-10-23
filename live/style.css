@@ -286,3 +286,6 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .sched.compact .appt{font-size:10px;padding:1px 3px;line-height:1.15;overflow:hidden}
 .sched.compact .appt b{font-size:10px}
 .sched.compact .hours div{font-size:10px}
+.sched-wrap{touch-action:pan-x pan-y}
+.hours div:first-child{transform:translateY(2px)}
+.hours div:last-child{transform:translateY(calc(-100% - 2px))}
