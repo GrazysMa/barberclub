@@ -23,14 +23,13 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=43">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="fonts.css?v=44">
+<link rel="stylesheet" href="style.css?v=44">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
 <a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
-<div class="pole" aria-hidden="true"></div>
-<nav class="topbar" aria-label="Meniu"><div class="tb-in">
+<nav class="topbar" aria-label="Meniu"><div class="pole" aria-hidden="true"></div><div class="tb-in">
   <a class="tb-brand" href="#top"><img src="logo.webp" width="34" height="34" alt=""><span>Barber Club</span></a>
   <div class="tb-links"><a href="#book" data-nav="book" id="nav-book">Registracija</a><a href="#team" id="nav-team">Komanda</a><a href="#reviews" data-nav="rev" id="nav-rev" hidden>Atsiliepimai</a><a href="#info" id="nav-info">Informacija</a></div>
   <div class="tb-act"><a class="tb-tel" href="tel:+37060318712" aria-label="+370 603 18712"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>+370 603 18712</span></a><button type="button" class="btn red tb-book" id="tb-book">Registruotis</button></div>
@@ -81,7 +80,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=43"></script>
+<script src="shared.js?v=44"></script>
 <script>
 const I18N = {
   lt: {
