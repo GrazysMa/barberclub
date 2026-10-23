@@ -266,7 +266,7 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .rev-ok{margin-left:auto;color:var(--ok, #1a8a6a)}
 
 .info-p{margin-top:20px}
-.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 32px}
 @media (max-width:900px){.info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.info-grid{grid-template-columns:minmax(0,1fr)}}
 .info-grid h3{margin:0 0 6px}
