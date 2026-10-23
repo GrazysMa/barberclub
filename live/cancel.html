@@ -13,8 +13,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=40">
-<link rel="stylesheet" href="style.css?v=40">
+<link rel="stylesheet" href="fonts.css?v=41">
+<link rel="stylesheet" href="style.css?v=41">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -43,18 +43,18 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=40"></script>
+<script src="shared.js?v=41"></script>
 <script>
 const C = {
   lt: { title: 'Vizito atšaukimas', notFound: 'Rezervacija nerasta. Patikrink nuorodą arba paskambink.', service: 'Paslauga', barber: 'Barberis', time: 'Laikas', code: 'Kodas',
         ask: 'Ar tikrai nori atšaukti šį vizitą?', btn: 'Taip, atšaukti vizitą', sending: 'Atšaukiama…', done: 'Vizitas atšauktas. Laikas atlaisvintas kitiems klientams.',
-        already: 'Šis vizitas jau atšauktas.', late: `Atšaukti internetu jau per vėlu. Paskambink ${SHOP_PHONE}.`, fail: 'Nepavyko. Bandyk dar kartą arba paskambink.', again: 'Užsirašyti iš naujo', foot: '© Barber Club Vilnius' },
+        already: 'Šis vizitas jau atšauktas.', late: `Atšaukti internetu jau per vėlu. Paskambink ${SHOP_PHONE}.`, fail: 'Nepavyko. Bandyk dar kartą arba paskambink.', again: 'Užsirašyti iš naujo', foot: `© ${new Date().getFullYear()} Barber Club Vilnius · Visos teisės saugomos` },
   en: { title: 'Cancel appointment', notFound: 'Booking not found. Check the link or call us.', service: 'Service', barber: 'Barber', time: 'Time', code: 'Code',
         ask: 'Do you really want to cancel this appointment?', btn: 'Yes, cancel appointment', sending: 'Cancelling…', done: 'Appointment cancelled. The slot is free for others now.',
-        already: 'This appointment is already cancelled.', late: `It’s too late to cancel online. Please call ${SHOP_PHONE}.`, fail: 'Something went wrong. Try again or call us.', again: 'Book again', foot: '© Barber Club Vilnius' },
+        already: 'This appointment is already cancelled.', late: `It’s too late to cancel online. Please call ${SHOP_PHONE}.`, fail: 'Something went wrong. Try again or call us.', again: 'Book again', foot: `© ${new Date().getFullYear()} Barber Club Vilnius · All rights reserved` },
   tr: { title: 'Randevu iptali', notFound: 'Randevu bulunamadı. Linki kontrol edin veya bizi arayın.', service: 'Hizmet', barber: 'Berber', time: 'Saat', code: 'Kod',
         ask: 'Bu randevuyu iptal etmek istediğinize emin misiniz?', btn: 'Evet, iptal et', sending: 'İptal ediliyor…', done: 'Randevu iptal edildi. Saat artık başkaları için açık.',
-        already: 'Bu randevu zaten iptal edilmiş.', late: `Online iptal için çok geç. Lütfen ${SHOP_PHONE} numarasını arayın.`, fail: 'Bir hata oluştu. Tekrar deneyin veya bizi arayın.', again: 'Yeni randevu al', foot: '© Barber Club Vilnius' }
+        already: 'Bu randevu zaten iptal edilmiş.', late: `Online iptal için çok geç. Lütfen ${SHOP_PHONE} numarasını arayın.`, fail: 'Bir hata oluştu. Tekrar deneyin veya bizi arayın.', again: 'Yeni randevu al', foot: `© ${new Date().getFullYear()} Barber Club Vilnius · Tüm hakları saklıdır` }
 };
 const P = new URLSearchParams(location.search), TOKEN = P.get('t') || '';
 if (['lt','en','tr'].includes(P.get('lang'))) LANG = P.get('lang');
