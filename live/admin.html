@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=46">
-<link rel="stylesheet" href="style.css?v=46">
+<link rel="stylesheet" href="fonts.css?v=47">
+<link rel="stylesheet" href="style.css?v=47">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=46"></script>
+<script src="shared.js?v=47"></script>
 <script>
 const I18N = {
   lt: {
@@ -124,6 +124,8 @@ const I18N = {
 const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
 const admin = document.getElementById('admin');
 const BOOK_URL = new URL('./', location.href).href;
+// staff can schedule/see until 22:00 even if the public booking day ends earlier
+const ACLOSE = () => Math.max(SET.close_min, 22 * 60);
 const ZL = [[0.45, 78], [0.6, 95], [0.8, 115], [1.1, 150], [1.5, 180]];
 let ZI = 3; try { const z = +localStorage.getItem('bc_zoom'); if (z >= 0 && z < ZL.length) ZI = z; } catch (e) {}
 let PX = ZL[ZI][0];
@@ -345,7 +347,7 @@ function renderDash() {
   if (ad.view === 'ratings') return renderRatings();
   if (ad.view === 'team') return renderTeam();
   const t = T(), now = shopNow(), s = stats();
-  const OPEN = SET.open_min, CLOSE = SET.close_min, H = (CLOSE - OPEN) * PX;
+  const OPEN = SET.open_min, CLOSE = ACLOSE(), H = (CLOSE - OPEN) * PX;
   const dayList = ROWS.filter(r => r.day === ad.date);
   const hours = []; for (let x = OPEN; x <= CLOSE; x += 60) hours.push(x);
   const cols = BARBERS.map(br => {
@@ -543,7 +545,7 @@ function visitForm() {
   return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
     <div class="field"><label for="v-brb">${t.bBarber}</label><select id="v-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}" ${ME && ME.barber_id === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
     <div class="field"><label for="v-svc">${t.service}</label><select id="v-svc" name="service">${SERVICES.filter(x => x.active).map(x => `<option value="${esc(x.id)}">${esc(sName(x))} · ${t.dur(x.minutes)}</option>`).join('')}</select></div>
-    <div class="field"><label for="v-start">${t.bFrom}</label><select id="v-start" name="start">${timeOpts(SET.open_min, SET.close_min - 15, SET.step_min, -1)}</select></div>
+    <div class="field"><label for="v-start">${t.bFrom}</label><select id="v-start" name="start">${timeOpts(SET.open_min, ACLOSE() - 15, SET.step_min, -1)}</select></div>
     <div class="field"><label for="v-src">${t.vSrc}</label><select id="v-src" name="source">${['phone','walkin','treatwell'].map(k => `<option value="${k}">${t.srcN[k]}</option>`).join('')}</select></div>
     <div class="field"><label for="v-name">${t.vName}</label><input id="v-name" name="client_name" autocomplete="off" maxlength="60"></div>
     <div class="field"><label for="v-phone">${t.vPhone}</label><input id="v-phone" name="client_phone" type="tel" inputmode="tel" autocomplete="off" maxlength="20"></div>
@@ -558,16 +560,16 @@ function hoursForm() {
   const rows = [1, 2, 3, 4, 5, 6, 0].map(d => {
     const h = HOURS.find(x => x.barber_id === ad.hb && x.dow === d);
     return `<div class="hrow"><label class="hday"><input type="checkbox" data-hd="${d}" ${h ? 'checked' : ''}> ${t.dowL[d]}</label>
-      <select data-hs="${d}" aria-label="${t.dowL[d]} ${t.bFrom}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min, SET.close_min - 30, 30, h ? h.start_min : SET.open_min)}</select>
+      <select data-hs="${d}" aria-label="${t.dowL[d]} ${t.bFrom}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min, ACLOSE() - 30, 30, h ? h.start_min : SET.open_min)}</select>
       <span>${t.hTo}</span>
-      <select data-he="${d}" aria-label="${t.dowL[d]} ${t.hTo}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min + 30, SET.close_min, 30, h ? h.end_min : SET.close_min)}</select></div>`;
+      <select data-he="${d}" aria-label="${t.dowL[d]} ${t.hTo}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min + 30, ACLOSE(), 30, h ? h.end_min : ACLOSE())}</select></div>`;
   }).join('');
   return `<div class="panel" style="margin-bottom:12px">
     ${list.length > 1 ? `<div class="field" style="max-width:220px"><label for="h-brb">${t.bBarber}</label><select id="h-brb">${list.map(b => `<option value="${esc(b.id)}" ${b.id === ad.hb ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>` : `<h3>${esc(list[0].name)}</h3>`}
     <div class="hours-grid">${rows}</div><p class="info">${t.hInfo}</p><button class="btn" id="h-save">${t.hSave}</button></div>`;
 }
 function blockForm() {
-  const t = T(), opts = []; for (let x = SET.open_min; x < SET.close_min; x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
+  const t = T(), opts = []; for (let x = SET.open_min; x < ACLOSE(); x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
   return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
     <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('')}</select></div>
     <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start" name="start">${opts.join('')}</select></div>
@@ -579,7 +581,7 @@ function moveForm(r) {
   return `<div class="move-box"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">
     <div class="field"><label for="m-brb">${t.bBarber}</label><select id="m-brb">${BARBERS.map(b => `<option value="${esc(b.id)}" ${b.id === r.barber_id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
     <div class="field"><label for="m-day">${t.mDay}</label><select id="m-day">${DAYS.map(d => `<option value="${d}" ${d === r.day ? 'selected' : ''}>${shortDate(d)} ${COMMON[LANG].dow[parseYmd(d).getDay()]}</option>`).join('')}</select></div>
-    <div class="field"><label for="m-start">${t.bFrom}</label><select id="m-start">${timeOpts(SET.open_min, SET.close_min - 15, SET.step_min, r.start_min)}</select></div>
+    <div class="field"><label for="m-start">${t.bFrom}</label><select id="m-start">${timeOpts(SET.open_min, ACLOSE() - 15, SET.step_min, r.start_min)}</select></div>
   </div><div class="row"><button class="btn" id="m-save">${t.mSave}</button><button class="btn ghost" id="m-close">${t.close}</button></div></div>`;
 }
 function detail(r) {
@@ -688,7 +690,7 @@ function bindDash() {
   admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
   const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
     const barber = admin.querySelector('#b-brb').value, start = +admin.querySelector('#b-start').value;
-    const len = Math.min(+admin.querySelector('#b-len').value, SET.close_min - start);
+    const len = Math.min(+admin.querySelector('#b-len').value, ACLOSE() - start);
     ad.panel = null;
     act(() => sb.rpc('add_block', { p_barber: barber, p_day: ad.date, p_start_min: start, p_minutes: len }), t.tBlocked);
   };
