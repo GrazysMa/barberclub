@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=49">
-<link rel="stylesheet" href="style.css?v=49">
+<link rel="stylesheet" href="fonts.css?v=50">
+<link rel="stylesheet" href="style.css?v=50">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=49"></script>
+<script src="shared.js?v=50"></script>
 <script>
 const I18N = {
   lt: {
@@ -410,6 +410,22 @@ function renderDash() {
   if (strip) strip.onscroll = () => { ad.scroll = strip.scrollLeft; };
 }
 function visibleBarbers() { return BARBERS.filter(b => ME && (ME.is_owner || ME.barber_id === b.id)); }
+// client suggestions for "+ Vizitas" (own lists + shared salon list), loaded once per session
+let SUG = null, SUG_LOADING = false;
+async function loadSuggest() {
+  if (SUG || SUG_LOADING) return; SUG_LOADING = true;
+  try {
+    const ids = [...new Set([...visibleBarbers().map(b => b.id), 'salon'])];
+    const res = await Promise.all(ids.map(id => sb.rpc('staff_clients', { p_barber: id })));
+    const map = new Map();
+    res.forEach(r => (r.data || []).forEach(c => {
+      const d = String(c.phone || '').replace(/\D/g, ''), k = d || 'n:' + String(c.name || '').toLowerCase();
+      const v = { name: c.name || '', phone: c.phone || '', d, n: String(c.name || '').toLowerCase(), visits: +c.visits || 0 };
+      const prev = map.get(k); if (!prev) map.set(k, v); else prev.visits = Math.max(prev.visits, v.visits);
+    }));
+    SUG = [...map.values()].sort((a, b) => b.visits - a.visits);
+  } catch (e) { console.error(e); } finally { SUG_LOADING = false; }
+}
 async function loadClients(barber) {
   const { data, error } = await sb.rpc('staff_clients', { p_barber: barber });
   if (error) throw error; CLIENTS = data || []; CLI_FOR = barber;
@@ -549,6 +565,7 @@ function visitForm() {
     <div class="field"><label for="v-src">${t.vSrc}</label><select id="v-src" name="source">${['phone','walkin','treatwell'].map(k => `<option value="${k}">${t.srcN[k]}</option>`).join('')}</select></div>
     <div class="field"><label for="v-name">${t.vName}</label><input id="v-name" name="client_name" autocomplete="off" maxlength="60"></div>
     <div class="field"><label for="v-phone">${t.vPhone}</label><input id="v-phone" name="client_phone" type="tel" inputmode="tel" autocomplete="off" maxlength="20"></div>
+    <div class="sug" id="v-sug" role="listbox" hidden style="grid-column:1/-1"></div>
     <div class="field" style="grid-column:1/-1"><label for="v-note">${t.vNote}</label><input id="v-note" name="note" autocomplete="off" maxlength="300"></div>
   </div><button class="btn" id="v-save">${t.vSave}</button></div>`;
 }
@@ -664,9 +681,22 @@ function bindDash() {
     const args = { p_barber: admin.querySelector('#v-brb').value, p_service: admin.querySelector('#v-svc').value, p_day: ad.date,
       p_start_min: +admin.querySelector('#v-start').value, p_name: name, p_phone: admin.querySelector('#v-phone').value.trim() || null,
       p_note: admin.querySelector('#v-note').value.trim() || null, p_source: admin.querySelector('#v-src').value };
-    ad.panel = null;
+    ad.panel = null; SUG = null;
     act(() => sb.rpc('staff_create_booking', args), t.tAdded);
   };
+  const vn = admin.querySelector('#v-name'), vp = admin.querySelector('#v-phone'), vsug = admin.querySelector('#v-sug');
+  if (vn && vp && vsug) {
+    loadSuggest();
+    const show = el => {
+      const q = el.value.trim().toLowerCase(), d = q.replace(/\D/g, ''), byPhone = el === vp || /^\+?\d/.test(q);
+      if (!SUG || (byPhone ? d.length < 3 : q.length < 2)) { vsug.hidden = true; return; }
+      const m = SUG.filter(c => byPhone ? c.d.includes(d) : c.n.includes(q)).slice(0, 6);
+      vsug.innerHTML = m.map((c, i) => `<button type="button" class="sug-i" data-i="${i}"><b>${esc(c.name)}</b><span>${esc(c.phone)}${c.visits ? ` · ${c.visits} ${t.cliVisits}` : ''}</span></button>`).join('');
+      vsug.hidden = !m.length;
+      vsug.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { const c = m[+b.dataset.i]; vn.value = c.name; vp.value = c.phone; vsug.hidden = true; });
+    };
+    [vn, vp].forEach(el => { el.oninput = () => show(el); el.onfocus = () => show(el); el.onblur = () => setTimeout(() => { if (!vsug.contains(document.activeElement)) vsug.hidden = true; }, 200); });
+  }
   const hbSel = admin.querySelector('#h-brb'); if (hbSel) hbSel.onchange = () => { ad.hb = hbSel.value; render(); };
   admin.querySelectorAll('[data-hd]').forEach(c => c.onchange = () => {
     const d = c.dataset.hd; admin.querySelector(`[data-hs="${d}"]`).disabled = !c.checked; admin.querySelector(`[data-he="${d}"]`).disabled = !c.checked;

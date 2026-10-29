@@ -344,3 +344,8 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .team-card .team-rate{gap:4px}
 .team-card .team-rate .stars-s{color:var(--warn)}
 .team-card .team-item .avatar{background-color:var(--navy-soft)}
+/* "+ Vizitas" client suggestions */
+.sug{display:grid;gap:4px;margin:-6px 0 12px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.sug-i{display:flex;justify-content:space-between;gap:10px;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.sug-i:hover,.sug-i:focus{background:var(--navy-soft)}
+.sug-i span{color:var(--muted);font-size:13px;white-space:nowrap}
