@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=48">
-<link rel="stylesheet" href="style.css?v=48">
+<link rel="stylesheet" href="fonts.css?v=49">
+<link rel="stylesheet" href="style.css?v=49">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=48"></script>
+<script src="shared.js?v=49"></script>
 <script>
 const I18N = {
   lt: {
@@ -603,7 +603,7 @@ function detail(r) {
     <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
     ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
     ${ad.moving ? `<div style="margin-top:14px">${moveForm(r)}</div>` : ''}
-    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button><button class="btn ghost" id="r-link">${t.rateLink}</button>${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button>${(r.source || 'web') === 'web' && r.client_email && typeof EMAILS_ON !== 'undefined' && EMAILS_ON ? '' : `<button class="btn ghost" id="r-link">${t.rateLink}</button>`}${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
 }
 async function act(fn, okMsg) {
   if (busyAct) return; busyAct = true;
