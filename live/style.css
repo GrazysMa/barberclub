@@ -127,6 +127,8 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute
 .appt b{display:block;font-weight:700}
 .appt.new{background:var(--red-soft);border-left-color:var(--red)}
 .appt.block{background:repeating-linear-gradient(-45deg,var(--surface-2) 0 6px,var(--line) 6px 8px);border-left-color:var(--muted);color:var(--muted)}
+.appt.done{background:var(--surface-2);border-left-color:var(--muted);color:var(--muted)}
+.pill.done{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
 .appt.noshow{opacity:.55;text-decoration:line-through}
 .appt[aria-pressed="true"]{outline:2px solid var(--ink)}
 .now{position:absolute;left:0;right:0;border-top:2px solid var(--red);z-index:1}

@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=50">
-<link rel="stylesheet" href="style.css?v=50">
+<link rel="stylesheet" href="fonts.css?v=51">
+<link rel="stylesheet" href="style.css?v=51">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=50"></script>
+<script src="shared.js?v=51"></script>
 <script>
 const I18N = {
   lt: {
@@ -54,7 +54,7 @@ const I18N = {
     lgBook: 'Rezervacija', lgNew: 'Nauja (24 val.)', lgBlk: 'Užblokuota', blocked: 'Užblokuota',
     visitH: 'Vizitas', visitHint: 'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis.',
     service: 'Paslauga', time: 'Laikas', barberL: 'Barberis', price: 'Kaina', code: 'Kodas', created: 'Užregistruota',
-    pNo: 'Neatvyko', pNew: 'Nauja', pOk: 'Patvirtinta', noshow: 'Neatvyko', undoNoshow: 'Atvyko', cancel: 'Atšaukti vizitą', cancelSure: 'Tikrai atšaukti?',
+    pNo: 'Neatvyko', pNew: 'Nauja', pOk: 'Patvirtinta', pDone: 'Įvyko', rateL: 'Įvertinimas', lgDone: 'Įvyko', noshow: 'Neatvyko', undoNoshow: 'Atvyko', cancel: 'Atšaukti vizitą', cancelSure: 'Tikrai atšaukti?',
     blkH: 'Užblokuotas laikas', unblock: 'Atblokuoti', bBarber: 'Barberis', bFrom: 'Nuo', bLen: 'Trukmė', bSave: 'Užblokuoti', h: 'val.',
     tUnblocked: 'Laikas atblokuotas', tCancelled: 'Vizitas atšauktas. Laikas vėl laisvas klientams.', tNoshow: 'Pažymėta: neatvyko', tShow: 'Pažymėta: atvyko',
     tBusy: 'Tuo metu jau yra vizitas. Pasirink kitą laiką.', tBlocked: 'Laikas užblokuotas', tFail: 'Nepavyko. Patikrink internetą ir bandyk dar kartą.', refreshed: 'Atnaujinta',
@@ -79,7 +79,7 @@ const I18N = {
     lgBook: 'Booking', lgNew: 'New (24 h)', lgBlk: 'Blocked', blocked: 'Blocked',
     visitH: 'Appointment', visitHint: 'Tap an appointment in the calendar to see client details.',
     service: 'Service', time: 'Time', barberL: 'Barber', price: 'Price', code: 'Code', created: 'Booked',
-    pNo: 'No-show', pNew: 'New', pOk: 'Confirmed', noshow: 'No-show', undoNoshow: 'Showed up', cancel: 'Cancel appointment', cancelSure: 'Really cancel?',
+    pNo: 'No-show', pNew: 'New', pOk: 'Confirmed', pDone: 'Done', rateL: 'Rating', lgDone: 'Done', noshow: 'No-show', undoNoshow: 'Showed up', cancel: 'Cancel appointment', cancelSure: 'Really cancel?',
     blkH: 'Blocked time', unblock: 'Unblock', bBarber: 'Barber', bFrom: 'From', bLen: 'Length', bSave: 'Block', h: 'h',
     tUnblocked: 'Time unblocked', tCancelled: 'Appointment cancelled. The slot is open again.', tNoshow: 'Marked as no-show', tShow: 'Marked as showed up',
     tBusy: 'There’s already an appointment then. Pick another time.', tBlocked: 'Time blocked', tFail: 'Something went wrong. Check your connection and try again.', refreshed: 'Updated',
@@ -104,7 +104,7 @@ const I18N = {
     lgBook: 'Randevu', lgNew: 'Yeni (24 sa)', lgBlk: 'Kapalı', blocked: 'Kapalı',
     visitH: 'Randevu', visitHint: 'Müşteri bilgilerini görmek için takvimdeki bir randevuya dokunun.',
     service: 'Hizmet', time: 'Saat', barberL: 'Berber', price: 'Fiyat', code: 'Kod', created: 'Alınma zamanı',
-    pNo: 'Gelmedi', pNew: 'Yeni', pOk: 'Onaylı', noshow: 'Gelmedi', undoNoshow: 'Geldi', cancel: 'Randevuyu iptal et', cancelSure: 'Emin misiniz?',
+    pNo: 'Gelmedi', pNew: 'Yeni', pOk: 'Onaylı', pDone: 'Tamamlandı', rateL: 'Puan', lgDone: 'Tamamlandı', noshow: 'Gelmedi', undoNoshow: 'Geldi', cancel: 'Randevuyu iptal et', cancelSure: 'Emin misiniz?',
     blkH: 'Kapalı saat', unblock: 'Saati aç', bBarber: 'Berber', bFrom: 'Başlangıç', bLen: 'Süre', bSave: 'Kapat', h: 'sa',
     tUnblocked: 'Saat açıldı', tCancelled: 'Randevu iptal edildi. Saat tekrar müşterilere açık.', tNoshow: 'İşaretlendi: gelmedi', tShow: 'İşaretlendi: geldi',
     tBusy: 'O saatte zaten randevu var. Başka bir saat seçin.', tBlocked: 'Saat kapatıldı', tFail: 'Bir hata oluştu. Bağlantınızı kontrol edip tekrar deneyin.', refreshed: 'Güncellendi',
@@ -169,10 +169,13 @@ async function loadRef() {
   if (!ad.date) ad.date = today;
 }
 async function loadRows() {
-  const { data, error } = await sb.rpc('staff_bookings', { p_from: FROM, p_to: TO });
+  const [{ data, error }, rr] = await Promise.all([sb.rpc('staff_bookings', { p_from: FROM, p_to: TO }), sb.rpc('staff_ratings').then(x => x, () => ({}))]);
   if (error) throw error;
   ROWS = data || []; lastLoad = new Date();
+  const m = {}; (rr.data || []).forEach(x => { if (x.booking_id) m[x.booking_id] = x; }); RATE_BY = m;
 }
+let RATE_BY = {};
+function isDone(r) { if (r.kind !== 'booking' || r.status !== 'confirmed') return false; const n = shopNow(); return r.day < n.date || (r.day === n.date && r.end_min <= n.min); }
 /* ---------- Push notifications ---------- */
 const PUSH = { state: 'unknown', barber: null, reg: null, sub: null, busy: false };
 const FN_NOTIFY = `${SUPABASE_URL}/functions/v1/notify`;
@@ -353,8 +356,8 @@ function renderDash() {
   const cols = BARBERS.map(br => {
     const items = dayList.filter(r => r.barber_id === br.id).map(r => {
       const top = Math.max(0, r.start_min - OPEN), bottom = Math.min(CLOSE, r.end_min) - OPEN;
-      const cls = r.kind === 'block' ? 'block' : r.status === 'noshow' ? 'noshow' : isNew(r) ? 'new' : '';
-      const label = r.kind === 'block' ? t.blocked : esc(r.client_name);
+      const cls = r.kind === 'block' ? 'block' : r.status === 'noshow' ? 'noshow' : isDone(r) ? 'done' : isNew(r) ? 'new' : '';
+      const label = r.kind === 'block' ? t.blocked : (RATE_BY[r.id] ? '✓ ' : '') + esc(r.client_name);
       return `<button class="appt ${cls}" data-id="${r.id}" aria-pressed="${ad.sel === r.id}" style="top:${top * PX + 1}px;height:${Math.max(18, (bottom - top) * PX - 2)}px"><b>${hm(r.start_min)} ${label}</b>${r.service_id ? esc(sName(svc(r.service_id))) : ''}</button>`;
     }).join('');
     const lines = hours.map(x => `<div class="gl" style="top:${(x - OPEN) * PX}px"></div>`).join('');
@@ -393,7 +396,7 @@ function renderDash() {
         <div class="head" style="padding:10px 0"></div>${heads}
         <div class="hours" style="height:${H}px">${hours.map(x => `<div style="top:${(x - OPEN) * PX}px">${hm(x)}</div>`).join('')}</div>${cols}
       </div></div>
-      <div class="legend"><span><i style="background:var(--navy-soft);border-left:3px solid var(--navy)"></i>${t.lgBook}</span><span><i style="background:var(--red-soft);border-left:3px solid var(--red)"></i>${t.lgNew}</span><span><i style="background:var(--line)"></i>${t.lgBlk}</span></div>
+      <div class="legend"><span><i style="background:var(--navy-soft);border-left:3px solid var(--navy)"></i>${t.lgBook}</span><span><i style="background:var(--red-soft);border-left:3px solid var(--red)"></i>${t.lgNew}</span><span><i style="background:var(--surface-2);border-left:3px solid var(--muted)"></i>${t.lgDone}</span><span><i style="background:var(--line)"></i>${t.lgBlk}</span></div>
     </section>
     <div class="side">
       ${sel ? detail(sel) : `<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
@@ -605,7 +608,8 @@ function detail(r) {
   const t = T();
   if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p>${ad.moving ? moveForm(r) : `<div class="row"><button class="btn ghost" id="m-open">${t.move}</button><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`}</div>`;
   const s = svc(r.service_id);
-  const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
+  const done = isDone(r), rt = RATE_BY[r.id];
+  const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : done ? `<span class="pill done">${t.pDone}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
   const created = new Intl.DateTimeFormat(LOC[LANG], { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
   const tel = String(r.client_phone || '').replace(/[^\d+]/g, '');
   return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">${t.visitH}</h3>${pill}</div>
@@ -618,9 +622,10 @@ function detail(r) {
     <div class="sum-row"><span>${t.src}</span><span>${t.srcN[r.source] || t.srcN.web}</span></div>
     <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(r.code)}</span></div>
     <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
+    ${rt ? `<div class="sum-row"><span>${t.rateL}</span><span><span class="stars-s">${'★'.repeat(rt.stars)}</span>${'☆'.repeat(5 - rt.stars)}</span></div>${rt.comment ? `<p class="info">“${esc(rt.comment)}”</p>` : ''}` : ''}
     ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
     ${ad.moving ? `<div style="margin-top:14px">${moveForm(r)}</div>` : ''}
-    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}><button class="btn" id="m-open">${t.move}</button>${(r.source || 'web') === 'web' && r.client_email && typeof EMAILS_ON !== 'undefined' && EMAILS_ON ? '' : `<button class="btn ghost" id="r-link">${t.rateLink}</button>`}${r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}>${done ? '' : `<button class="btn" id="m-open">${t.move}</button>`}${rt || ((r.source || 'web') === 'web' && r.client_email && typeof EMAILS_ON !== 'undefined' && EMAILS_ON) ? '' : `<button class="btn ghost" id="r-link">${t.rateLink}</button>`}${rt ? '' : r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
 }
 async function act(fn, okMsg) {
   if (busyAct) return; busyAct = true;
