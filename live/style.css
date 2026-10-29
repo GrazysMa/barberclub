@@ -336,3 +336,11 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 @media (max-width:520px){.tb-tel span{display:none}.tb-tel{width:38px;height:38px;justify-content:center;border:1px solid rgba(255,255,255,.2);border-radius:50%}.tb-brand{font-size:18px}.tb-in{gap:10px}}
 #team,#info,#reviews,#book-panel,.grid .panel{scroll-margin-top:72px}
 .fab{display:none!important}
+/* team list: rating under the name (no overlap next to the book button) */
+.team-card .team-item{display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:2px;align-items:center;overflow:hidden}
+.team-card .team-item .avatar{grid-row:1 / span 2}
+.team-card .team-name{grid-column:2}
+.team-card .team-rate{grid-column:2;flex-direction:row;align-items:center;gap:6px;text-align:left;justify-content:flex-start;white-space:nowrap;font-size:13px}
+.team-card .team-rate{gap:4px}
+.team-card .team-rate .stars-s{color:var(--warn)}
+.team-card .team-item .avatar{background-color:var(--navy-soft)}
