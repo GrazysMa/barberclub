@@ -53,6 +53,8 @@ $$;
 revoke execute on function public.email_queue(text), public.email_mark(uuid, text) from public, anon, authenticated;
 grant execute on function public.email_queue(text), public.email_mark(uuid, text) to service_role;
 
--- Bookings that already exist before emails are switched on: don't send old confirmations
-update public.bookings set confirm_sent_at = coalesce(confirm_sent_at, now()), review_sent_at = coalesce(review_sent_at, now())
- where confirm_sent_at is null or review_sent_at is null;
+-- Bookings that already exist before emails are switched on: don't send late confirmations,
+-- and don't ask for ratings of visits that ended more than 1 day ago. Recent and future visits still get the rating email.
+update public.bookings set confirm_sent_at = coalesce(confirm_sent_at, now()) where confirm_sent_at is null;
+update public.bookings set review_sent_at = coalesce(review_sent_at, now())
+ where review_sent_at is null and ends_at < now() - interval '1 day';

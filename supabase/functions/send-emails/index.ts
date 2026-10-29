@@ -1,7 +1,7 @@
 // Supabase Edge Function: sends booking confirmations and 24 h reminders through Resend.
 // Triggered (1) by the booking page right after a booking, with {code}, and (2) every 10 min by pg_cron.
 // Safe to call by anyone: it only sends emails that are due, to the address stored with the booking.
-// Secrets to set in Supabase → Edge Functions → Secrets: RESEND_API_KEY, MAIL_FROM, SITE_URL
+// Secrets to set in Supabase → Edge Functions → Secrets: RESEND_API_KEY, MAIL_FROM, SITE_URL (optional REPLY_TO)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 import { buildEmail, buildReview, type Row } from './templates.ts';
 
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'Idempotency-Key': `${r.id}-${r.kind}` },
-      body: JSON.stringify({ from, to: [m.to], subject: m.subject, html: m.html, text: m.text, reply_to: 'info@barberclub.lt' }),
+      body: JSON.stringify({ from, to: [m.to], subject: m.subject, html: m.html, text: m.text, reply_to: Deno.env.get('REPLY_TO') ?? 'info@barberclub.lt' }),
     });
     if (res.ok) { await db.rpc('email_mark', { p_id: r.id, p_kind: r.kind }); sent.push(`${r.code}:${r.kind}`); }
     else failed.push(`${r.code}:${r.kind}:${res.status}`);
