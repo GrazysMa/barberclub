@@ -296,7 +296,17 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 
 /* hero, quick book, floating button */
 .hero{position:relative;border-radius:var(--r);overflow:hidden;margin:0 0 16px;min-height:220px;display:flex;align-items:flex-end;background:#111}
-.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-track{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.hero-track::-webkit-scrollbar{display:none}
+.hero-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.hero::after{pointer-events:none}
+.hero-txt{pointer-events:none}.hero-txt .btn{pointer-events:auto}
+.hero-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:26px;line-height:1;cursor:pointer;display:none}
+.hero-nav.prev{left:10px}.hero-nav.next{right:10px}
+@media (hover:hover){.hero-nav{display:block}}
+.hero-dots{position:absolute;z-index:2;right:14px;bottom:14px;display:flex;gap:6px;pointer-events:none}
+.hero-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45)}
+.hero-dots i.on{background:#fff}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.75) 100%)}
 .hero-txt{position:relative;z-index:1;padding:22px;color:#fff;max-width:560px}
 .hero-txt h2{margin:0 0 6px;font-size:clamp(24px,5vw,36px);line-height:1.1;color:#fff}

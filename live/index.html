@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="fonts.css?v=48">
-<link rel="stylesheet" href="style.css?v=48">
+<link rel="stylesheet" href="style.css?v=52">
 <script src="vendor/supabase-2.118.0.js"></script>
 </head>
 <body>
@@ -60,7 +60,9 @@
   </header>
 
   <section class="hero" aria-labelledby="hero-t">
-    <img class="hero-img" src="https://cdn1.treatwell.net/images/view/v2.i15641173.w1280.h800.x1C61D402/" alt="" width="1280" height="800" fetchpriority="high" onerror="this.remove()">
+    <div class="hero-track" id="hero-track"><img src="https://cdn1.treatwell.net/images/view/v2.i15641173.w1280.h800.x1C61D402/" alt="" width="1280" height="800" fetchpriority="high" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15757192.w1080.h720.x80FFB3B5/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15747645.w1080.h720.x0CD2CB3C/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15757196.w1080.h720.x3A79D49B/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15641178.w1080.h720.x409DCFFB/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15641193.w1080.h720.x56AA9F65/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15641307.w1080.h720.x859540DA/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15641186.w1080.h720.x384F04D0/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"><img src="https://cdn1.treatwell.net/images/view/v2.i15641154.w1080.h720.xDC2A3B03/" alt="" width="1080" height="720" loading="lazy" onerror="this.remove()"></div>
+    <button type="button" class="hero-nav prev" id="hero-prev" aria-label="‹">‹</button><button type="button" class="hero-nav next" id="hero-next" aria-label="›">›</button>
+    <div class="hero-dots" id="hero-dots" aria-hidden="true"></div>
     <div class="hero-txt"><h2 id="hero-t"></h2><p id="hero-s"></p><button type="button" class="btn red" id="hero-b"></button></div>
   </section>
 
@@ -80,7 +82,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=48"></script>
+<script src="shared.js?v=52"></script>
 <script>
 const I18N = {
   lt: {
@@ -285,6 +287,14 @@ function demoUi() {
   const t = T(), toBook = () => document.querySelector('.grid .panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   document.getElementById('hero-t').textContent = t.heroT; document.getElementById('hero-s').textContent = t.heroS;
   const hb = document.getElementById('hero-b'); hb.textContent = t.book; hb.onclick = toBook;
+  const ht = document.getElementById('hero-track');
+  if (ht && !ht._init) { ht._init = 1;
+    const dots = document.getElementById('hero-dots'), n = () => ht.querySelectorAll('img').length, cur = () => Math.round(ht.scrollLeft / ht.clientWidth);
+    const paint = () => { dots.innerHTML = Array.from({ length: n() }, (_, i) => `<i${i === cur() ? ' class="on"' : ''}></i>`).join(''); };
+    const go = d => { const i = (cur() + d + n()) % n(); ht.scrollTo({ left: i * ht.clientWidth, behavior: 'smooth' }); };
+    document.getElementById('hero-prev').onclick = () => go(-1); document.getElementById('hero-next').onclick = () => go(1);
+    let tm; ht.addEventListener('scroll', () => { clearTimeout(tm); tm = setTimeout(paint, 80); }, { passive: true }); paint();
+  }
   const fab = document.getElementById('fab'); fab.textContent = t.book; fab.onclick = toBook;
   const tbb = document.getElementById('tb-book'); tbb.textContent = t.book; tbb.onclick = toBook;
   const nb = document.getElementById('nav-book'); nb.textContent = t.navBook; nb.onclick = e => { e.preventDefault(); toBook(); };
