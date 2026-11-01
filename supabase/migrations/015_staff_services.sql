@@ -31,13 +31,28 @@ language plpgsql volatile security definer set search_path = public as $$
 declare ids text[]; i int; j int; k int;
 begin
   if not public.is_staff() then raise exception 'not_staff'; end if;
-  select array_agg(id order by sort, id) into ids from public.services;
+  -- shown services first, hidden after; move only swaps with a neighbour of the same kind
+  select array_agg(id order by not active, sort, id) into ids from public.services;
   i := array_position(ids, p_id); if i is null then raise exception 'not_found'; end if;
   j := i + sign(p_dir)::int;
   if j < 1 or j > array_length(ids, 1) then return; end if;
+  if (select active from public.services where id = ids[j]) is distinct from (select active from public.services where id = p_id) then return; end if;
   ids[i] := ids[j]; ids[j] := p_id;
   for k in 1 .. array_length(ids, 1) loop update public.services set sort = k where id = ids[k]; end loop;
 end $$;
+
+create or replace function public.staff_show_service(p_id text, p_active boolean)
+returns void
+language plpgsql volatile security definer set search_path = public as $$
+begin
+  if not public.is_staff() then raise exception 'not_staff'; end if;
+  update public.services set active = p_active,
+    sort = case when p_active then coalesce((select max(sort) from public.services where active), 0) + 1 else sort end
+  where id = p_id;
+end $$;
+
+revoke execute on function public.staff_show_service(text, boolean) from public, anon;
+grant execute on function public.staff_show_service(text, boolean) to authenticated;
 
 revoke execute on function public.staff_save_service(text, text, text, text, int, numeric, boolean), public.staff_move_service(text, int) from public, anon;
 grant execute on function public.staff_save_service(text, text, text, text, int, numeric, boolean), public.staff_move_service(text, int) to authenticated;

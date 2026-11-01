@@ -363,7 +363,7 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .sug-i span{color:var(--muted);font-size:13px;white-space:nowrap}
 
 .sv-list{display:grid;gap:8px;margin-bottom:8px}
-.sv-row{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.sv-row{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
 .sv-row.sv-off .sv-main b{color:var(--muted)}
 .sv-row.sv-on{display:block}
 .sv-main{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -372,3 +372,8 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .btn.sm{padding:6px 10px;font-size:13px;min-height:0}
 .sv-chk{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-weight:600}
 .sv-form .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sv-top{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.sv-more{font-size:20px;line-height:1;padding:4px 12px;letter-spacing:1px}
+.sv-menu{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.sv-hid{margin:10px 0}
+.sv-hid summary{cursor:pointer;color:var(--muted);font-weight:600;padding:8px 0}
