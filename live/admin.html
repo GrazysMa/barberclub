@@ -12,8 +12,8 @@
 <link rel="manifest" href="manifest-admin.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Barber Club">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="fonts.css?v=53">
-<link rel="stylesheet" href="style.css?v=53">
+<link rel="stylesheet" href="fonts.css?v=54">
+<link rel="stylesheet" href="style.css?v=54">
 <script src="vendor/supabase-2.118.0.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 </head>
@@ -42,7 +42,7 @@
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr-only" id="live" role="status" aria-live="polite"></div>
 
-<script src="shared.js?v=53"></script>
+<script src="shared.js?v=54"></script>
 <script>
 const I18N = {
   lt: {
@@ -554,11 +554,11 @@ function renderServices() {
     <div class="field"><label for="sv-pr">${t.svPrice}</label><input id="sv-pr" type="number" inputmode="decimal" min="0" max="10000" step="0.5" value="${x ? Number(x.price) : ''}"></div></div>
     <label class="sv-chk"><input type="checkbox" id="sv-act" ${!x || x.active ? 'checked' : ''}> ${t.svShow}</label>
     <div class="row"><button class="btn" id="sv-save">${t.cliSave}</button><button class="btn ghost" id="sv-cancel">${t.close}</button></div></div>`;
-  const rows = list.map((x, i) => x.id === ed ? `<div class="sv-row on">${form(x)}</div>` : `<div class="sv-row${x.active ? '' : ' off'}">
+  const rows = list.map((x, i) => x.id === ed ? `<div class="sv-row sv-on">${form(x)}</div>` : `<div class="sv-row${x.active ? '' : ' sv-off'}">
     <div class="sv-main"><b>${esc(sName(x))}</b><span>${t.dur(x.minutes)} · ${eur(x.price)}${x.active ? '' : ` · <span class="pill ns">${t.svHidden}</span>`}</span></div>
     <div class="sv-act"><button class="btn ghost sm" data-mv="${esc(x.id)}" data-d="-1" aria-label="${t.svUp}" ${i ? '' : 'disabled'}>↑</button><button class="btn ghost sm" data-mv="${esc(x.id)}" data-d="1" aria-label="${t.svDown}" ${i < list.length - 1 ? '' : 'disabled'}>↓</button><button class="btn ghost sm" data-ed="${esc(x.id)}">${t.svEdit}</button></div></div>`).join('');
   admin.innerHTML = `${tabsHtml()}<section class="panel"><h3>${t.svH}</h3>
-    ${ed === 'new' ? `<div class="sv-row on">${form(null)}</div>` : `<button class="btn" id="sv-new" style="margin-bottom:12px">${t.svNew}</button>`}
+    ${ed === 'new' ? `<div class="sv-row sv-on">${form(null)}</div>` : `<button class="btn" id="sv-new" style="margin-bottom:12px">${t.svNew}</button>`}
     <div class="sv-list">${rows}</div><p class="info">${t.svInfo}</p></section>`;
   bindTabs();
   const reload = async () => { const { data, error } = await sb.from('services').select('*').order('sort'); if (error) throw error; SERVICES = data; };

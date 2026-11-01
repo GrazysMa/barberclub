@@ -364,8 +364,8 @@ label.btn{display:inline-flex;align-items:center;cursor:pointer}
 
 .sv-list{display:grid;gap:8px;margin-bottom:8px}
 .sv-row{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
-.sv-row.off .sv-main b{color:var(--muted)}
-.sv-row.on{display:block}
+.sv-row.sv-off .sv-main b{color:var(--muted)}
+.sv-row.sv-on{display:block}
 .sv-main{display:flex;flex-direction:column;gap:2px;min-width:0}
 .sv-main span{color:var(--muted);font-size:13px}
 .sv-act{display:flex;gap:4px;flex:0 0 auto}
