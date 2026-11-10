@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fffcf6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#241c18" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Meda – grožio specialistė. Registracija internetu.">
+<title>Meda – vizito atšaukimas</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Meda">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="fonts.css?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="vendor/supabase-2.118.0.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.svg" width="88" height="88" alt=""><h1>Meda<span class="h1-sub">grožio specialistė</span></h1></div>
+      <p id="t-addr"></p>
+    </div>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="client" tabindex="-1"><section class="panel"><p class="loading">…</p></section></main>
+
+  <footer><div class="foot-row"><span id="t-foot"></span></div></footer>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=1"></script>
+<script>
+const C = {
+  lt: { title: 'Vizito atšaukimas', notFound: 'Rezervacija nerasta. Patikrinkite nuorodą arba paskambinkite.', service: 'Paslauga', barber: 'Meistrė', time: 'Laikas', code: 'Kodas',
+        ask: 'Ar tikrai norite atšaukti šį vizitą?', btn: 'Taip, atšaukti vizitą', sending: 'Atšaukiama…', done: 'Vizitas atšauktas. Laikas atlaisvintas kitoms klientėms.',
+        already: 'Šis vizitas jau atšauktas.', late: `Atšaukti internetu jau per vėlu. Skambinkite ${SHOP_PHONE}.`, fail: 'Nepavyko. Bandykite dar kartą arba paskambinkite.', again: 'Registruotis iš naujo', foot: `© ${new Date().getFullYear()} Meda · Visos teisės saugomos` },
+  en: { title: 'Cancel appointment', notFound: 'Booking not found. Check the link or call me.', service: 'Service', barber: 'Specialist', time: 'Time', code: 'Code',
+        ask: 'Do you really want to cancel this appointment?', btn: 'Yes, cancel appointment', sending: 'Cancelling…', done: 'Appointment cancelled. The slot is free for others now.',
+        already: 'This appointment is already cancelled.', late: `It’s too late to cancel online. Please call ${SHOP_PHONE}.`, fail: 'Something went wrong. Try again or call me.', again: 'Book again', foot: `© ${new Date().getFullYear()} Meda · All rights reserved` }
+};
+const P = new URLSearchParams(location.search), TOKEN = P.get('t') || '';
+if (['lt','en'].includes(P.get('lang'))) LANG = P.get('lang');
+const main = document.getElementById('client');
+let B = null, SVC = null, state = 'loading';
+function render() {
+  const t = { ...COMMON[LANG], ...C[LANG] }; paintCommon(); document.title = `Meda – ${t.title}`;
+  document.getElementById('t-foot').textContent = t.foot;
+  if (state === 'loading') { main.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (state === 'missing') { main.innerHTML = `<section class="panel"><h2>${t.title}</h2><p class="alert bad">${t.notFound}</p></section>`; return; }
+  const rows = `<div class="sum-row"><span>${t.service}</span><span>${esc(svcName(SVC) || '')}</span></div>
+    <div class="sum-row"><span>${t.barber}</span><span>${esc(B.barber_name)}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${niceDate(B.day)}, ${hm(B.start_min)}–${hm(B.end_min)}</span></div>
+    <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(B.code)}</span></div>`;
+  let body;
+  if (state === 'cancelled') body = `<p class="alert">${t.done}</p><a class="btn" href="./">${t.again}</a>`;
+  else if (B.status === 'cancelled') body = `<p class="alert">${t.already}</p><a class="btn" href="./">${t.again}</a>`;
+  else if (!B.can_cancel) body = `<p class="alert bad">${t.late}</p><a class="btn" href="tel:${SHOP_TEL}">${SHOP_PHONE}</a>`;
+  else body = `<p>${t.ask}</p><button class="btn red" id="go" ${state === 'sending' ? 'disabled aria-busy="true"' : ''}>${state === 'sending' ? t.sending : t.btn}</button>`;
+  main.innerHTML = `<section class="panel" style="max-width:520px;margin:0 auto"><h2>${t.title}</h2>${rows}<div style="margin-top:16px">${body}</div></section>`;
+  const go = document.getElementById('go');
+  if (go) go.onclick = async () => {
+    state = 'sending'; render();
+    const { error } = await sb.rpc('cancel_by_token', { p_token: TOKEN });
+    if (error) { const m = String(error.message || ''); if (m.includes('too_late')) { B.can_cancel = false; state = 'ok'; } else { state = 'ok'; toast(C[LANG].fail); } }
+    else state = 'cancelled';
+    render();
+  };
+}
+bindLangButtons(render);
+document.getElementById('skip').onclick = e => { e.preventDefault(); main.focus(); };
+(async () => {
+  render();
+  if (!/^[0-9a-f-]{36}$/i.test(TOKEN)) { state = 'missing'; return render(); }
+  const [r, s] = await Promise.all([sb.rpc('booking_by_token', { p_token: TOKEN }), sb.from('services').select('*')]);
+  B = (r.data || [])[0]; if (r.error || !B) { state = 'missing'; return render(); }
+  SVC = (s.data || []).find(x => x.id === B.service_id) || null;
+  state = 'ok'; render();
+})();
+</script>
+</body>
+</html>

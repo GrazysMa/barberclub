@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fffcf6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#241c18" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Meda – grožio specialistė Vilniuje, Žirmūnuose. Manikiūras, pedikiūras, antakių ir blakstienų laminavimas. Registracija internetu visą parą, mokama salone.">
+<title>Meda – manikiūras, pedikiūras, antakiai ir blakstienos Vilniuje</title>
+<!-- TODO domain: add <link rel="canonical">, og:url, og:image and the Search Console tag once the address is known -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Meda – manikiūras, pedikiūras, antakiai ir blakstienos Vilniuje">
+<meta property="og:description" content="Meda – grožio specialistė Vilniuje, Žirmūnuose. Manikiūras, pedikiūras, antakių ir blakstienų laminavimas. Registracija internetu visą parą, mokama salone.">
+<meta property="og:locale" content="lt_LT">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BeautySalon", "name": "Meda – grožio specialistė", "address": {"@type": "PostalAddress", "streetAddress": "Sporto g. 3-73", "addressLocality": "Vilnius", "postalCode": "09232", "addressCountry": "LT"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:00", "closes": "21:00"}], "priceRange": "€€", "paymentAccepted": "Cash, Card"}</script>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Meda">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="fonts.css?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="vendor/supabase-2.118.0.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#client">Pereiti prie turinio</a>
+<nav class="topbar" aria-label="Meniu"><div class="tb-in">
+  <a class="tb-brand" href="#top"><img src="logo.svg" width="36" height="36" alt=""><span>Meda</span></a>
+  <div class="tb-links"><a href="#book" id="nav-book">Registracija</a><a href="#team" id="nav-team">Apie mane</a><a href="#reviews" id="nav-rev" hidden>Atsiliepimai</a><a href="#info" id="nav-info">Informacija</a></div>
+  <div class="tb-act"><a class="tb-tel" id="tb-tel" href="#info"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span id="tb-tel-t"></span></a><button type="button" class="btn red tb-book" id="tb-book">Registruotis</button></div>
+</div></nav>
+<div class="wrap" id="top">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.svg" width="88" height="88" alt=""><h1>Meda<span class="h1-sub" id="h1-sub">grožio specialistė</span></h1></div>
+      <p class="addr"><span id="t-addr"></span></p>
+      <p class="rating-line"><button type="button" class="rating-btn" id="rating-btn" hidden></button></p>
+      <div class="chips">
+        <a class="chip" id="chip-tel" href="#info"><svg viewBox="0 0 24 24" class="chip-ico" width="16" height="16" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span id="chip-tel-t"></span></a>
+        <a class="chip" href="https://www.google.com/maps/search/?api=1&amp;query=Hair+Express+Beauty%2C+Sporto+g.+3%2C+Vilnius" target="_blank" rel="noopener"><svg class="chip-ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.750 7-13a7 7 0 0 0-7-7zm0 9.500a2.500 2.500 0 1 1 0-5 2.500 2.500 0 0 1 0 5z" fill="currentColor"/></svg><span id="map-l">Rasti žemėlapyje</span></a>
+      </div>
+      <div class="chips chips-rev">
+        <a class="chip" id="tw-rev" href="https://www.treatwell.lt/salonas/hair-express-beauty-sporto-g/" target="_blank" rel="noopener"><span id="tw-rev-t">Atsiliepimai Treatwell</span></a>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-t">
+    <div class="hero-track" id="hero-track"></div>
+    <svg class="hero-art" viewBox="0 0 300 400" aria-hidden="true" focusable="false"><path pathLength="1" d="M40 400V170a110 110 0 0 1 220 0v230"/><path pathLength="1" d="M64 400V172a86 86 0 0 1 172 0v228"/><path pathLength="1" d="M88 400V174a62 62 0 0 1 124 0v226"/><circle cx="150" cy="40" r="2.500"/></svg>
+    <div class="hero-dots" id="hero-dots" aria-hidden="true"></div>
+    <div class="hero-txt"><h2 id="hero-t"></h2><p id="hero-s"></p><button type="button" class="btn red" id="hero-b"></button></div>
+  </section>
+
+  <main id="client" tabindex="-1"></main>
+
+  <footer>
+    <div class="foot-co">
+      <b>Meda [TODO pavardė]</b><br>
+      <span id="f-code"></span> [TODO]<br>
+      <a id="f-mail" href="mailto:TODO">[TODO el. paštas]</a> · <a id="f-tel" href="#info"></a><br>
+      <span id="f-shop"></span>
+    </div>
+    <div class="foot-row"><span id="t-foot"></span><a href="privacy.html" id="t-priv">Privatumo politika</a></div>
+  </footer>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=1"></script>
+<script>
+const TEL_HREF = SHOP_TEL ? `tel:${SHOP_TEL}` : '#info';
+const TEL_A = () => `<a class="tel" href="${TEL_HREF}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>${SHOP_PHONE}</a>`;
+const I18N = {
+  lt: {
+    steps: ['Paslauga','Meistrė','Laikas','Duomenys'],
+    pickSvc: 'Pasirinkite paslaugą', pickBrb: 'Pasirinkite meistrę', any: 'Bet kuri laisva', anyS: 'Daugiausia laisvų laikų', pickTime: 'Pasirinkite laiką',
+    noSlotsDay: ', laisvų laikų nėra', parts: ['Rytas','Diena','Vakaras'], noSlots: 'Šią dieną laisvų laikų nėra. Pasirinkite kitą dieną.',
+    you: 'Jūsų duomenys', name: 'Vardas', phone: 'Telefono numeris', phoneHint: 'Paskambinsiu, jei reikės ką nors patikslinti.',
+    email: 'El. paštas', emailHint: 'Naudosiu tik su šiuo vizitu susijusiai informacijai.', note: 'Pastaba meistrei (nebūtina)',
+    back: 'Atgal', next: 'Toliau', confirm: 'Patvirtinti rezervaciją', sending: 'Siunčiama…',
+    visit: 'Jūsų vizitas', service: 'Paslauga', duration: 'Trukmė', barberL: 'Meistrė', time: 'Laikas', payIn: 'Mokama salone',
+    infoS: 'Mokama salone po vizito. Jei negalite atvykti, praneškite iš anksto.',
+    errName: 'Įrašykite vardą.', errPhone: 'Įrašykite telefono numerį, pvz. +370 612 34567.', errEmail: 'Įrašykite teisingą el. pašto adresą, pvz. vardas@gmail.com.',
+    errNote: 'Pastaba per ilga (iki 300 simbolių).',
+    taken: 'Šis laikas ką tik užimtas. Pasirinkite kitą.', tooSoon: 'Šis laikas jau per arti. Pasirinkite vėlesnį.',
+    tooMany: `Šiuo numeriu jau yra kelios būsimos rezervacijos. Dėl daugiau vizitų skambinkite ${SHOP_PHONE}.`,
+    failed: `Nepavyko užregistruoti. Bandykite dar kartą arba skambinkite ${SHOP_PHONE}.`,
+    confirmed: 'Patvirtinta', seeYou: n => `Iki pasimatymo, ${n}!`, with: 'pas', code: 'Rezervacijos kodas',
+    keep: `Išsisaugokite kodą. Jei negalėsite atvykti, skambinkite ${TEL_A()}.`,
+    again: 'Nauja rezervacija', foot: `© ${new Date().getFullYear()} Meda · Visos teisės saugomos`,
+    revs: n => { const m = n % 10, h = n % 100; return `${n} atsiliepim${m === 1 && h !== 11 ? 'as' : m >= 2 && m <= 9 && !(h >= 12 && h <= 19) ? 'ai' : 'ų'}`; },
+    revTitle: 'Klienčių atsiliepimai', twRev: 'Atsiliepimai Treatwell', twUrl: 'https://www.treatwell.lt/salonas/hair-express-beauty-sporto-g/', revNone: 'Naujų komentarų dar nėra.', revClose: 'Uždaryti', mapL: 'Rasti žemėlapyje', priv: 'Privatumo politika',
+    privNote: 'Duomenis naudosiu tik šiam vizitui. Daugiau – <a href="privacy.html" target="_blank" rel="noopener">privatumo politikoje</a>.',
+    infoT: 'Naudinga žinoti', infoPlace: 'Vieta', infoPlaceD: 'Grožio salonas „Hair Express Beauty“, Sporto g. 3-73, Vilnius, 09232 (Žirmūnai).',
+    infoHours: 'Darbo laikas', infoHoursD: 'Pirmadienį–penktadienį 9:00–21:00. Savaitgaliais nedirbu. Laisvi laikai rodomi registracijoje.',
+    infoCancel: 'Atšaukimas ir vėlavimas', infoCancelD: `${EMAILS_ON ? 'Vizitą galite atšaukti patvirtinimo laiške esančia nuoroda iki 2 val. prieš vizitą. Vėliau arba jei vėluojate – paskambinkite' : 'Negalite atvykti ar vėluojate? Paskambinkite kuo anksčiau'}, kad laiką galėčiau pasiūlyti kitai klientei.<br>${TEL_A()}`,
+    infoPay: 'Mokėjimas', infoPayD: 'Mokama salone po vizito. [TODO: kortele / grynaisiais]',
+    revBy: 'Paslaugą atliko', revVer: 'Patvirtintas vizitas', revFBrb: 'Meistrė', revAll: 'Visos meistrės', revFSvc: 'Paslauga', revAllS: 'Visos paslaugos', revFStar: 'Įvertinimas', revClear: 'Išvalyti filtrus', revNoMatch: 'Pagal pasirinktus filtrus atsiliepimų nėra.',
+    revNote: 'Įvertinimus palieka tik klientės, kurios užsiregistravo per šią svetainę ir apsilankė.',
+    team: 'Apie mane', about: 'Apie', gallery: 'Mano darbai', bookWith: n => 'Registruotis', heroT: 'Grožis su dėmesiu detalėms',
+    navBook: 'Registracija', navTeam: 'Apie mane', navRev: 'Atsiliepimai', navInfo: 'Informacija',
+    heroS: 'Manikiūras, pedikiūras, antakių ir blakstienų laminavimas Žirmūnuose. Laisvą laiką pasirinkite per minutę.', book: 'Registruotis', workOf: n => 'Darbo nuotrauka',
+    sub: 'grožio specialistė', fCode: 'Individualios veiklos pažymos nr.', fShop: 'Priimu: ' + ADDR_LINE,
+    title: 'Meda – manikiūras, pedikiūras, antakiai ir blakstienos Vilniuje'
+  },
+  en: {
+    steps: ['Service','Specialist','Time','Details'],
+    pickSvc: 'Choose a service', pickBrb: 'Choose a specialist', any: 'Any available', anyS: 'Most open times', pickTime: 'Choose a time',
+    noSlotsDay: ', fully booked', parts: ['Morning','Afternoon','Evening'], noSlots: 'No open times on this day. Try another day.',
+    you: 'Your details', name: 'First name', phone: 'Phone number', phoneHint: 'I’ll call if anything needs confirming.',
+    email: 'Email', emailHint: 'Used only for information about this visit.', note: 'Note for Meda (optional)',
+    back: 'Back', next: 'Continue', confirm: 'Confirm booking', sending: 'Sending…',
+    visit: 'Your visit', service: 'Service', duration: 'Duration', barberL: 'Specialist', time: 'Time', payIn: 'Pay at the salon',
+    infoS: 'You pay at the salon after your visit. If you can’t make it, please let me know in advance.',
+    errName: 'Enter your name.', errPhone: 'Enter a phone number, e.g. +370 612 34567.', errEmail: 'Enter a valid email, e.g. name@gmail.com.',
+    errNote: 'The note is too long (300 characters max).',
+    taken: 'That time was just taken. Please pick another.', tooSoon: 'That time is too close now. Please pick a later one.',
+    tooMany: `This phone number already has several upcoming bookings. For more, call ${SHOP_PHONE}.`,
+    failed: `Booking failed. Please try again or call ${SHOP_PHONE}.`,
+    confirmed: 'Confirmed', seeYou: n => `See you soon, ${n}!`, with: 'with', code: 'Booking code',
+    keep: `Save this code. If you can’t make it, call ${TEL_A()}.`,
+    again: 'New booking', foot: `© ${new Date().getFullYear()} Meda · All rights reserved`,
+    revs: n => `${n} review${n === 1 ? '' : 's'}`, revTitle: 'Client reviews', twRev: 'Reviews on Treatwell', twUrl: 'https://www.treatwell.lt/en/place/hair-express-beauty-sporto-g/', revNone: 'No new comments yet.', revClose: 'Close', mapL: 'Find on map', priv: 'Privacy policy',
+    privNote: 'I use your details only for this visit. More in the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.',
+    infoT: 'Good to know', infoPlace: 'Location', infoPlaceD: 'Hair Express Beauty salon, Sporto g. 3-73, Vilnius, 09232 (Žirmūnai).',
+    infoHours: 'Working hours', infoHoursD: 'Monday to Friday 9:00–21:00. Closed at weekends. Free times are shown when you book.',
+    infoCancel: 'Cancelling or running late', infoCancelD: `${EMAILS_ON ? 'You can cancel with the link in your confirmation email up to 2 hours before the visit. After that, or if you are running late, please call' : 'Can’t make it or running late? Please call as early as possible'} so I can offer the time to another client.<br>${TEL_A()}`,
+    infoPay: 'Payment', infoPayD: 'You pay at the salon after your visit. [TODO: card / cash]',
+    revBy: 'Done by', revVer: 'Verified visit', revFBrb: 'Specialist', revAll: 'All specialists', revFSvc: 'Service', revAllS: 'All services', revFStar: 'Rating', revClear: 'Clear filters', revNoMatch: 'No reviews match these filters.',
+    revNote: 'Only clients who booked on this website and visited can leave a rating.',
+    team: 'About me', about: 'About', gallery: 'My work', bookWith: n => 'Book now', heroT: 'Beauty with attention to detail',
+    navBook: 'Booking', navTeam: 'About me', navRev: 'Reviews', navInfo: 'Info',
+    heroS: 'Manicure, pedicure, brow and lash lamination in Žirmūnai, Vilnius. Pick a free time in a minute.', book: 'Book now', workOf: n => 'Photo of work',
+    sub: 'beauty specialist', fCode: 'Self-employment certificate no.', fShop: 'Find me at: ' + ADDR_LINE,
+    title: 'Meda – manicure, pedicure, brows and lashes in Vilnius'
+  }
+};
+const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
+
+let SERVICES = [], BARBERS = [], SET = null, BUSY = [], DAYS = [], HOURS = [];
+let loadState = 'loading', PR = null, revOpen = false;
+const st = { cat: null, step: 0, service: null, barber: null, date: null, time: null, name: '', phone: '', email: '', note: '', errors: {}, done: null, sending: false };
+const client = document.getElementById('client');
+
+const svc = id => SERVICES.find(s => s.id === id);
+const sName = s => svcName(s);
+const brb = id => BARBERS.find(b => b.id === id);
+
+async function loadBusy() {
+  const { data, error } = await sb.rpc('busy_slots', { p_from: DAYS[0], p_to: DAYS[DAYS.length - 1] });
+  if (error) throw error;
+  BUSY = data || [];
+}
+async function loadAll() {
+  loadState = 'loading'; render();
+  try {
+    const [s, b, c, h] = await Promise.all([
+      sb.from('services').select('*').eq('active', true).order('sort'),
+      sb.from('barbers').select('id,name,role,sort,about,photo,gallery').order('sort'),
+      sb.from('settings').select('*').limit(1),
+      sb.from('barber_hours').select('*')
+    ]);
+    for (const r of [s, b, c, h]) if (r.error) throw r.error;
+    SERVICES = s.data; BARBERS = b.data; SET = c.data[0]; HOURS = h.data || [];
+    const today = shopNow().date, n = Math.min(29, SET.days_ahead + 1);
+    DAYS = Array.from({ length: n }, (_, i) => addDays(today, i));
+    await loadBusy();
+    sb.rpc('public_ratings').then(({ data }) => { if (data) { PR = data; render(); } });
+    if (BARBERS.length === 1) st.barber = BARBERS[0].id;
+    loadState = 'ok';
+  } catch (e) { console.error(e); loadState = 'error'; }
+  render();
+}
+
+function busy(barber, date, start, len) {
+  return BUSY.some(b => b.barber_id === barber && b.day === date && start < b.end_min && b.start_min < start + len);
+}
+function works(barber, date, start, len) {
+  const dow = parseYmd(date).getDay();
+  return HOURS.some(h => h.barber_id === barber && h.dow === dow && start >= h.start_min && start + len <= h.end_min);
+}
+function freeBarbers(date, start, len, which) {
+  return (which === 'any' ? BARBERS.map(b => b.id) : [which]).filter(id => works(id, date, start, len) && !busy(id, date, start, len));
+}
+function slotsFor(date, len, which) {
+  const now = shopNow(), out = [];
+  for (let t = 0; t + len <= 1440; t += SET.step_min) {
+    if (date === now.date && t < now.min + SET.lead_min) continue;
+    if (freeBarbers(date, t, len, which).length) out.push(t);
+  }
+  return out;
+}
+const firstDayWithSlots = () => DAYS.find(d => slotsFor(d, svc(st.service).minutes, st.barber).length) || DAYS[0];
+const nf = (x, d = 1) => x.toLocaleString(LANG === 'en' ? 'en-GB' : 'lt-LT', { minimumFractionDigits: d, maximumFractionDigits: d });
+function overall() {
+  const n = PR ? PR.n : 0; return n ? { avg: PR.sum / n, n } : null;
+}
+const media = p => p ? `${SUPABASE_URL}/storage/v1/object/public/media/${p.split('/').map(encodeURIComponent).join('/')}` : '';
+const brbRating = id => { const r = PR && PR.barbers.find(x => x.id === id); return r && r.n ? { n: r.n, avg: Number(r.avg) } : null; };
+const avatar = (b, cls = '') => b.photo ? `<img class="avatar ${cls}" src="${esc(media(b.photo))}" alt="" width="42" height="42" loading="lazy">` : `<div class="avatar ${cls}" aria-hidden="true">${esc(b.name[0])}</div>`;
+let teamSel = null;
+const gl = b => Array.isArray(b && b.gallery) ? b.gallery : [];
+function teamHtml() {
+  if (!BARBERS.length) return '';
+  const t = T(); if (!teamSel || !brb(teamSel)) teamSel = BARBERS[0].id;
+  const b = brb(teamSel), r = brbRating(b.id);
+  const gal = gl(b).map((g, i) => `<button type="button" class="gal-img" data-gal="${i}"><img src="${esc(media(g))}" alt="${esc(t.workOf(b.name))} ${i + 1}" loading="lazy" width="200" height="266"></button>`).join('');
+  return `<section class="panel team" id="team"><h2>${t.team}</h2><div class="about">
+    ${b.photo ? `<img class="avatar tm-av" src="${esc(media(b.photo))}" alt="${esc(b.name)}" width="112" height="112" loading="lazy">` : `<div class="avatar tm-av" aria-hidden="true">${esc(b.name[0])}</div>`}
+    <div><p class="role">${esc(b.name)}, ${t.sub}${r ? ` · <span class="stars-s" aria-hidden="true">★</span> ${nf(r.avg)} (${r.n})` : ''}</p>
+      ${b.about ? `<p>${esc(b.about)}</p>` : ''}
+      <button type="button" class="btn red" id="team-book">${t.book}</button></div>
+    ${gal ? `<div class="gal">${gal}</div>` : ''}</div></section>`;
+}
+function infoHtml() {
+  const t = T();
+  return `<section class="panel info-p" id="info"><h2>${t.infoT}</h2><div class="info-grid">
+    <div><h3>${t.infoPlace}</h3><p>${t.infoPlaceD}<br><a href="https://www.google.com/maps/search/?api=1&amp;query=Hair+Express+Beauty%2C+Sporto+g.+3%2C+Vilnius" target="_blank" rel="noopener">${t.mapL}</a></p></div>
+    <div><h3>${t.infoHours}</h3><p>${t.infoHoursD}</p></div>
+    <div><h3>${t.infoCancel}</h3><p>${t.infoCancelD}</p></div>
+    <div><h3>${t.infoPay}</h3><p>${t.infoPayD}</p></div></div></section>`;
+}
+function openPhoto(i) {
+  const b = brb(teamSel), g = gl(b); if (!g.length) return;
+  let d = document.getElementById('lb'); if (!d) { d = document.createElement('dialog'); d.id = 'lb'; d.className = 'lb'; document.body.appendChild(d); }
+  const show = k => { i = (k + g.length) % g.length; d.innerHTML = `<img src="${esc(media(g[i]))}" alt=""><button class="lb-x" aria-label="×">×</button>${g.length > 1 ? '<button class="lb-p" aria-label="‹">‹</button><button class="lb-n" aria-label="›">›</button>' : ''}`;
+    d.querySelector('.lb-x').onclick = () => d.close(); const pv = d.querySelector('.lb-p'), nx = d.querySelector('.lb-n');
+    if (pv) { pv.onclick = e => { e.stopPropagation(); show(i - 1); }; nx.onclick = e => { e.stopPropagation(); show(i + 1); }; } };
+  d.onclick = e => { if (e.target === d) d.close(); };
+  d.onkeydown = e => { if (e.key === 'ArrowLeft') show(i - 1); if (e.key === 'ArrowRight') show(i + 1); };
+  show(i); d.showModal();
+}
+const starsFrac = v => `<span class="stars-f" style="--p:${Math.max(0, Math.min(100, v / 5 * 100)).toFixed(1)}%" aria-label="${nf(v)}/5">★★★★★</span>`;
+const starsHtml = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span class="star-off">${'★'.repeat(5 - n)}</span></span>`;
+function paintRating() {
+  const t = T(), b = document.getElementById('rating-btn'), o = overall();
+  if (!o) { b.hidden = true; return; }
+  b.hidden = false; b.setAttribute('aria-expanded', String(revOpen));
+  b.innerHTML = `<span class="stars-s">★</span> <b>${nf(o.avg)}</b> · ${t.revs(o.n)}`;
+  b.onclick = () => { revOpen = !revOpen; render(); if (revOpen) document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+}
+const revF = { brb: '', svc: '', stars: [] };
+function reviewsHtml() {
+  if (!revOpen || !overall()) return '';
+  const t = T(), o = overall(), rec = PR ? PR.recent : [];
+  const own = PR && PR.dist ? PR.dist : [0, 0, 0, 0, 0];
+  const dist = [0, 1, 2, 3, 4].map(i => own[i] || 0), dmax = Math.max(1, ...dist);
+  const list = rec.filter(r => (!revF.brb || r.barber_id === revF.brb) && (!revF.svc || r.service_id === revF.svc) && (!revF.stars.length || revF.stars.includes(r.stars)));
+  const brbOpts = BARBERS.map(b => { const r = brbRating(b.id); return `<option value="${esc(b.id)}" ${revF.brb === b.id ? 'selected' : ''}>${esc(b.name)}${r ? ` · ★ ${nf(r.avg)}` : ''}</option>`; }).join('');
+  const svcIds = [...new Set(rec.map(r => r.service_id))];
+  const svcOpts = SERVICES.filter(x => svcIds.includes(x.id)).map(x => `<option value="${esc(x.id)}" ${revF.svc === x.id ? 'selected' : ''}>${esc(sName(x))}</option>`).join('');
+  const starRows = [5, 4, 3, 2, 1].map((n, i) => `<label class="rf-star"><input type="checkbox" data-rstar="${n}" ${revF.stars.includes(n) ? 'checked' : ''}>${starsHtml(n)}<span class="rf-bar"><span style="width:${(dist[i] / dmax * 100).toFixed(1)}%"></span></span><span class="rf-n">${dist[i]}</span></label>`).join('');
+  const items = list.slice(0, 60).map(r => { const sv = svc(r.service_id);
+    return `<div class="rev">${starsHtml(r.stars)}<p>${esc(r.comment)}</p><div class="rev-meta">${BARBERS.length > 1 ? `${t.revBy} ${esc((brb(r.barber_id) || {}).name || '')}` : ''}${sv ? ` <span class="rev-tag">${esc(sName(sv))}</span>` : ''}</div><div class="rev-who"><b>${esc(r.name || '')}</b> · ${shortDate(r.day)}<span class="rev-ok">✓ ${t.revVer}</span></div></div>`; }).join('');
+  const any = revF.brb || revF.svc || revF.stars.length;
+  return `<section class="panel reviews" id="reviews"><div class="rev-head"><h2>${t.revTitle}</h2><button type="button" class="btn ghost" id="rev-close">${t.revClose}</button></div>
+    <div class="rev-big"><b>${nf(o.avg)}</b><div>${starsFrac(o.avg)}<div class="rev-sub">${t.revs(o.n)}</div></div></div>
+    <div class="rev-grid"><aside class="rev-filters">
+      ${BARBERS.length > 1 ? `<label class="rf-l" for="rf-b">${t.revFBrb}</label><select id="rf-b"><option value="">${t.revAll}</option>${brbOpts}</select>` : ''}
+      ${svcOpts ? `<label class="rf-l" for="rf-s">${t.revFSvc}</label><select id="rf-s"><option value="">${t.revAllS}</option>${svcOpts}</select>` : ''}
+      <div class="rf-l">${t.revFStar}</div>${starRows}
+      ${any ? `<button type="button" class="btn ghost" id="rf-clear" style="margin-top:10px;width:100%">${t.revClear}</button>` : ''}
+      <p class="rev-sub" style="margin-top:12px">${t.revNote}</p></aside>
+    <div class="rev-list">${items || `<p class="info">${rec.length ? t.revNoMatch : t.revNone}</p>`}</div></div></section>`;
+}
+function bindReviews() {
+  if (!document.querySelector('.rev-filters')) return;
+  const b = document.getElementById('rf-b'); if (b) b.onchange = () => { revF.brb = b.value; render(); };
+  const sv = document.getElementById('rf-s'); if (sv) sv.onchange = () => { revF.svc = sv.value; render(); };
+  document.querySelectorAll('[data-rstar]').forEach(c => c.onchange = () => { const n = +c.dataset.rstar; revF.stars = c.checked ? [...revF.stars, n] : revF.stars.filter(x => x !== n); render(); });
+  const cl = document.getElementById('rf-clear'); if (cl) cl.onclick = () => { revF.brb = ''; revF.svc = ''; revF.stars = []; render(); };
+}
+const firstStep = () => BARBERS.length === 1 ? [0, 2, 3] : [0, 1, 2, 3];
+
+function demoUi() {
+  const t = T(), toBook = () => document.querySelector('.grid .panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('hero-t').textContent = t.heroT; document.getElementById('hero-s').textContent = t.heroS;
+  const hb = document.getElementById('hero-b'); hb.textContent = t.book; hb.onclick = toBook;
+  document.querySelector('.hero').classList.toggle('has-img', !!document.querySelector('#hero-track img'));
+  const tbb = document.getElementById('tb-book'); tbb.textContent = t.book; tbb.onclick = toBook;
+  const nb = document.getElementById('nav-book'); nb.textContent = t.navBook; nb.onclick = e => { e.preventDefault(); toBook(); };
+  document.getElementById('nav-team').textContent = t.navTeam; document.getElementById('nav-info').textContent = t.navInfo;
+  const nr = document.getElementById('nav-rev'); nr.textContent = t.navRev; nr.hidden = !overall();
+  nr.onclick = e => { e.preventDefault(); if (!revOpen) { revOpen = true; render(); } document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const panel = document.querySelector('.grid .panel'); if (panel) panel.id = 'book-panel';
+}
+function render() {
+  const t = T();
+  paintCommon();
+  document.title = t.title;
+  document.getElementById('t-foot').textContent = t.foot;
+  document.getElementById('h1-sub').textContent = t.sub;
+  document.getElementById('f-code').textContent = t.fCode;
+  document.getElementById('f-shop').textContent = t.fShop;
+  document.getElementById('t-priv').textContent = t.priv;
+  for (const id of ['tb-tel', 'chip-tel', 'f-tel']) document.getElementById(id).href = TEL_HREF;
+  document.getElementById('tb-tel').setAttribute('aria-label', SHOP_PHONE);
+  for (const id of ['tb-tel-t', 'chip-tel-t', 'f-tel']) document.getElementById(id).textContent = SHOP_PHONE;
+  paintRating();
+  document.getElementById('map-l').textContent = t.mapL;
+  const tr = document.getElementById('tw-rev'); document.getElementById('tw-rev-t').textContent = t.twRev; tr.href = t.twUrl;
+  if (loadState === 'loading') { client.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (loadState === 'error') { client.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; client.querySelector('#retry').onclick = loadAll; return; }
+  if (st.done) { client.innerHTML = doneView(); bindDone(); return; }
+
+  const visible = firstStep();
+  const steps = visible.map((s, i) => s < st.step
+    ? `<button type="button" class="done" data-go="${s}">${i + 1}. ${t.steps[s]}</button>`
+    : `<span class="${s === st.step ? 'on' : ''}" ${s === st.step ? 'aria-current="step"' : ''}>${i + 1}. ${t.steps[s]}</span>`).join('');
+  let body = '';
+  if (st.step === 0) {
+    const cats = [...CATS, 'other'].filter(c => SERVICES.some(s => catOf(s) === c));
+    if (st.service && svc(st.service)) st.cat = st.cat || catOf(svc(st.service));
+    if (!cats.includes(st.cat)) st.cat = cats[0];
+    body = `<h2>${t.pickSvc}</h2>${cats.length > 1 ? `<div class="cats" role="tablist">${cats.map(c => `<button type="button" role="tab" data-cat="${c}" aria-selected="${st.cat === c}">${t.cat[c]}</button>`).join('')}</div>` : ''}
+      <div class="menu">${SERVICES.filter(s => catOf(s) === st.cat).map(s => `
+      <button class="menu-i" data-svc="${esc(s.id)}" aria-pressed="${st.service === s.id}">
+        <span class="mi-name">${esc(sName(s))}</span><span class="mi-lead" aria-hidden="true"></span><span class="mi-p">${eur(s.price)}</span>
+        <span class="mi-d">${t.dur(s.minutes)}</span></button>`).join('')}</div>`;
+  } else if (st.step === 1) {
+    body = `<h2>${t.pickBrb}</h2><div class="list">
+      <button class="opt" data-brb="any" aria-pressed="${st.barber === 'any'}"><div class="avatar any" aria-hidden="true">✂</div><div class="main"><div class="t">${t.any}</div><div class="s">${t.anyS}</div></div></button>
+      ${BARBERS.map(b => `<button class="opt" data-brb="${esc(b.id)}" aria-pressed="${st.barber === b.id}">${avatar(b)}<div class="main"><div class="t">${esc(b.name)}</div><div class="s">${t.role[b.role] || ''}${brbRating(b.id) ? ` · <span class="stars-s">★</span> ${nf(brbRating(b.id).avg)} (${brbRating(b.id).n})` : ''}</div></div></button>`).join('')}</div>`;
+  } else if (st.step === 2) {
+    const len = svc(st.service).minutes;
+    if (!st.date) st.date = firstDayWithSlots();
+    const days = DAYS.map(d => { const n = slotsFor(d, len, st.barber).length; return dayBtn(d, 'data-day', st.date === d, !n, niceDate(d) + (n ? '' : t.noSlotsDay)); }).join('');
+    const sl = slotsFor(st.date, len, st.barber);
+    const groups = [[0, 0, 720], [1, 720, 1020], [2, 1020, 1440]].map(([n, a, b]) => {
+      const g = sl.filter(x => x >= a && x < b); if (!g.length) return '';
+      return `<div class="part">${t.parts[n]}</div><div class="slots">${g.map(x => `<button class="slot" data-t="${x}" aria-pressed="${st.time === x}">${hm(x)}</button>`).join('')}</div>`;
+    }).join('');
+    body = `<h2>${t.pickTime}</h2><div class="days">${days}</div><h3>${niceDate(st.date)}</h3>${groups || `<div class="empty">${t.noSlots}</div>`}`;
+  } else {
+    const e = st.errors;
+    const fld = (k, label, attrs, hint) => `<div class="field"><label for="f-${k}">${label}</label><input id="f-${k}" name="${k}" ${attrs} ${e[k] ? `aria-invalid="true" aria-describedby="e-${k}"` : ''} value="${esc(st[k])}">${e[k] ? `<span class="err" id="e-${k}">${t[e[k]]}</span>` : hint ? `<span style="font-size:12px;color:var(--muted)">${hint}</span>` : ''}</div>`;
+    body = `<h2>${t.you}</h2>
+      ${fld('name', t.name, 'autocomplete="given-name" maxlength="60"', '')}
+      ${fld('phone', t.phone, 'type="tel" autocomplete="tel" inputmode="tel" spellcheck="false" maxlength="20" placeholder="+370 612 34567"', t.phoneHint)}
+      ${fld('email', t.email, 'type="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="120" placeholder="vardas@gmail.com"', t.emailHint)}
+      <p class="priv-note">${t.privNote}</p><div class="field"><label for="f-note">${t.note}</label><textarea id="f-note" name="note" autocomplete="off" rows="2" maxlength="300" ${e.note ? 'aria-invalid="true" aria-describedby="e-note"' : ''}>${esc(st.note)}</textarea>${e.note ? `<span class="err" id="e-note">${t[e.note]}</span>` : ''}</div>`;
+  }
+  const canNext = [st.service, st.barber, st.time != null, !st.sending][st.step];
+  const showBack = st.step > 0;
+  const nav = `<div class="nav">${showBack ? `<button class="btn ghost" id="back">${t.back}</button>` : '<span></span>'}
+    <button class="btn ${st.step === 3 ? 'red' : ''}" id="next" ${canNext ? '' : 'disabled'} ${st.sending ? 'aria-busy="true"' : ''}>${st.step === 3 ? (st.sending ? t.sending : t.confirm) : t.next}</button></div>`;
+  client.innerHTML = `${reviewsHtml()}<div class="grid"><section class="panel"><div class="steps">${steps}</div>${body}${nav}</section>${summary()}</div>${teamHtml()}${infoHtml()}`;
+  bindClient();
+  const rc = document.getElementById('rev-close'); if (rc) rc.onclick = () => { revOpen = false; render(); };
+  bindReviews();
+  client.querySelectorAll('[data-team]').forEach(x => x.onclick = () => { teamSel = x.dataset.team; render(); });
+  client.querySelectorAll('[data-gal]').forEach(x => x.onclick = () => openPhoto(+x.dataset.gal));
+  const bookWith = id => { teamSel = id; if (st.barber !== id) { st.barber = id; st.date = null; st.time = null; } go(st.service ? 2 : 0); client.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const tb = document.getElementById('team-book'); if (tb) tb.onclick = () => bookWith(teamSel);
+  client.querySelectorAll('[data-book]').forEach(x => x.onclick = () => bookWith(x.dataset.book));
+  demoUi();
+}
+function summary() {
+  const t = T(), s = st.service && svc(st.service);
+  const who = st.barber === 'any' ? t.any : st.barber ? brb(st.barber).name : '—';
+  return `<aside class="panel summary"><h3>${t.visit}</h3>
+    <div class="sum-row"><span>${t.service}</span><span>${s ? esc(sName(s)) : '—'}</span></div>
+    <div class="sum-row"><span>${t.duration}</span><span>${s ? t.dur(s.minutes) : '—'}</span></div>
+    ${BARBERS.length > 1 ? `<div class="sum-row"><span>${t.barberL}</span><span>${esc(who)}</span></div>` : ''}
+    <div class="sum-row"><span>${t.time}</span><span>${st.time != null ? `${shortDate(st.date)} · ${hm(st.time)}` : '—'}</span></div>
+    <div class="sum-total"><span>${t.payIn}</span><b>${s ? eur(s.price) : '—'}</b></div>
+    <p class="info">${t.infoS}</p></aside>`;
+}
+function go(step) {
+  st.step = step; render();
+  if (step === 2) loadBusy().then(render).catch(() => {});
+}
+function bindClient() {
+  const steps = firstStep();
+  const nextOf = s => steps[steps.indexOf(s) + 1], prevOf = s => steps[steps.indexOf(s) - 1];
+  client.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { st.cat = b.dataset.cat; render(); client.querySelector(`[data-cat="${st.cat}"]`)?.focus(); });
+  client.querySelectorAll('[data-svc]').forEach(b => b.onclick = () => { if (st.service !== b.dataset.svc) { st.service = b.dataset.svc; st.date = null; st.time = null; } go(nextOf(0)); });
+  client.querySelectorAll('[data-brb]').forEach(b => b.onclick = () => { if (st.barber !== b.dataset.brb) { st.barber = b.dataset.brb; st.date = null; st.time = null; } go(2); });
+  client.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { st.date = b.dataset.day; st.time = null; render(); });
+  client.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { st.time = +b.dataset.t; render(); });
+  client.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { saveFields(); go(+b.dataset.go); });
+  const back = client.querySelector('#back'); if (back) back.onclick = () => { saveFields(); go(prevOf(st.step)); };
+  client.querySelector('#next').onclick = () => { if (st.step < 3) { go(nextOf(st.step)); return; } submit(); };
+}
+function saveFields() {
+  const n = client.querySelector('#f-name');
+  if (n) { st.name = n.value; st.phone = client.querySelector('#f-phone').value; st.email = client.querySelector('#f-email').value; st.note = client.querySelector('#f-note').value; }
+}
+function showErrors(e) {
+  st.errors = e; render();
+  const k = Object.keys(e)[0], el = client.querySelector('#f-' + k); if (el) el.focus();
+  announce(Object.values(e).map(x => T()[x]).join(' '));
+}
+async function submit() {
+  if (st.sending) return;
+  saveFields();
+  const e = {};
+  if (st.name.trim().length < 2) e.name = 'errName';
+  if (st.phone.replace(/\D/g, '').length < 8) e.phone = 'errPhone';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(st.email.trim())) e.email = 'errEmail';
+  if (st.note.trim().length > 300) e.note = 'errNote';
+  if (Object.keys(e).length) { showErrors(e); return; }
+  st.errors = {}; st.sending = true; render();
+  const { data, error } = await sb.rpc('create_booking', {
+    p_service: st.service, p_barber: st.barber, p_day: st.date, p_start_min: st.time,
+    p_name: st.name.trim(), p_phone: st.phone.trim(), p_email: st.email.trim(), p_note: st.note.trim() || null, p_lang: LANG
+  });
+  st.sending = false;
+  if (error || !data || !data.length) {
+    const c = errCode(error), t = T();
+    if (c === 'bad_name') return showErrors({ name: 'errName' });
+    if (c === 'bad_phone') return showErrors({ phone: 'errPhone' });
+    if (c === 'bad_email') return showErrors({ email: 'errEmail' });
+    if (c === 'bad_note') return showErrors({ note: 'errNote' });
+    if (c === 'slot_taken' || c === 'too_soon' || c === 'bad_time' || c === 'bad_day') {
+      st.time = null; go(2); toast(c === 'too_soon' ? t.tooSoon : t.taken); return;
+    }
+    render(); toast(c === 'too_many' ? t.tooMany : t.failed); return;
+  }
+  const r = data[0];
+  if (EMAILS_ON) fetch(`${SUPABASE_URL}/functions/v1/send-emails`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: r.code }) }).catch(() => {});
+  st.done = { code: r.code, barberName: r.barber_name, day: r.day, start: r.start_min, end: r.end_min, service: st.service, name: st.name.trim() };
+  render(); client.focus();
+}
+function doneView() {
+  const t = T(), d = st.done, s = svc(d.service);
+  return `<section class="panel done-box" style="max-width:560px;margin:0 auto">
+    <span class="pill ok">${t.confirmed}</span>
+    <h2 style="margin-top:12px">${t.seeYou(esc(d.name))}</h2>
+    <p>${esc(sName(s))}${BARBERS.length > 1 ? ` ${t.with} <strong>${esc(d.barberName)}</strong>` : ''}<br>${niceDate(d.day)}, ${hm(d.start)}–${hm(d.end)}</p>
+    <div class="code" translate="no" aria-label="${t.code}">${esc(d.code)}</div>
+    <p class="info" style="margin-top:0">${t.keep}</p>
+    <div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" id="again">${t.again}</button></div></section>`;
+}
+function bindDone() {
+  client.querySelector('#again').onclick = () => {
+    Object.assign(st, { step: 0, cat: null, service: null, barber: BARBERS.length === 1 ? BARBERS[0].id : null, date: null, time: null, note: '', errors: {}, done: null });
+    go(0);
+  };
+}
+
+document.getElementById('skip').onclick = e => { e.preventDefault(); client.focus(); };
+bindLangButtons(() => { saveFields(); render(); });
+loadAll();
+setInterval(() => { if (loadState === 'ok' && st.step === 2 && !document.hidden) loadBusy().then(render).catch(() => {}); }, 60000);
+</script>
+</body>
+</html>

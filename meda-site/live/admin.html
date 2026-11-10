@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fffcf6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#241c18" media="(prefers-color-scheme: dark)">
+<title>Meda – skydelis</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest-admin.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Meda">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="fonts.css?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<script src="vendor/supabase-2.118.0.js"></script>
+<script src="vendor/qrcode-1.4.4.js"></script>
+</head>
+<body>
+<a class="skip" id="skip" href="#admin">Pereiti prie turinio</a>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-row"><img class="logo" src="logo.svg" width="88" height="88" alt=""><h1>Meda<span class="h1-sub">grožio specialistė</span></h1></div>
+      <p id="t-addr"></p>
+      <p class="who" id="who"></p>
+    </div>
+    <div class="controls">
+      <button class="btn ghost" id="logout" hidden style="padding:8px 14px;font-size:13px"></button>
+      <div class="lang" role="group" aria-label="Kalba / Language">
+        <button id="lang-lt" lang="lt" aria-pressed="true">LT</button>
+        <button id="lang-en" lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="admin" tabindex="-1"></main>
+</div>
+<div class="toast" id="toast" aria-hidden="true" hidden></div>
+<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=1"></script>
+<script>
+const I18N = {
+  lt: {
+    title: 'Meda – skydelis', loginH: 'Prisijungimas', email: 'El. paštas', pass: 'Slaptažodis', login: 'Prisijungti', logging: 'Jungiamasi…',
+    badLogin: 'Neteisingas el. paštas arba slaptažodis.', notStaff: 'Ši paskyra neturi prieigos prie skydelio.', forgot: 'Pamiršai slaptažodį? Įrašyk el. paštą ir spausk mygtuką žemiau.',
+    logout: 'Atsijungti', signedAs: e => `Prisijungta: ${e}`,
+    sToday: 'Šiandien vizitų', sTodayRev: 'Šiandienos pajamos', sDay: 'Vizitų', sDayRev: 'Pajamos', findL: 'Rasti vizitą', findPh: 'Kodas, vardas arba telefonas', findNone: 'Nieko nerasta', sWeek: 'Ateinančios 7 d.', sNew: 'Naujos per 24 val.', vShort: 'viz.',
+    blockT: 'Užblokuoti laiką', close: 'Uždaryti', refresh: 'Atnaujinti', updated: t => `Atnaujinta ${t}`,
+    lgBook: 'Rezervacija', lgNew: 'Nauja (24 val.)', lgBlk: 'Užblokuota', blocked: 'Užblokuota',
+    visitH: 'Vizitas', visitHint: 'Paspausk vizitą kalendoriuje, kad matytum kliento duomenis.',
+    service: 'Paslauga', time: 'Laikas', barberL: 'Meistrė', price: 'Kaina', code: 'Kodas', created: 'Užregistruota',
+    pNo: 'Neatvyko', pNew: 'Nauja', pOk: 'Patvirtinta', pDone: 'Įvyko', rateL: 'Įvertinimas', lgDone: 'Įvyko', noshow: 'Neatvyko', undoNoshow: 'Atvyko', cancel: 'Atšaukti vizitą', cancelSure: 'Tikrai atšaukti?',
+    blkH: 'Užblokuotas laikas', unblock: 'Atblokuoti', bBarber: 'Meistrė', bFrom: 'Nuo', bLen: 'Trukmė', bSave: 'Užblokuoti', h: 'val.',
+    tUnblocked: 'Laikas atblokuotas', tCancelled: 'Vizitas atšauktas. Laikas vėl laisvas klientams.', tNoshow: 'Pažymėta: neatvyko', tShow: 'Pažymėta: atvyko',
+    tBusy: 'Tuo metu jau yra vizitas. Pasirink kitą laiką.', tBlocked: 'Laikas užblokuotas', tFail: 'Nepavyko. Patikrink internetą ir bandyk dar kartą.', refreshed: 'Atnaujinta',
+    linkH: 'Registracijos nuoroda klientams', copy: 'Kopijuoti', tCopied: 'Nuoroda nukopijuota', tSelect: 'Pažymėta, nukopijuok ranka',
+    linkInfo: 'Įdėk į Instagram bio, Google Maps profilį ir Facebook.', qrAlt: 'QR kodas registracijai',
+    qrInfo: 'Klientas nuskenuoja telefonu ir iškart patenka į registraciją.', none: 'Šią dieną vizitų nėra.', allDay: 'Visa diena',
+    addV: '+ Vizitas', vName: 'Kliento vardas', vPhone: 'Telefonas (nebūtina)', vSrc: 'Iš kur', vNote: 'Pastaba (nebūtina)', vSave: 'Pridėti vizitą', tAdded: 'Vizitas pridėtas', vNeedName: 'Įvesk kliento vardą',
+    src: 'Šaltinis', srcN: { web: 'Svetainė', phone: 'Telefonu', walkin: 'Gyvai', treatwell: 'Treatwell' },
+    hoursT: 'Darbo grafikas', hSave: 'Išsaugoti grafiką', tHours: 'Grafikas išsaugotas', dayOff: 'Nedirba', hTo: 'iki',
+    hInfo: 'Klientai matys laikus tik darbo valandomis. Atostogoms ar vienai dienai naudok „Užblokuoti laiką“.',
+    tabCal: 'Kalendorius', tabCli: 'Klientai', cliSalon: 'Visi salono klientai (Treatwell)', tabRat: 'Įvertinimai', cliSearch: 'Ieškoti: vardas, telefonas, el. paštas', cliCount: n => `${n} klientų`, cliVisits: 'vizitų', cliNo: 'neatvyko', cliLast: 'Paskutinis', cliNext: 'Kitas', cliNote: 'Pastaba', cliSave: 'Išsaugoti', cliMore: 'Rodyti daugiau', cliCsv: 'Atsisiųsti CSV', cliNone: 'Klientų nerasta', cliMk: 'sutinka gauti naujienas', tNote: 'Pastaba išsaugota', ratAvg: 'Vidurkis', ratCount: n => `${n} įvert.`, ratNone: 'Įvertinimų dar nėra. Klientai gaus nuorodą el. paštu po vizito, arba nusiųsk ją pats iš vizito kortelės.', rateLink: 'Įvertinimo nuoroda', tRateCopied: 'Įvertinimo nuoroda nukopijuota – nusiųsk klientui', revShort: 'pajamos', tabTeam: 'Profilis', tabSvc: 'Paslaugos', svH: 'Paslaugos ir kainos', svNew: '+ Nauja paslauga', svEdit: 'Keisti', svNameLt: 'Pavadinimas (lietuviškai)', svNameEn: 'Pavadinimas angliškai (nebūtina)', svNameTr: 'Pavadinimas turkiškai (nebūtina)', svMin: 'Trukmė', svPrice: 'Kaina, €', svShow: 'Rodyti klientams', svShowBtn: 'Rodyti klientams', svHide: 'Paslėpti nuo klientų', svHideSure: 'Paslėpti šią paslaugą? Klientai jos nebematys.', svMore: 'Daugiau', svHiddenH: n => `Paslėptos paslaugos (${n})`, svHidden: 'Paslėpta', svUp: 'Aukščiau', svDown: 'Žemiau', svInfo: 'Pakeitimai iškart matosi svetainėje. Jau užregistruotų vizitų trukmė ir laikas nesikeičia. Paslaugos neištrinamos – jei nebereikia, paspausk ⋯ ir „Paslėpti nuo klientų“.', svBad: 'Patikrink pavadinimą ir kainą', tSaved: 'Išsaugota', tmPhoto: 'Keisti nuotrauką', tmAbout: 'Apie (rodoma klientams)', tmGallery: 'Darbų galerija', tmAdd: '+ Pridėti nuotraukų', tmNone: 'Nuotraukų dar nėra.', tmRemove: 'Pašalinti', tmConfirm: 'Pašalinti šią nuotrauką?', tmUploading: 'Įkeliama…', tmInfo: 'Viskas iškart matosi klientų puslapyje, skiltyje „Susipažink su komanda“.', ratHide: 'Slėpti nuo klientų', ratShow: 'Rodyti klientams', ratHidden: 'Paslėpta nuo klientų', ratPublic: 'Žvaigždutės ir komentarai rodomi klientų puslapyje. Rodomi tik per šią svetainę gauti įvertinimai.',
+    pwSetH: 'Sukurk slaptažodį', pwSetInfo: 'Sveiki! Susikurk slaptažodį, kuriuo jungsiesi prie skydelio.', resetBtn: 'Pamiršau slaptažodį', tReset: 'Jei toks el. paštas yra, išsiuntėme nuorodą slaptažodžiui atkurti.', needEmail: 'Įrašyk el. paštą viršuje.',
+    accH: 'Paskyra', pwBtn: 'Pakeisti slaptažodį', pwNew: 'Naujas slaptažodis (bent 10 simbolių)', pwRep: 'Pakartok slaptažodį', pwSave: 'Išsaugoti', pwShort: 'Slaptažodis per trumpas (bent 10 simbolių).', pwDiff: 'Slaptažodžiai nesutampa.', tPw: 'Slaptažodis pakeistas', pushH: 'Pranešimai šiame telefone', pushOn: 'Įjungti pranešimus', pushOff: 'Išjungti', pushTest: 'Bandomasis pranešimas', pushFor: 'Pranešti apie vizitus pas', pushIsOn: n => `Įjungta: gausi pranešimą, kai kas nors užsiregistruos pas ${n}.`, pushIos: 'iPhone: pirmiausia įsidėk šį puslapį į pradinį ekraną (Dalintis → Add to Home Screen) ir atidaryk iš ikonėlės.', pushNo: 'Ši naršyklė pranešimų nepalaiko.', pushDenied: 'Pranešimai užblokuoti. Įjunk juos telefono nustatymuose šiai programėlei.', tPushOn: 'Pranešimai įjungti', tPushOff: 'Pranešimai išjungti', tPushTest: 'Išsiųsta – pranešimas turėtų atsirasti per kelias sekundes',
+    move: 'Perkelti', mDay: 'Diena', mSave: 'Perkelti čia', tMoved: 'Perkelta', dowL: ['Sekmadienis','Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis']
+  },
+  en: {
+    title: 'Meda – dashboard', loginH: 'Sign in', email: 'Email', pass: 'Password', login: 'Sign in', logging: 'Signing in…',
+    badLogin: 'Wrong email or password.', notStaff: 'This account has no access to the dashboard.', forgot: 'Forgot your password? Enter your email and press the button below.',
+    logout: 'Sign out', signedAs: e => `Signed in: ${e}`,
+    sToday: 'Visits today', sTodayRev: 'Revenue today', sDay: 'Visits', sDayRev: 'Revenue', findL: 'Find a visit', findPh: 'Code, name or phone', findNone: 'Nothing found', sWeek: 'Next 7 days', sNew: 'New in 24 h', vShort: 'visits',
+    blockT: 'Block time', close: 'Close', refresh: 'Refresh', updated: t => `Updated ${t}`,
+    lgBook: 'Booking', lgNew: 'New (24 h)', lgBlk: 'Blocked', blocked: 'Blocked',
+    visitH: 'Appointment', visitHint: 'Tap an appointment in the calendar to see client details.',
+    service: 'Service', time: 'Time', barberL: 'Specialist', price: 'Price', code: 'Code', created: 'Booked',
+    pNo: 'No-show', pNew: 'New', pOk: 'Confirmed', pDone: 'Done', rateL: 'Rating', lgDone: 'Done', noshow: 'No-show', undoNoshow: 'Showed up', cancel: 'Cancel appointment', cancelSure: 'Really cancel?',
+    blkH: 'Blocked time', unblock: 'Unblock', bBarber: 'Specialist', bFrom: 'From', bLen: 'Length', bSave: 'Block', h: 'h',
+    tUnblocked: 'Time unblocked', tCancelled: 'Appointment cancelled. The slot is open again.', tNoshow: 'Marked as no-show', tShow: 'Marked as showed up',
+    tBusy: 'There’s already an appointment then. Pick another time.', tBlocked: 'Time blocked', tFail: 'Something went wrong. Check your connection and try again.', refreshed: 'Updated',
+    linkH: 'Client booking link', copy: 'Copy', tCopied: 'Link copied', tSelect: 'Selected, copy it manually',
+    linkInfo: 'Add it to your Instagram bio, Google Maps profile and Facebook.', qrAlt: 'Booking QR code',
+    qrInfo: 'Clients scan it with their phone and land straight on booking.', none: 'No appointments on this day.', allDay: 'All day',
+    addV: '+ Appointment', vName: 'Client name', vPhone: 'Phone (optional)', vSrc: 'Source', vNote: 'Note (optional)', vSave: 'Add appointment', tAdded: 'Appointment added', vNeedName: 'Enter the client’s name',
+    src: 'Source', srcN: { web: 'Website', phone: 'Phone', walkin: 'Walk-in', treatwell: 'Treatwell' },
+    hoursT: 'Working hours', hSave: 'Save hours', tHours: 'Hours saved', dayOff: 'Off', hTo: 'to',
+    hInfo: 'Clients only see times within working hours. For a holiday or a single day, use “Block time”.',
+    tabCal: 'Calendar', tabCli: 'Clients', cliSalon: 'All salon clients (Treatwell)', tabRat: 'Ratings', cliSearch: 'Search: name, phone, email', cliCount: n => `${n} clients`, cliVisits: 'visits', cliNo: 'no-shows', cliLast: 'Last', cliNext: 'Next', cliNote: 'Note', cliSave: 'Save', cliMore: 'Show more', cliCsv: 'Download CSV', cliNone: 'No clients found', cliMk: 'agrees to marketing', tNote: 'Note saved', ratAvg: 'Average', ratCount: n => `${n} ratings`, ratNone: 'No ratings yet. Clients get a link by email after the visit, or send it yourself from the visit card.', rateLink: 'Rating link', tRateCopied: 'Rating link copied – send it to the client', revShort: 'revenue', tabTeam: 'Profile', tabSvc: 'Services', svH: 'Services and prices', svNew: '+ New service', svEdit: 'Edit', svNameLt: 'Name (Lithuanian)', svNameEn: 'Name in English (optional)', svNameTr: 'Name in Turkish (optional)', svMin: 'Duration', svPrice: 'Price, €', svShow: 'Show to clients', svShowBtn: 'Show to clients', svHide: 'Hide from clients', svHideSure: 'Hide this service? Clients won’t see it.', svMore: 'More', svHiddenH: n => `Hidden services (${n})`, svHidden: 'Hidden', svUp: 'Up', svDown: 'Down', svInfo: 'Changes show on the website right away. Visits already booked keep their time and length. Services can’t be deleted – tap ⋯ and “Hide from clients” instead.', svBad: 'Check the name and price', tSaved: 'Saved', tmPhoto: 'Change photo', tmAbout: 'About (shown to clients)', tmGallery: 'Work gallery', tmAdd: '+ Add photos', tmNone: 'No photos yet.', tmRemove: 'Remove', tmConfirm: 'Remove this photo?', tmUploading: 'Uploading…', tmInfo: 'Everything shows right away on the client page, under “Meet the team”.', ratHide: 'Hide from clients', ratShow: 'Show to clients', ratHidden: 'Hidden from clients', ratPublic: 'Stars and comments are shown on the client page. Only ratings received through this website are shown.',
+    pwSetH: 'Create your password', pwSetInfo: 'Welcome! Create the password you’ll use to sign in.', resetBtn: 'Forgot password', tReset: 'If that email exists, we sent a link to reset the password.', needEmail: 'Enter your email above.',
+    accH: 'Account', pwBtn: 'Change password', pwNew: 'New password (at least 10 characters)', pwRep: 'Repeat password', pwSave: 'Save', pwShort: 'Password too short (at least 10 characters).', pwDiff: 'Passwords don’t match.', tPw: 'Password changed', pushH: 'Notifications on this phone', pushOn: 'Turn on notifications', pushOff: 'Turn off', pushTest: 'Send a test', pushFor: 'Notify me about bookings with', pushIsOn: n => `On: you’ll get a notification when someone books with ${n}.`, pushIos: 'iPhone: first add this page to your Home Screen (Share → Add to Home Screen) and open it from the icon.', pushNo: 'This browser doesn’t support notifications.', pushDenied: 'Notifications are blocked. Allow them in your phone settings for this app.', tPushOn: 'Notifications on', tPushOff: 'Notifications off', tPushTest: 'Sent – it should show up in a few seconds',
+    move: 'Move', mDay: 'Day', mSave: 'Move here', tMoved: 'Moved', dowL: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  }
+};
+const T = () => ({ ...COMMON[LANG], ...I18N[LANG] });
+const admin = document.getElementById('admin');
+const BOOK_URL = new URL('./', location.href).href;
+// staff can schedule/see until 22:00 even if the public booking day ends earlier
+const ACLOSE = () => Math.max(SET.close_min, 22 * 60);
+const ZL = [[0.45, 78], [0.6, 95], [0.8, 115], [1.1, 150], [1.5, 180]];
+let ZI = 3; try { const z = +localStorage.getItem('md_zoom'); if (z >= 0 && z < ZL.length) ZI = z; } catch (e) {}
+let PX = ZL[ZI][0];
+let pinch = null;
+document.addEventListener('touchstart', e => { if (e.touches.length === 2 && e.target.closest('.sched-wrap')) { const [a, b] = e.touches; pinch = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); } }, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (pinch == null || e.touches.length !== 2) return;
+  e.preventDefault();
+  const [a, b] = e.touches, d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  if (d / pinch < 0.8 && ZI > 0) { pinch = d; setZoom(-1); } else if (d / pinch > 1.25 && ZI < ZL.length - 1) { pinch = d; setZoom(1); }
+}, { passive: false });
+document.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; });
+function setZoom(d) { ZI = Math.max(0, Math.min(ZL.length - 1, ZI + d)); PX = ZL[ZI][0]; try { localStorage.setItem('md_zoom', ZI); } catch (e) {} renderDash(); }
+
+let SERVICES = [], BARBERS = [], SET = null, ROWS = [], DAYS = [], HOURS = [], ME = null, FROM, TO;
+let view = 'loading', session = null, lastLoad = null, busyAct = false;
+const ad = { date: null, sel: null, panel: null, hb: null, moving: false, view: 'cal', cb: null, cq: '', cn: 60 };
+const INVITE = /type=(invite|recovery|signup)/.test(location.hash);
+let CLIENTS = [], CLI_FOR = null, RATINGS = null;
+const login = { email: '', err: '', sending: false };
+
+const svc = id => SERVICES.find(s => s.id === id);
+const sName = s => svcName(s);
+const brb = id => BARBERS.find(b => b.id === id) || { name: id };
+
+let QR = ''; function qrSvg() { if (QR) return QR; try { const q = qrcode(0, 'M'); q.addData(BOOK_URL); q.make(); QR = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) {} return QR; }
+
+async function loadRef() {
+  const [s, b, c, h, m] = await Promise.all([
+    sb.from('services').select('*').order('sort'),
+    sb.from('barbers').select('*').order('sort'),
+    sb.from('settings').select('*').limit(1),
+    sb.from('barber_hours').select('*'),
+    sb.rpc('my_staff')
+  ]);
+  for (const r of [s, b, c, h, m]) if (r.error) throw r.error;
+  SERVICES = s.data; BARBERS = b.data.filter(x => x.active); SET = c.data[0]; HOURS = h.data || []; ME = (m.data || [])[0] || null;
+  const today = shopNow().date;
+  FROM = addDays(today, -7); TO = addDays(today, 30);
+  DAYS = Array.from({ length: 32 }, (_, i) => addDays(today, i - 3));
+  if (!ad.date) ad.date = today;
+}
+async function loadRows() {
+  const [{ data, error }, rr] = await Promise.all([sb.rpc('staff_bookings', { p_from: FROM, p_to: TO }), sb.rpc('staff_ratings').then(x => x, () => ({}))]);
+  if (error) throw error;
+  ROWS = data || []; lastLoad = new Date();
+  const m = {}; (rr.data || []).forEach(x => { if (x.booking_id) m[x.booking_id] = x; }); RATE_BY = m;
+}
+let RATE_BY = {};
+function isDone(r) { if (r.kind !== 'booking' || r.status !== 'confirmed') return false; const n = shopNow(); return r.day < n.date || (r.day === n.date && r.end_min <= n.min); }
+/* ---------- Push notifications ---------- */
+const PUSH = { state: 'unknown', barber: null, reg: null, sub: null, busy: false };
+const FN_NOTIFY = `${SUPABASE_URL}/functions/v1/notify`;
+const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function b64u(s) { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
+async function pushInit() {
+  try {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { PUSH.state = isIos && !standalone() ? 'ios' : 'no'; return; }
+    PUSH.reg = await navigator.serviceWorker.register('sw.js');
+    if (Notification.permission === 'denied') { PUSH.state = 'denied'; return; }
+    PUSH.sub = await PUSH.reg.pushManager.getSubscription();
+    if (PUSH.sub) { const { data } = await sb.rpc('my_push_sub', { p_endpoint: PUSH.sub.endpoint }); PUSH.barber = data || null; }
+    PUSH.state = PUSH.sub && PUSH.barber ? 'on' : 'off';
+  } catch (e) { console.error(e); PUSH.state = 'no'; }
+}
+async function pushOn(barber) {
+  const t = T();
+  PUSH.busy = true; render();
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { PUSH.state = perm === 'denied' ? 'denied' : 'off'; return; }
+    const { publicKey } = await fetch(FN_NOTIFY).then(r => r.json());
+    PUSH.sub = (await PUSH.reg.pushManager.getSubscription()) || await PUSH.reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(publicKey) });
+    const k = PUSH.sub.toJSON().keys;
+    const { error } = await sb.rpc('save_push_sub', { p_barber: barber, p_endpoint: PUSH.sub.endpoint, p_p256dh: k.p256dh, p_auth: k.auth, p_lang: LANG });
+    if (error) throw error;
+    PUSH.barber = barber; PUSH.state = 'on'; toast(t.tPushOn);
+  } catch (e) { console.error(e); toast(t.tFail); }
+  finally { PUSH.busy = false; render(); }
+}
+async function pushOff(silent) {
+  try {
+    if (PUSH.sub) { await sb.rpc('delete_push_sub', { p_endpoint: PUSH.sub.endpoint }); await PUSH.sub.unsubscribe(); }
+    PUSH.sub = null; PUSH.barber = null; PUSH.state = 'off'; if (!silent) toast(T().tPushOff);
+  } catch (e) { console.error(e); if (!silent) toast(T().tFail); }
+  if (!silent) render();
+}
+async function pushTest() {
+  const t = T();
+  try { const r = await fetch(FN_NOTIFY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ test: true, endpoint: PUSH.sub.endpoint }) }).then(r => r.json()); toast(r.sent ? t.tPushTest : t.tFail); }
+  catch (e) { toast(t.tFail); }
+}
+function accountPanel() {
+  const t = T();
+  const body = ad.pw ? `<form id="pwf" novalidate>
+      <div class="field"><label for="pw1">${t.pwNew}</label><input id="pw1" type="password" autocomplete="new-password" minlength="10" required></div>
+      <div class="field"><label for="pw2">${t.pwRep}</label><input id="pw2" type="password" autocomplete="new-password" minlength="10" required></div>
+      ${ad.pwErr ? `<p class="alert bad" role="alert">${t[ad.pwErr]}</p>` : ''}
+      <div class="row"><button class="btn" type="submit">${t.pwSave}</button><button class="btn ghost" type="button" id="pw-x">${t.close}</button></div></form>`
+    : `<button class="btn ghost" id="pw-open">${t.pwBtn}</button>`;
+  return `<div class="panel"><h3>${t.accH}</h3><p class="info" style="margin:0 0 10px">${esc(session ? session.user.email : '')}</p>${body}</div>`;
+}
+function pushPanel() {
+  const t = T(), list = editableBarbers();
+  if (!list.length || PUSH.state === 'unknown') return '';
+  let inner;
+  if (PUSH.state === 'ios') inner = `<p class="info" style="margin:0">${t.pushIos}</p>`;
+  else if (PUSH.state === 'no') inner = `<p class="info" style="margin:0">${t.pushNo}</p>`;
+  else if (PUSH.state === 'denied') inner = `<p class="info" style="margin:0">${t.pushDenied}</p>`;
+  else if (PUSH.state === 'on') inner = `<p class="info" style="margin:0 0 10px">${esc(t.pushIsOn(brb(PUSH.barber).name))}</p><div class="row"><button class="btn" id="p-test">${t.pushTest}</button><button class="btn ghost" id="p-off">${t.pushOff}</button></div>`;
+  else {
+    const def = ME && ME.barber_id && list.some(b => b.id === ME.barber_id) ? ME.barber_id : list[0].id;
+    inner = `${list.length > 1 ? `<div class="field" style="max-width:240px"><label for="p-brb">${t.pushFor}</label><select id="p-brb">${list.map(b => `<option value="${esc(b.id)}" ${b.id === def ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>` : `<input type="hidden" id="p-brb" value="${esc(def)}">`}
+      <button class="btn" id="p-on" ${PUSH.busy ? 'disabled aria-busy="true"' : ''}>🔔 ${t.pushOn}</button>`;
+  }
+  return `<div class="panel"><h3>${t.pushH}</h3>${inner}</div>`;
+}
+function openVisitFromUrl(u) {
+  try {
+    const id = new URL(u, location.href).searchParams.get('visit'); if (!id) return false;
+    const r = ROWS.find(x => x.id === id); if (!r) return false;
+    ad.date = r.day; ad.sel = r.id; ad.moving = false; ad.panel = null; ad.scroll = null; return true;
+  } catch (e) { return false; }
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => {
+  if (ev.data && ev.data.type === 'open' && view === 'dash') loadRows().then(() => { openVisitFromUrl(ev.data.url); render(); }).catch(() => {});
+});
+
+async function enter() {
+  view = 'loading'; render();
+  try { await loadRef(); await loadRows(); view = 'dash'; if (openVisitFromUrl(location.href)) history.replaceState(null, '', location.pathname); pushInit().then(render); }
+  catch (e) {
+    console.error(e);
+    if (errCode(e) === 'not_staff') { await sb.auth.signOut(); session = null; login.err = 'notStaff'; view = 'login'; }
+    else view = 'error';
+  }
+  render();
+}
+
+function render() {
+  const t = T();
+  paintCommon();
+  document.title = t.title;
+  const lo = document.getElementById('logout'); lo.hidden = !session; lo.textContent = t.logout;
+  document.getElementById('who').textContent = session ? t.signedAs(session.user.email) : '';
+  if (view === 'loading') { admin.innerHTML = `<section class="panel"><p class="loading">${t.loading}</p></section>`; return; }
+  if (view === 'error') { admin.innerHTML = `<section class="panel"><p class="alert bad">${esc(t.loadErr)}</p><button class="btn" id="retry">${t.retry}</button></section>`; admin.querySelector('#retry').onclick = enter; return; }
+  if (view === 'login') return renderLogin();
+  if (view === 'setpw') return renderSetPw();
+  renderDash();
+}
+
+function renderSetPw() {
+  const t = T();
+  admin.innerHTML = `<section class="panel login"><h2>${t.pwSetH}</h2><p class="info">${t.pwSetInfo}</p><p class="info" style="margin-top:0"><b>${esc(session ? session.user.email : '')}</b></p>
+    <form id="spf" novalidate>
+      <input type="email" autocomplete="username" value="${esc(session ? session.user.email : '')}" hidden readonly>
+      <div class="field"><label for="sp1">${t.pwNew}</label><input id="sp1" type="password" autocomplete="new-password" minlength="10" required></div>
+      <div class="field"><label for="sp2">${t.pwRep}</label><input id="sp2" type="password" autocomplete="new-password" minlength="10" required></div>
+      ${ad.pwErr ? `<p class="alert bad" role="alert">${t[ad.pwErr]}</p>` : ''}
+      <button class="btn" type="submit">${t.pwSave}</button></form></section>`;
+  admin.querySelector('#spf').onsubmit = async ev => {
+    ev.preventDefault();
+    const a = admin.querySelector('#sp1').value, b = admin.querySelector('#sp2').value;
+    if (a.length < 10) { ad.pwErr = 'pwShort'; render(); return; }
+    if (a !== b) { ad.pwErr = 'pwDiff'; render(); return; }
+    const { error } = await sb.auth.updateUser({ password: a });
+    if (error) { console.error(error); toast(t.tFail); return; }
+    ad.pwErr = ''; history.replaceState(null, '', location.pathname); toast(t.tPw); enter();
+  };
+  admin.querySelector('#sp1').focus();
+}
+function renderLogin() {
+  const t = T();
+  admin.innerHTML = `<section class="panel login"><h2>${t.loginH}</h2>
+    ${login.err ? `<p class="alert bad" role="alert">${t[login.err]}</p>` : ''}
+    <form id="lf" novalidate>
+      <div class="field"><label for="l-email">${t.email}</label><input id="l-email" name="email" type="email" autocomplete="username" inputmode="email" spellcheck="false" required value="${esc(login.email)}"></div>
+      <div class="field"><label for="l-pass">${t.pass}</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn" type="submit" ${login.sending ? 'disabled aria-busy="true"' : ''}>${login.sending ? t.logging : t.login}</button>
+    </form><p class="info">${t.forgot}</p><button class="btn ghost" id="l-reset" type="button">${t.resetBtn}</button></section>`;
+  admin.querySelector('#l-reset').onclick = async () => {
+    const em = admin.querySelector('#l-email').value.trim();
+    if (!em) { toast(t.needEmail); admin.querySelector('#l-email').focus(); return; }
+    await sb.auth.resetPasswordForEmail(em, { redirectTo: new URL('admin.html', location.href).href });
+    toast(t.tReset);
+  };
+  admin.querySelector('#lf').onsubmit = async ev => {
+    ev.preventDefault();
+    login.email = admin.querySelector('#l-email').value.trim();
+    const pass = admin.querySelector('#l-pass').value;
+    if (!login.email || !pass) { login.err = 'badLogin'; render(); return; }
+    login.sending = true; login.err = ''; render();
+    const { data, error } = await sb.auth.signInWithPassword({ email: login.email, password: pass });
+    login.sending = false;
+    if (error || !data.session) { login.err = 'badLogin'; render(); admin.querySelector('#l-pass')?.focus(); return; }
+    session = data.session; enter();
+  };
+  (login.email ? admin.querySelector('#l-pass') : admin.querySelector('#l-email')).focus();
+}
+
+function isNew(r) { return r.kind === 'booking' && Date.now() - new Date(r.created_at).getTime() < 864e5; }
+function stats() {
+  const today = shopNow().date, week = addDays(today, 7);
+  const book = ROWS.filter(r => r.kind === 'booking' && r.status === 'confirmed');
+  const td = book.filter(r => r.day === ad.date);
+  return {
+    today: td.length,
+    rev: td.reduce((a, r) => a + Number(svc(r.service_id)?.price || 0), 0),
+    week: book.filter(r => r.day >= today && r.day < week).length,
+    fresh: ROWS.filter(isNew).length
+  };
+}
+
+function tabsHtml() {
+  const t = T();
+  return `<div class="tabs" role="tablist">${[['cal', t.tabCal], ['clients', t.tabCli], ['ratings', t.tabRat], ['team', t.tabTeam], ['svc', t.tabSvc]].map(([k, l]) => `<button role="tab" data-view="${k}" aria-selected="${ad.view === k}">${l}</button>`).join('')}</div>`;
+}
+function renderDash() {
+  if (ad.view === 'clients') return renderClients();
+  if (ad.view === 'ratings') return renderRatings();
+  if (ad.view === 'team') return renderTeam();
+  if (ad.view === 'svc') return renderServices();
+  const t = T(), now = shopNow(), s = stats();
+  const OPEN = SET.open_min, CLOSE = ACLOSE(), H = (CLOSE - OPEN) * PX;
+  const dayList = ROWS.filter(r => r.day === ad.date);
+  const hours = []; for (let x = OPEN; x <= CLOSE; x += 60) hours.push(x);
+  const cols = BARBERS.map(br => {
+    const items = dayList.filter(r => r.barber_id === br.id).map(r => {
+      const top = Math.max(0, r.start_min - OPEN), bottom = Math.min(CLOSE, r.end_min) - OPEN;
+      const cls = r.kind === 'block' ? 'block' : r.status === 'noshow' ? 'noshow' : isDone(r) ? 'done' : isNew(r) ? 'new' : '';
+      const label = r.kind === 'block' ? t.blocked : (RATE_BY[r.id] ? '✓ ' : '') + esc(r.client_name);
+      return `<button class="appt ${cls}" data-id="${r.id}" aria-pressed="${ad.sel === r.id}" style="top:${top * PX + 1}px;height:${Math.max(18, (bottom - top) * PX - 2)}px"><b>${hm(r.start_min)} ${label}</b>${r.service_id ? esc(sName(svc(r.service_id))) : ''}</button>`;
+    }).join('');
+    const lines = hours.map(x => `<div class="gl" style="top:${(x - OPEN) * PX}px"></div>`).join('');
+    const wh = HOURS.find(h => h.barber_id === br.id && h.dow === parseYmd(ad.date).getDay());
+    const offs = (wh ? [[OPEN, Math.max(OPEN, Math.min(CLOSE, wh.start_min))], [Math.min(CLOSE, Math.max(OPEN, wh.end_min)), CLOSE]] : [[OPEN, CLOSE]])
+      .filter(([a, b]) => b > a).map(([a, b]) => `<div class="off" style="top:${(a - OPEN) * PX}px;height:${(b - a) * PX}px">${!wh && a === OPEN ? `<span>${t.dayOff}</span>` : ''}</div>`).join('');
+    const nowLine = ad.date === now.date && now.min >= OPEN && now.min <= CLOSE ? `<div class="now" style="top:${(now.min - OPEN) * PX}px"></div>` : '';
+    return `<div class="col" style="height:${H}px">${offs}${lines}${nowLine}${items}</div>`;
+  }).join('');
+  const heads = BARBERS.map(b => { const mine = dayList.filter(x => x.barber_id === b.id && x.kind === 'booking'); const rev = mine.filter(x => x.status === 'confirmed').reduce((a, x) => a + Number(svc(x.service_id)?.price || 0), 0);
+    return `<div class="head"><span class="avatar" aria-hidden="true">${esc(b.name[0])}</span>${esc(b.name)}<span style="margin-left:auto;font-weight:500;color:var(--muted);font-size:12px;text-align:right;line-height:1.25">${mine.length} ${t.vShort}<br><b style="color:var(--ink)">${eur(rev)}</b></span></div>`; }).join('');
+  const days = DAYS.map(d => { const n = ROWS.filter(r => r.day === d && r.kind === 'booking' && r.status === 'confirmed').length; return dayBtn(d, 'data-aday', ad.date === d, false, niceDate(d) + (n ? ` · ${n} ${t.vShort}` : ''), n); }).join('');
+  const sel = ROWS.find(r => r.id === ad.sel);
+  const upd = lastLoad ? t.updated(new Intl.DateTimeFormat(LOC[LANG], { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(lastLoad)) : '';
+
+  admin.innerHTML = `${tabsHtml()}
+  <div class="stats">
+    <div class="stat"><small>${ad.date === now.date ? t.sToday : `${t.sDay} · ${shortDate(ad.date)}`}</small><b>${s.today}</b></div>
+    <div class="stat"><small>${ad.date === now.date ? t.sTodayRev : `${t.sDayRev} · ${shortDate(ad.date)}`}</small><b>${eur(s.rev)}</b></div>
+    <div class="stat"><small>${t.sWeek}</small><b>${s.week}</b><div class="note">${t.vShort}</div></div>
+    <div class="stat"><small>${t.sNew}</small><b>${s.fresh}</b></div>
+  </div>
+  <div class="dash-grid">
+    <section>
+      <div class="find"><label class="sr-only" for="q">${t.findL}</label><input id="q" type="search" name="q" autocomplete="off" spellcheck="false" placeholder="🔍 ${t.findPh}" value="${esc(ad.q || '')}"><div id="qres" aria-live="polite">${findHtml()}</div></div>
+      <div class="days" id="days">${days}</div>
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${niceDate(ad.date)}</h3>
+        <div class="row"><span class="who">${upd}</span><button class="btn ghost" id="ref" style="padding:7px 12px;font-size:13px">${t.refresh}</button>
+        <button class="btn" data-panel="visit" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'visit'}">${ad.panel === 'visit' ? t.close : t.addV}</button>
+        <button class="btn ghost" data-panel="block" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'block'}">${ad.panel === 'block' ? t.close : t.blockT}</button>
+        <button class="btn ghost" data-panel="hours" style="padding:7px 12px;font-size:13px" aria-pressed="${ad.panel === 'hours'}">${ad.panel === 'hours' ? t.close : t.hoursT}</button></div></div>
+      ${ad.panel === 'block' ? blockForm() : ad.panel === 'visit' ? visitForm() : ad.panel === 'hours' ? hoursForm() : ''}
+      ${dayList.length ? '' : `<p class="info" style="margin-top:0">${t.none}</p>`}
+      <div class="zoom-bar"><button class="btn ghost" id="z-out" aria-label="Zoom out" ${ZI === 0 ? 'disabled' : ''}>−</button><button class="btn ghost" id="z-in" aria-label="Zoom in" ${ZI === ZL.length - 1 ? 'disabled' : ''}>+</button></div>
+      <div class="sched-wrap"><div class="sched${ZI < 3 ? ' compact' : ''}" style="min-width:0;grid-template-columns:44px repeat(${BARBERS.length},minmax(${ZL[ZI][1]}px,1fr))">
+        <div class="head" style="padding:10px 0"></div>${heads}
+        <div class="hours" style="height:${H}px">${hours.map(x => `<div style="top:${(x - OPEN) * PX}px">${hm(x)}</div>`).join('')}</div>${cols}
+      </div></div>
+      <div class="legend"><span><i style="background:var(--navy-soft);border-left:3px solid var(--navy)"></i>${t.lgBook}</span><span><i style="background:var(--red-soft);border-left:3px solid var(--red)"></i>${t.lgNew}</span><span><i style="background:var(--surface-2);border-left:3px solid var(--muted)"></i>${t.lgDone}</span><span><i style="background:var(--line)"></i>${t.lgBlk}</span></div>
+    </section>
+    <div class="side">
+      ${sel ? detail(sel) : `<div class="panel"><h3>${t.visitH}</h3><p class="info" style="margin:0">${t.visitHint}</p></div>`}
+      ${pushPanel()}
+      ${accountPanel()}
+      <div class="panel"><h3>${t.linkH}</h3>
+        <div class="share"><input id="f-link" name="booking_link" autocomplete="off" spellcheck="false" readonly value="${esc(BOOK_URL)}" aria-label="${t.linkH}"><button class="btn" id="copy" style="padding:9px 12px">${t.copy}</button></div>
+        <p class="info">${t.linkInfo}</p><div class="qr"><div class="qr-box" role="img" aria-label="${t.qrAlt}">${qrSvg()}</div><p class="info">${t.qrInfo}</p></div></div>
+    </div>
+  </div>`;
+  bindDash();
+  const strip = admin.querySelector('#days'), cur = strip && strip.querySelector('[aria-pressed="true"]');
+  if (cur) strip.scrollLeft = ad.scroll ?? Math.max(0, cur.offsetLeft - strip.clientWidth / 2 + cur.clientWidth / 2);
+  if (strip) strip.onscroll = () => { ad.scroll = strip.scrollLeft; };
+}
+function visibleBarbers() { return BARBERS.filter(b => ME && (ME.is_owner || ME.barber_id === b.id)); }
+// client suggestions for "+ Vizitas" (own lists + shared salon list), loaded once per session
+let SUG = null, SUG_LOADING = false;
+async function loadSuggest() {
+  if (SUG || SUG_LOADING) return; SUG_LOADING = true;
+  try {
+    const ids = [...new Set([...visibleBarbers().map(b => b.id), 'salon'])];
+    const res = await Promise.all(ids.map(id => sb.rpc('staff_clients', { p_barber: id })));
+    const map = new Map();
+    res.forEach(r => (r.data || []).forEach(c => {
+      const d = String(c.phone || '').replace(/\D/g, ''), k = d || 'n:' + String(c.name || '').toLowerCase();
+      const v = { name: c.name || '', phone: c.phone || '', d, n: String(c.name || '').toLowerCase(), visits: +c.visits || 0 };
+      const prev = map.get(k); if (!prev) map.set(k, v); else prev.visits = Math.max(prev.visits, v.visits);
+    }));
+    SUG = [...map.values()].sort((a, b) => b.visits - a.visits);
+  } catch (e) { console.error(e); } finally { SUG_LOADING = false; }
+}
+async function loadClients(barber) {
+  const { data, error } = await sb.rpc('staff_clients', { p_barber: barber });
+  if (error) throw error; CLIENTS = data || []; CLI_FOR = barber;
+}
+function cliMatch(c, q) {
+  if (!q) return true;
+  const d = q.replace(/\D/g, '');
+  return String(c.name || '').toLowerCase().includes(q) || String(c.email || '').toLowerCase().includes(q) || (d.length >= 3 && String(c.phone || '').replace(/\D/g, '').includes(d));
+}
+function renderClients() {
+  const t = T(), list = visibleBarbers();
+  if (!list.length) { admin.innerHTML = tabsHtml() + `<section class="panel"><p class="info">${t.notStaff}</p></section>`; bindTabs(); return; }
+  if (ad.cb !== 'salon' && !list.some(b => b.id === ad.cb)) ad.cb = (ME && ME.barber_id && list.some(b => b.id === ME.barber_id)) ? ME.barber_id : list[0].id;
+  if (CLI_FOR !== ad.cb) {
+    admin.innerHTML = tabsHtml() + `<section class="panel"><p class="loading">${t.loading}</p></section>`; bindTabs();
+    loadClients(ad.cb).then(render).catch(e => { console.error(e); toast(t.tFail); }); return;
+  }
+  const q = ad.cq.trim().toLowerCase(), rows = CLIENTS.filter(c => cliMatch(c, q)), shown = rows.slice(0, ad.cn);
+  const fmt = d => d ? shortDate(d) : '—';
+  const cards = shown.map(c => {
+    const tel = String(c.phone || '').replace(/[^\d+]/g, '');
+    return `<div class="cli"><div class="cli-top"><b>${esc(c.name)}</b>${c.marketing_ok ? `<span class="pill ok" title="${t.cliMk}">✉</span>` : ''}<span class="cli-v">${c.visits} ${t.cliVisits}${c.noshows ? ` · <span style="color:var(--red)">${c.noshows} ${t.cliNo}</span>` : ''}</span></div>
+      <div class="cli-c">${c.phone ? `<a class="tel" href="tel:${esc(tel)}">${esc(c.phone)}</a>` : ''}${c.email ? ` · <span style="user-select:all">${esc(c.email)}</span>` : ''}</div>
+      <div class="cli-d">${t.cliLast}: ${fmt(c.last_visit)}${c.next_visit ? ` · ${t.cliNext}: <b>${fmt(c.next_visit)}</b>` : ''}</div>
+      ${ad.noteFor === c.id ? `<div class="row" style="margin-top:6px"><input id="cn-in" maxlength="1000" value="${esc(c.notes || '')}" style="flex:1;min-width:0;padding:8px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit"><button class="btn" data-nsave="${c.id}" style="padding:7px 12px">${t.cliSave}</button></div>`
+        : `<button class="cli-note" data-note="${c.id}">${c.notes ? '📝 ' + esc(c.notes) : '+ ' + t.cliNote}</button>`}</div>`;
+  }).join('');
+  admin.innerHTML = `${tabsHtml()}<section class="panel">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+      <select id="cb" aria-label="${t.bBarber}" style="padding:8px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit">${[...list.map(b => [b.id, b.name]), ['salon', t.cliSalon]].map(([id, n]) => `<option value="${esc(id)}" ${id === ad.cb ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
+      <span class="who">${t.cliCount(rows.length)}</span><button class="btn ghost" id="csv" style="padding:7px 12px;font-size:13px">${t.cliCsv}</button></div>
+    <div class="find"><input id="cq" type="search" autocomplete="off" spellcheck="false" placeholder="🔍 ${t.cliSearch}" value="${esc(ad.cq)}"></div>
+    <div class="cli-list">${cards || `<p class="info">${t.cliNone}</p>`}</div>
+    ${rows.length > shown.length ? `<button class="btn ghost" id="cmore" style="margin-top:10px">${t.cliMore} (${rows.length - shown.length})</button>` : ''}
+  </section>`;
+  bindTabs();
+  const cb = admin.querySelector('#cb'); if (cb) cb.onchange = () => { ad.cb = cb.value; ad.cn = 60; ad.noteFor = null; render(); };
+  const cq = admin.querySelector('#cq'); cq.oninput = () => { ad.cq = cq.value; ad.cn = 60; const pos = cq.selectionStart; render(); const n = admin.querySelector('#cq'); n.focus(); n.setSelectionRange(pos, pos); };
+  const cm = admin.querySelector('#cmore'); if (cm) cm.onclick = () => { ad.cn += 100; render(); };
+  admin.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { ad.noteFor = b.dataset.note; render(); admin.querySelector('#cn-in')?.focus(); });
+  admin.querySelectorAll('[data-nsave]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.nsave, v = admin.querySelector('#cn-in').value;
+    const { error } = await sb.rpc('set_client_note', { p_id: id, p_notes: v });
+    if (error) { toast(t.tFail); return; }
+    const c = CLIENTS.find(x => x.id === id); if (c) c.notes = v.trim() || null; ad.noteFor = null; toast(t.tNote); render();
+  });
+  admin.querySelector('#csv').onclick = () => {
+    const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csv = ['name,phone,email,visits,noshows,last_visit,next_visit,marketing_ok,notes', ...rows.map(c => [c.name, c.phone, c.email, c.visits, c.noshows, c.last_visit, c.next_visit, c.marketing_ok ? 'T' : 'N', c.notes].map(cell).join(','))].join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+    a.download = `klientai-${ad.cb}-${shopNow().date}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  };
+}
+function renderRatings() {
+  const t = T();
+  if (RATINGS === null) {
+    admin.innerHTML = tabsHtml() + `<section class="panel"><p class="loading">${t.loading}</p></section>`; bindTabs();
+    sb.rpc('staff_ratings').then(({ data, error }) => { if (error) { toast(t.tFail); RATINGS = []; } else RATINGS = data || []; render(); }); return;
+  }
+  const star = n => `<span class="stars-s" aria-label="${n}/5">${'★'.repeat(n)}<span style="color:var(--line)">${'★'.repeat(5 - n)}</span></span>`;
+  const sum = visibleBarbers().map(b => { const r = RATINGS.filter(x => x.barber_id === b.id); const avg = r.length ? r.reduce((a, x) => a + x.stars, 0) / r.length : 0;
+    return `<div class="stat"><small>${esc(b.name)}</small><b>${r.length ? avg.toFixed(1) : '—'}</b><div class="note">${r.length ? star(Math.round(avg)) + ' · ' + t.ratCount(r.length) : t.ratCount(0)}</div></div>`; }).join('');
+  const items = RATINGS.slice(0, 200).map(r => `<div class="cli"><div class="cli-top">${star(r.stars)}<b style="margin-left:8px">${esc(r.client_name || '')}</b><span class="cli-v">${esc(brb(r.barber_id).name)} · ${shortDate(r.day)}</span></div>${r.comment ? `<div class="cli-c" style="font-family:inherit">“${esc(r.comment)}”</div>` : ''}${r.comment && ME && ME.is_owner ? `<button class="btn ghost" style="margin-top:6px;padding:6px 10px;font-size:13px" data-hide="${esc(r.id)}" data-h="${r.hidden ? 0 : 1}">${r.hidden ? t.ratShow : t.ratHide}</button>` : r.hidden ? `<div class="cli-v">${t.ratHidden}</div>` : ''}</div>`).join('');
+  admin.innerHTML = `${tabsHtml()}<div class="stats">${sum}</div><section class="panel"><p class="info" style="margin-top:0">${t.ratPublic}</p>${items ? `<div class="cli-list">${items}</div>` : `<p class="info" style="margin:0">${t.ratNone}</p>`}</section>`;
+  bindTabs();
+  admin.querySelectorAll('[data-hide]').forEach(x => x.onclick = async () => {
+    const { error } = await sb.rpc('set_rating_hidden', { p_id: x.dataset.hide, p_hidden: x.dataset.h === '1' });
+    if (error) { toast(t.tFail); return; }
+    const r = RATINGS.find(y => y.id === x.dataset.hide); if (r) r.hidden = x.dataset.h === '1'; render();
+  });
+}
+const media = p => p ? `${SUPABASE_URL}/storage/v1/object/public/media/${p.split('/').map(encodeURIComponent).join('/')}` : '';
+async function shrink(file, max = 1200) {
+  const img = await createImageBitmap(file);
+  const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+}
+async function upPhoto(bid, file, max) {
+  const blob = await shrink(file, max), path = `barbers/${bid}/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}.jpg`;
+  const { error } = await sb.storage.from('media').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+  if (error) throw error; return path;
+}
+async function saveProfile(b) {
+  const { error } = await sb.rpc('set_barber_profile', { p_barber: b.id, p_title: b.title || '', p_about: b.about || '', p_photo: b.photo || '', p_gallery: b.gallery || [] });
+  if (error) throw error;
+}
+function renderTeam() {
+  const t = T(), list = visibleBarbers();
+  if (!list.some(b => b.id === ad.tb)) ad.tb = (ME && ME.barber_id && list.some(b => b.id === ME.barber_id)) ? ME.barber_id : list[0]?.id;
+  const b = BARBERS.find(x => x.id === ad.tb);
+  if (!b) { admin.innerHTML = tabsHtml(); bindTabs(); return; }
+  const gal = (b.gallery || []).map((g, i) => `<div class="pg"><img src="${esc(media(g))}" alt="" loading="lazy"><button class="pg-x" data-rm="${i}" aria-label="${t.tmRemove}">×</button></div>`).join('');
+  admin.innerHTML = `${tabsHtml()}<section class="panel">
+    ${list.length > 1 ? `<div class="field"><label for="tm-b">${t.bBarber}</label><select id="tm-b">${list.map(x => `<option value="${esc(x.id)}" ${x.id === b.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></div>` : ''}
+    <div class="tm-head">${b.photo ? `<img class="tm-av" src="${esc(media(b.photo))}" alt="">` : `<div class="tm-av avatar">${esc(b.name[0])}</div>`}
+      <label class="btn ghost">${t.tmPhoto}<input type="file" id="tm-photo" accept="image/*" hidden></label></div>
+    <div class="field"><label for="tm-about">${t.tmAbout}</label><textarea id="tm-about" rows="3" maxlength="600">${esc(b.about || '')}</textarea></div>
+    <button class="btn" id="tm-save">${t.cliSave}</button>
+    <h3 style="margin-top:22px">${t.tmGallery} (${(b.gallery || []).length})</h3>
+    <label class="btn ghost" style="margin-bottom:12px">${t.tmAdd}<input type="file" id="tm-add" accept="image/*" multiple hidden></label>
+    <div class="pgrid">${gal || `<p class="info" style="margin:0">${t.tmNone}</p>`}</div>
+    <p class="info">${t.tmInfo}</p></section>`;
+  bindTabs();
+  const sel = admin.querySelector('#tm-b'); if (sel) sel.onchange = () => { ad.tb = sel.value; render(); };
+  const run = async (fn, okMsg) => { if (busyAct) return; busyAct = true; toast(t.tmUploading); try { await fn(); toast(okMsg || t.tSaved); } catch (e) { console.error(e); toast(t.tFail); } finally { busyAct = false; render(); } };
+  admin.querySelector('#tm-save').onclick = () => run(async () => { b.about = admin.querySelector('#tm-about').value.trim(); await saveProfile(b); });
+  admin.querySelector('#tm-photo').onchange = e => { const f = e.target.files[0]; if (f) run(async () => { const old = b.photo; b.photo = await upPhoto(b.id, f, 600); await saveProfile(b); if (old) sb.storage.from('media').remove([old]); }); };
+  admin.querySelector('#tm-add').onchange = e => { const fs = [...e.target.files].slice(0, 30 - (b.gallery || []).length); if (fs.length) run(async () => { const add = []; for (const f of fs) add.push(await upPhoto(b.id, f, 1200)); b.gallery = [...add, ...(b.gallery || [])]; await saveProfile(b); }); };
+  admin.querySelectorAll('[data-rm]').forEach(x => x.onclick = () => { if (!confirm(t.tmConfirm)) return; run(async () => { const g = [...b.gallery], [gone] = g.splice(+x.dataset.rm, 1); b.gallery = g; await saveProfile(b); sb.storage.from('media').remove([gone]); }); });
+}
+function renderServices() {
+  const t = T(), all = [...SERVICES].sort((a, b) => a.sort - b.sort || a.id.localeCompare(b.id));
+  const shown = all.filter(x => x.active), hidden = all.filter(x => !x.active);
+  const ed = ad.svcEdit, cur = ed && ed !== 'new' ? SERVICES.find(x => x.id === ed) : null;
+  const mins = []; for (let m = 5; m <= 480; m += 5) mins.push(m);
+  const form = x => `<div class="sv-form">
+    <div class="field"><label for="sv-lt">${t.svNameLt}</label><input id="sv-lt" maxlength="120" value="${esc(x?.name_lt || '')}"></div>
+    <div class="field"><label for="sv-en">${t.svNameEn}</label><input id="sv-en" maxlength="120" value="${esc(x && x.name_en !== x.name_lt ? x.name_en : '')}"></div>
+    <div class="field"><label for="sv-cat">${LANG === 'lt' ? 'Kategorija' : 'Category'}</label><select id="sv-cat">${[...CATS, 'other'].map(c => `<option value="${c}" ${catOf(x) === c ? 'selected' : ''}>${t.cat[c]}</option>`).join('')}</select></div>
+    <div class="grid2"><div class="field"><label for="sv-min">${t.svMin}</label><select id="sv-min">${mins.map(m => `<option value="${m}" ${m === (x?.minutes || 60) ? 'selected' : ''}>${t.dur(m)}</option>`).join('')}</select></div>
+    <div class="field"><label for="sv-pr">${t.svPrice}</label><input id="sv-pr" type="number" inputmode="decimal" min="0" max="10000" step="0.5" value="${x ? Number(x.price) : ''}"></div></div>
+    <div class="row"><button class="btn" id="sv-save">${t.cliSave}</button><button class="btn ghost" id="sv-cancel">${t.close}</button></div></div>`;
+  const row = (x, i, arr) => x.id === ed ? `<div class="sv-row sv-on">${form(x)}</div>` : `<div class="sv-row${x.active ? '' : ' sv-off'}${ad.svcMenu === x.id ? ' sv-open' : ''}">
+    <div class="sv-top"><div class="sv-main"><b>${esc(sName(x))}</b><span>${t.cat[catOf(x)]} · ${t.dur(x.minutes)} · ${eur(x.price)}</span></div>
+    <button class="btn ghost sm sv-more" data-menu="${esc(x.id)}" aria-expanded="${ad.svcMenu === x.id}" aria-label="${t.svMore}">⋯</button></div>
+    ${ad.svcMenu === x.id ? `<div class="sv-menu"><button class="btn ghost sm" data-ed="${esc(x.id)}">${t.svEdit}</button>${x.active ? `${i ? `<button class="btn ghost sm" data-mv="${esc(x.id)}" data-d="-1">↑ ${t.svUp}</button>` : ''}${i < arr.length - 1 ? `<button class="btn ghost sm" data-mv="${esc(x.id)}" data-d="1">↓ ${t.svDown}</button>` : ''}` : ''}<button class="btn ghost sm" data-show="${esc(x.id)}" data-a="${x.active ? 0 : 1}">${x.active ? t.svHide : t.svShowBtn}</button></div>` : ''}</div>`;
+  admin.innerHTML = `${tabsHtml()}<section class="panel"><h3>${t.svH}</h3>
+    ${ed === 'new' ? `<div class="sv-row sv-on">${form(null)}</div>` : `<button class="btn" id="sv-new" style="margin-bottom:12px">${t.svNew}</button>`}
+    <div class="sv-list">${shown.map(row).join('')}</div>
+    ${hidden.length ? `<details class="sv-hid" ${ad.svcHid ? 'open' : ''}><summary>${t.svHiddenH(hidden.length)}</summary><div class="sv-list">${hidden.map(row).join('')}</div></details>` : ''}
+    <p class="info">${t.svInfo}</p></section>`;
+  bindTabs();
+  const reload = async () => { const { data, error } = await sb.from('services').select('*').order('sort'); if (error) throw error; SERVICES = data; };
+  const run = async fn => { if (busyAct) return; busyAct = true; try { await fn(); toast(t.tSaved); } catch (e) { console.error(e); toast(/bad_/.test(e?.message || '') ? t.svBad : t.tFail); } finally { busyAct = false; render(); } };
+  const hd = admin.querySelector('.sv-hid'); if (hd) hd.ontoggle = () => { ad.svcHid = hd.open; };
+  admin.querySelector('#sv-new')?.addEventListener('click', () => { ad.svcEdit = 'new'; ad.svcMenu = null; render(); admin.querySelector('#sv-lt')?.focus(); });
+  admin.querySelectorAll('[data-menu]').forEach(b => b.onclick = () => { ad.svcMenu = ad.svcMenu === b.dataset.menu ? null : b.dataset.menu; render(); });
+  admin.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => { ad.svcEdit = b.dataset.ed; ad.svcMenu = null; render(); });
+  admin.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => run(async () => { const { error } = await sb.rpc('staff_move_service', { p_id: b.dataset.mv, p_dir: +b.dataset.d }); if (error) throw error; await reload(); }));
+  admin.querySelectorAll('[data-show]').forEach(b => b.onclick = () => { if (b.dataset.a === '0' && !confirm(t.svHideSure)) return; run(async () => { const { error } = await sb.rpc('staff_show_service', { p_id: b.dataset.show, p_active: b.dataset.a === '1' }); if (error) throw error; ad.svcMenu = null; await reload(); }); });
+  const cancel = admin.querySelector('#sv-cancel'); if (cancel) cancel.onclick = () => { ad.svcEdit = null; render(); };
+  const save = admin.querySelector('#sv-save'); if (save) save.onclick = () => {
+    const v = id => admin.querySelector(id).value, price = parseFloat(String(v('#sv-pr')).replace(',', '.'));
+    if (v('#sv-lt').trim().length < 2 || !(price >= 0)) { toast(t.svBad); return; }
+    run(async () => {
+      const cat = v('#sv-cat');
+      const { data: sid, error } = await sb.rpc('staff_save_service', { p_id: cur ? cur.id : null, p_name_lt: v('#sv-lt'), p_name_en: v('#sv-en'), p_name_tr: '', p_minutes: +v('#sv-min'), p_price: price, p_active: cur ? cur.active : true });
+      if (error) throw error;
+      const { error: e2 } = await sb.rpc('staff_set_service_cat', { p_id: sid || cur.id, p_cat: cat === 'other' ? null : cat }); if (e2) throw e2; ad.svcEdit = null; await reload();
+    });
+  };
+}
+function bindTabs() {
+  admin.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { ad.view = b.dataset.view; ad.svcEdit = null; ad.svcMenu = null; if (ad.view === 'ratings') RATINGS = null; if (ad.view === 'clients') CLI_FOR = null; render(); });
+}
+function findHtml() {
+  const t = T(), raw = (ad.q || '').trim(); if (raw.length < 2) return '';
+  const q = raw.toLowerCase(), code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^BC/, ''), dig = raw.replace(/\D/g, '');
+  const hits = ROWS.filter(r => r.kind === 'booking' && (
+    (code.length >= 3 && String(r.code || '').replace(/[^A-Z0-9]/g, '').replace(/^BC/, '').includes(code)) ||
+    String(r.client_name || '').toLowerCase().includes(q) ||
+    (dig.length >= 4 && String(r.client_phone || '').replace(/\D/g, '').includes(dig))
+  )).sort((a, b) => (a.day + hm(a.start_min)).localeCompare(b.day + hm(b.start_min))).slice(0, 8);
+  if (!hits.length) return `<p class="info" style="margin:6px 0 0">${t.findNone}</p>`;
+  return `<div class="list" style="margin-top:6px">${hits.map(r => `<button class="opt" data-hit="${r.id}" data-day="${r.day}"><div class="main"><div class="t">${esc(r.client_name)} · ${esc(brb(r.barber_id).name)}</div><div class="s">${shortDate(r.day)} ${hm(r.start_min)} · <span translate="no">${esc(r.code)}</span></div></div></button>`).join('')}</div>`;
+}
+function bindFind() {
+  admin.querySelectorAll('[data-hit]').forEach(b => b.onclick = () => { ad.date = b.dataset.day; ad.sel = b.dataset.hit; ad.q = ''; ad.scroll = null; render(); });
+}
+function timeOpts(from, to, step, sel) { const o = []; for (let x = from; x <= to; x += step) o.push(`<option value="${x}" ${x === sel ? 'selected' : ''}>${hm(x)}</option>`); return o.join(''); }
+function visitForm() {
+  const t = T();
+  return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+    <div class="field"><label for="v-brb">${t.bBarber}</label><select id="v-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}" ${ME && ME.barber_id === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-svc">${t.service}</label><select id="v-svc" name="service">${SERVICES.filter(x => x.active).map(x => `<option value="${esc(x.id)}">${esc(sName(x))} · ${t.dur(x.minutes)}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-start">${t.bFrom}</label><select id="v-start" name="start">${timeOpts(SET.open_min, ACLOSE() - 15, SET.step_min, -1)}</select></div>
+    <div class="field"><label for="v-src">${t.vSrc}</label><select id="v-src" name="source">${['phone','walkin','treatwell'].map(k => `<option value="${k}">${t.srcN[k]}</option>`).join('')}</select></div>
+    <div class="field"><label for="v-name">${t.vName}</label><input id="v-name" name="client_name" autocomplete="off" maxlength="60"></div>
+    <div class="field"><label for="v-phone">${t.vPhone}</label><input id="v-phone" name="client_phone" type="tel" inputmode="tel" autocomplete="off" maxlength="20"></div>
+    <div class="sug" id="v-sug" role="listbox" hidden style="grid-column:1/-1"></div>
+    <div class="field" style="grid-column:1/-1"><label for="v-note">${t.vNote}</label><input id="v-note" name="note" autocomplete="off" maxlength="300"></div>
+  </div><button class="btn" id="v-save">${t.vSave}</button></div>`;
+}
+function editableBarbers() { return BARBERS.filter(b => ME && (ME.is_owner || ME.barber_id === b.id)); }
+function hoursForm() {
+  const t = T(), list = editableBarbers();
+  if (!list.length) return `<div class="panel" style="margin-bottom:12px"><p class="info" style="margin:0">${t.notStaff}</p></div>`;
+  if (!list.some(b => b.id === ad.hb)) ad.hb = list[0].id;
+  const rows = [1, 2, 3, 4, 5, 6, 0].map(d => {
+    const h = HOURS.find(x => x.barber_id === ad.hb && x.dow === d);
+    return `<div class="hrow"><label class="hday"><input type="checkbox" data-hd="${d}" ${h ? 'checked' : ''}> ${t.dowL[d]}</label>
+      <select data-hs="${d}" aria-label="${t.dowL[d]} ${t.bFrom}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min, ACLOSE() - 30, 30, h ? h.start_min : SET.open_min)}</select>
+      <span>${t.hTo}</span>
+      <select data-he="${d}" aria-label="${t.dowL[d]} ${t.hTo}" ${h ? '' : 'disabled'}>${timeOpts(SET.open_min + 30, ACLOSE(), 30, h ? h.end_min : ACLOSE())}</select></div>`;
+  }).join('');
+  return `<div class="panel" style="margin-bottom:12px">
+    ${list.length > 1 ? `<div class="field" style="max-width:220px"><label for="h-brb">${t.bBarber}</label><select id="h-brb">${list.map(b => `<option value="${esc(b.id)}" ${b.id === ad.hb ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>` : `<h3>${esc(list[0].name)}</h3>`}
+    <div class="hours-grid">${rows}</div><p class="info">${t.hInfo}</p><button class="btn" id="h-save">${t.hSave}</button></div>`;
+}
+function blockForm() {
+  const t = T(), opts = []; for (let x = SET.open_min; x < ACLOSE(); x += SET.step_min) opts.push(`<option value="${x}">${hm(x)}</option>`);
+  return `<div class="panel" style="margin-bottom:12px"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+    <div class="field"><label for="b-brb">${t.bBarber}</label><select id="b-brb" name="barber">${BARBERS.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="b-start">${t.bFrom}</label><select id="b-start" name="start">${opts.join('')}</select></div>
+    <div class="field"><label for="b-len">${t.bLen}</label><select id="b-len" name="length"><option value="30">30 min</option><option value="60" selected>1 ${t.h}</option><option value="120">2 ${t.h}</option><option value="240">4 ${t.h}</option><option value="660">${t.allDay}</option></select></div>
+  </div><button class="btn" id="b-save">${t.bSave}</button></div>`;
+}
+function moveForm(r) {
+  const t = T();
+  return `<div class="move-box"><div class="inline-fields" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">
+    <div class="field"><label for="m-brb">${t.bBarber}</label><select id="m-brb">${BARBERS.map(b => `<option value="${esc(b.id)}" ${b.id === r.barber_id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="m-day">${t.mDay}</label><select id="m-day">${DAYS.map(d => `<option value="${d}" ${d === r.day ? 'selected' : ''}>${shortDate(d)} ${COMMON[LANG].dow[parseYmd(d).getDay()]}</option>`).join('')}</select></div>
+    <div class="field"><label for="m-start">${t.bFrom}</label><select id="m-start">${timeOpts(SET.open_min, ACLOSE() - 15, SET.step_min, r.start_min)}</select></div>
+  </div><div class="row"><button class="btn" id="m-save">${t.mSave}</button><button class="btn ghost" id="m-close">${t.close}</button></div></div>`;
+}
+function detail(r) {
+  const t = T();
+  if (r.kind === 'block') return `<div class="panel"><h3>${t.blkH}</h3><p style="margin:0 0 12px">${esc(brb(r.barber_id).name)}, ${hm(r.start_min)}–${hm(r.end_min)}</p>${ad.moving ? moveForm(r) : `<div class="row"><button class="btn ghost" id="m-open">${t.move}</button><button class="btn ghost" data-act="cancelled">${t.unblock}</button></div>`}</div>`;
+  const s = svc(r.service_id);
+  const done = isDone(r), rt = RATE_BY[r.id];
+  const pill = r.status === 'noshow' ? `<span class="pill ns">${t.pNo}</span>` : done ? `<span class="pill done">${t.pDone}</span>` : isNew(r) ? `<span class="pill new">${t.pNew}</span>` : `<span class="pill ok">${t.pOk}</span>`;
+  const created = new Intl.DateTimeFormat(LOC[LANG], { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(r.created_at));
+  const tel = String(r.client_phone || '').replace(/[^\d+]/g, '');
+  return `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">${t.visitH}</h3>${pill}</div>
+    <div style="font-weight:700;font-size:18px">${esc(r.client_name)}</div>
+    <div style="font-family:var(--f-mono);font-size:13px;margin-bottom:10px"><a class="tel" href="tel:${esc(tel)}">${esc(r.client_phone)}</a><br><span style="color:var(--muted);user-select:all">${esc(r.client_email)}</span></div>
+    <div class="sum-row"><span>${t.service}</span><span>${esc(sName(s))}</span></div>
+    <div class="sum-row"><span>${t.time}</span><span>${hm(r.start_min)}–${hm(r.end_min)}</span></div>
+    <div class="sum-row"><span>${t.barberL}</span><span>${esc(brb(r.barber_id).name)}</span></div>
+    <div class="sum-row"><span>${t.price}</span><span>${s ? eur(s.price) : '—'}</span></div>
+    <div class="sum-row"><span>${t.src}</span><span>${t.srcN[r.source] || t.srcN.web}</span></div>
+    <div class="sum-row"><span>${t.code}</span><span translate="no">${esc(r.code)}</span></div>
+    <div class="sum-row"><span>${t.created}</span><span>${created}</span></div>
+    ${rt ? `<div class="sum-row"><span>${t.rateL}</span><span><span class="stars-s">${'★'.repeat(rt.stars)}</span>${'☆'.repeat(5 - rt.stars)}</span></div>${rt.comment ? `<p class="info">“${esc(rt.comment)}”</p>` : ''}` : ''}
+    ${r.note ? `<p class="info">“${esc(r.note)}”</p>` : ''}
+    ${ad.moving ? `<div style="margin-top:14px">${moveForm(r)}</div>` : ''}
+    <div class="row" style="margin-top:14px" ${ad.moving ? 'hidden' : ''}>${done ? '' : `<button class="btn" id="m-open">${t.move}</button>`}${rt || ((r.source || 'web') === 'web' && r.client_email && typeof EMAILS_ON !== 'undefined' && EMAILS_ON) ? '' : `<button class="btn ghost" id="r-link">${t.rateLink}</button>`}${rt ? '' : r.status === 'noshow' ? `<button class="btn ghost" data-act="confirmed">${t.undoNoshow}</button>` : `<button class="btn ghost" data-act="noshow">${t.noshow}</button>`}<button class="btn ghost" data-act="cancelled" data-confirm="1" style="color:var(--red)">${t.cancel}</button></div></div>`;
+}
+async function act(fn, okMsg) {
+  if (busyAct) return; busyAct = true;
+  try { const { error } = await fn(); if (error) throw error; await loadRows(); toast(okMsg); }
+  catch (e) { console.error(e); toast(errCode(e) === 'slot_taken' ? T().tBusy : T().tFail); }
+  busyAct = false; render();
+}
+function bindDash() {
+  const t = T();
+  bindTabs();
+  admin.querySelectorAll('[data-aday]').forEach(b => b.onclick = () => { ad.date = b.dataset.aday; ad.sel = null; ad.moving = false; render(); });
+  admin.querySelectorAll('[data-id]').forEach(b => b.onclick = () => { ad.sel = b.dataset.id; ad.moving = false; render(); });
+  admin.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    const r = ROWS.find(x => x.id === ad.sel); if (!r) return;
+    if (b.dataset.confirm && !b.dataset.armed) {
+      b.dataset.armed = '1'; b.textContent = t.cancelSure; announce(t.cancelSure);
+      setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = t.cancel; } }, 4000); return;
+    }
+    const status = b.dataset.act;
+    const msg = status === 'cancelled' ? (r.kind === 'block' ? t.tUnblocked : t.tCancelled) : status === 'noshow' ? t.tNoshow : t.tShow;
+    if (status === 'cancelled') ad.sel = null;
+    act(() => sb.rpc('set_booking_status', { p_id: r.id, p_status: status }), msg);
+  });
+  const qi = admin.querySelector('#q');
+  if (qi) qi.oninput = () => { ad.q = qi.value; admin.querySelector('#qres').innerHTML = findHtml(); bindFind(); };
+  bindFind();
+  const pwo = admin.querySelector('#pw-open'); if (pwo) pwo.onclick = () => { ad.pw = true; ad.pwErr = ''; render(); admin.querySelector('#pw1')?.focus(); };
+  const pwx = admin.querySelector('#pw-x'); if (pwx) pwx.onclick = () => { ad.pw = false; render(); };
+  const pwf = admin.querySelector('#pwf'); if (pwf) pwf.onsubmit = async ev => {
+    ev.preventDefault();
+    const a = admin.querySelector('#pw1').value, b = admin.querySelector('#pw2').value;
+    if (a.length < 10) { ad.pwErr = 'pwShort'; render(); return; }
+    if (a !== b) { ad.pwErr = 'pwDiff'; render(); return; }
+    const { error } = await sb.auth.updateUser({ password: a });
+    if (error) { console.error(error); toast(t.tFail); return; }
+    ad.pw = false; ad.pwErr = ''; render(); toast(t.tPw);
+  };
+  const pon = admin.querySelector('#p-on'); if (pon) pon.onclick = () => pushOn(admin.querySelector('#p-brb').value);
+  const poff = admin.querySelector('#p-off'); if (poff) poff.onclick = () => pushOff(false);
+  const pt = admin.querySelector('#p-test'); if (pt) pt.onclick = pushTest;
+  const rl = admin.querySelector('#r-link'); if (rl) rl.onclick = async () => {
+    const { data, error } = await sb.rpc('staff_booking_token', { p_id: ad.sel });
+    if (error || !data) { toast(t.tFail); return; }
+    const url = new URL('rate.html?t=' + data, location.href).href;
+    try { await navigator.clipboard.writeText(url); toast(t.tRateCopied); } catch (e) { prompt(t.rateLink, url); }
+  };
+  const mo = admin.querySelector('#m-open'); if (mo) mo.onclick = () => { ad.moving = true; render(); admin.querySelector('#m-start')?.focus(); };
+  const mc = admin.querySelector('#m-close'); if (mc) mc.onclick = () => { ad.moving = false; render(); };
+  const ms = admin.querySelector('#m-save'); if (ms) ms.onclick = () => {
+    const id = ad.sel, day = admin.querySelector('#m-day').value;
+    const args = { p_id: id, p_barber: admin.querySelector('#m-brb').value, p_day: day, p_start_min: +admin.querySelector('#m-start').value };
+    act(async () => { const r = await sb.rpc('move_booking', args); if (!r.error) { ad.moving = false; ad.date = day; ad.scroll = null; } return r; }, t.tMoved);
+  };
+  admin.querySelectorAll('[data-panel]').forEach(b => b.onclick = () => { ad.panel = ad.panel === b.dataset.panel ? null : b.dataset.panel; render(); });
+  const vs = admin.querySelector('#v-save'); if (vs) vs.onclick = () => {
+    const name = admin.querySelector('#v-name').value.trim();
+    if (!name) { toast(t.vNeedName); admin.querySelector('#v-name').focus(); return; }
+    const args = { p_barber: admin.querySelector('#v-brb').value, p_service: admin.querySelector('#v-svc').value, p_day: ad.date,
+      p_start_min: +admin.querySelector('#v-start').value, p_name: name, p_phone: admin.querySelector('#v-phone').value.trim() || null,
+      p_note: admin.querySelector('#v-note').value.trim() || null, p_source: admin.querySelector('#v-src').value };
+    ad.panel = null; SUG = null;
+    act(() => sb.rpc('staff_create_booking', args), t.tAdded);
+  };
+  const vn = admin.querySelector('#v-name'), vp = admin.querySelector('#v-phone'), vsug = admin.querySelector('#v-sug');
+  if (vn && vp && vsug) {
+    loadSuggest();
+    const show = el => {
+      const q = el.value.trim().toLowerCase(), d = q.replace(/\D/g, ''), byPhone = el === vp || /^\+?\d/.test(q);
+      if (!SUG || (byPhone ? d.length < 3 : q.length < 2)) { vsug.hidden = true; return; }
+      const m = SUG.filter(c => byPhone ? c.d.includes(d) : c.n.includes(q)).slice(0, 6);
+      vsug.innerHTML = m.map((c, i) => `<button type="button" class="sug-i" data-i="${i}"><b>${esc(c.name)}</b><span>${esc(c.phone)}${c.visits ? ` · ${c.visits} ${t.cliVisits}` : ''}</span></button>`).join('');
+      vsug.hidden = !m.length;
+      vsug.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { const c = m[+b.dataset.i]; vn.value = c.name; vp.value = c.phone; vsug.hidden = true; });
+    };
+    [vn, vp].forEach(el => { el.oninput = () => show(el); el.onfocus = () => show(el); el.onblur = () => setTimeout(() => { if (!vsug.contains(document.activeElement)) vsug.hidden = true; }, 200); });
+  }
+  const hbSel = admin.querySelector('#h-brb'); if (hbSel) hbSel.onchange = () => { ad.hb = hbSel.value; render(); };
+  admin.querySelectorAll('[data-hd]').forEach(c => c.onchange = () => {
+    const d = c.dataset.hd; admin.querySelector(`[data-hs="${d}"]`).disabled = !c.checked; admin.querySelector(`[data-he="${d}"]`).disabled = !c.checked;
+  });
+  const hs = admin.querySelector('#h-save'); if (hs) hs.onclick = async () => {
+    const out = [];
+    for (const c of admin.querySelectorAll('[data-hd]')) {
+      if (!c.checked) continue;
+      const d = +c.dataset.hd, a = +admin.querySelector(`[data-hs="${d}"]`).value, e = +admin.querySelector(`[data-he="${d}"]`).value;
+      if (e <= a) { toast(t.tFail); return; }
+      out.push({ dow: d, start: a, end: e });
+    }
+    const barber = ad.hb;
+    act(async () => {
+      const r = await sb.rpc('set_hours', { p_barber: barber, p_hours: out }); if (r.error) return r;
+      const h = await sb.from('barber_hours').select('*'); if (!h.error) HOURS = h.data || []; return h;
+    }, t.tHours);
+  };
+  admin.querySelector('#z-out').onclick = () => setZoom(-1);
+  admin.querySelector('#z-in').onclick = () => setZoom(1);
+  admin.querySelector('#ref').onclick = () => act(async () => ({ error: null }), t.refreshed);
+  const bs = admin.querySelector('#b-save'); if (bs) bs.onclick = () => {
+    const barber = admin.querySelector('#b-brb').value, start = +admin.querySelector('#b-start').value;
+    const len = Math.min(+admin.querySelector('#b-len').value, ACLOSE() - start);
+    ad.panel = null;
+    act(() => sb.rpc('add_block', { p_barber: barber, p_day: ad.date, p_start_min: start, p_minutes: len }), t.tBlocked);
+  };
+  admin.querySelector('#copy').onclick = () => {
+    const i = admin.querySelector('#f-link');
+    try { navigator.clipboard.writeText(i.value).then(() => toast(t.tCopied), () => { i.select(); toast(t.tSelect); }); } catch (e) { i.select(); toast(t.tSelect); }
+  };
+}
+
+document.getElementById('skip').onclick = e => { e.preventDefault(); admin.focus(); };
+document.getElementById('logout').onclick = async () => { if (PUSH.state === 'on') await pushOff(true); await sb.auth.signOut(); session = null; ROWS = []; ad.sel = null; view = 'login'; render(); };
+bindLangButtons(render);
+
+(async () => {
+  const { data } = await sb.auth.getSession();
+  session = data.session;
+  if (!session && INVITE) { await new Promise(r => setTimeout(r, 800)); session = (await sb.auth.getSession()).data.session; }
+  if (session && INVITE) { view = 'setpw'; render(); }
+  else if (session) enter(); else { view = 'login'; render(); }
+})();
+setInterval(() => { if (view === 'dash' && !document.hidden && !busyAct && ad.view === 'cal' && !ad.panel && !ad.moving && !ad.pw && document.activeElement?.id !== 'q') loadRows().then(render).catch(() => {}); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'dash' && !ad.panel) loadRows().then(render).catch(() => {}); });
+</script>
+</body>
+</html>
